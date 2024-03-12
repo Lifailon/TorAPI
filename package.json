@@ -1,0 +1,25 @@
+{
+  "name": "TorrentAPI",
+  "version": "1.1.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "start-server": "node app.js"
+  },
+  "keywords": [],
+  "author": "Lifailon",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.3",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.4",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
+  },
+  "description": "Unofficial API server to get torrent files by movie or series name from Russian torrent providers",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lifailon/TorrentAPI"
+  }
+}
