@@ -18,9 +18,9 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
   },
-  "description": "Unofficial API server to get torrent files by movie or series name from Russian torrent providers",
+  "description": "Unofficial API server of Russian torrent providers to get torrent files and other information by movie or series title",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Lifailon/TorrentAPI"
+    "url": "https://github.com/Lifailon/TorAPI"
   }
 }
