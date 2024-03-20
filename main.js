@@ -4,41 +4,11 @@ const axios   = require('axios')
 const iconv   = require('iconv-lite')
 
 // Configuration
-const port = 8443
-
-// Fasts-Torrent
-async function fastsTorrent(query) {
-    const torrents = []
-    const url = `http://fasts-torrent.net/engine/ajax/search_torrent.php?title=${query}`
-    let html
-    try {
-        html = await axios.get(url, { responseType: 'arraybuffer' })
-    } catch (error) {
-        console.error("Error fetching data:", error)
-        return null
-    }
-    const data = cheerio.load(html.data)
-    data('.restable tbody tr').each((_, element) => {
-        let torrent = {
-            'Name': data(element).find('.torrent-title b').text().trim(),
-            'Size': data(element).find('.torrent-sp').eq(0).text().trim(),
-            'Torrent': "http://fasts-torrent.net" + data(element).find('.torrent-d-btn a').attr('href')
-        }
-        torrents.push(torrent)
-    })
-    return torrents
-}
+const listen_port = 8443
 
 // Kinozal
-async function kinozal(query,year,page) {
-    // Если параметр не был передан, присваиваем им значения
-    if (page === undefined) {
-        page = 0
-    }
-    if (year === undefined) {
-        year = 0
-    }
-    const url = `https://kinozal.tv/browse.php?s=${query}&d=${year}&page=${page}`
+async function kinozal(query,page,year) {
+    const url = `https://kinozal.tv/browse.php?s=${query}&page=${page}&d=${year}`
     const torrents = []
     let html
     try {
@@ -95,25 +65,90 @@ async function kinozal(query,year,page) {
     return torrents
 }
 
+// Fasts-Torrent
+async function fastsTorrent(query) {
+    const torrents = []
+    const url = `http://fasts-torrent.net/engine/ajax/search_torrent.php?title=${query}`
+    let html
+    try {
+        html = await axios.get(url, { responseType: 'arraybuffer' })
+    } catch (error) {
+        console.error("Error fetching data:", error)
+        return null
+    }
+    const data = cheerio.load(html.data)
+    data('.restable tbody tr').each((_, element) => {
+        let torrent = {
+            'Name': data(element).find('.torrent-title b').text().trim(),
+            'Size': data(element).find('.torrent-sp').eq(0).text().trim(),
+            'Torrent': "http://fasts-torrent.net" + data(element).find('.torrent-d-btn a').attr('href')
+        }
+        torrents.push(torrent)
+    })
+    return torrents
+}
+
 //
 // kinozal('the+rookie').then(result => console.log(result)).catch(error => console.error(error))
 // fastsTorrent('test').then(result => console.log(result)).catch(error => console.error(error))
 //
 
-const app = express()
+// Функция получения текущего времени для логирования
+function getCurrentTime() {
+    const now = new Date()
+    const hours = now.getHours().toString().padStart(2, '0')
+    const minutes = now.getMinutes().toString().padStart(2, '0')
+    const seconds = now.getSeconds().toString().padStart(2, '0')
+    return `${hours}:${minutes}:${seconds}`
+}
 
-app.get('/api/kinozal/:query/:year/:page', async (req, res) => {
-    const { query, year, page } = req.params
-    try {
-        const result = await kinozal(query, year, page)
-        res.json(result)
-    } catch (error) {
-        console.error("Error:", error)
-        res.status(500).json({ error: 'Internal Server Error' })
+const web = express()
+
+web.get('/api/:provider/:query/:page?/:year?', async (req, res) => {
+    // Обрабатываем параметры
+    let provider = (req.params.provider).toLowerCase()
+    let query = req.params.query
+    let page = req.params.page
+    let year = req.params.year
+    // Если параметр не был передан, присваиваем им значения по умолчанию
+    if (page === undefined) {
+        page = 0
+    }
+    if (year === undefined) {
+        year = 0
+    }
+    // Логируем запросы
+    console.log(`${getCurrentTime()}: [${req.method}] ${req.ip.replace('::ffff:','')} (Provider: "${provider}", Query: "${query}", Page: "${page}", Year: "${year}")`)
+
+    // Проверяем конечные точки провайдеров
+    // Kinozal
+    if (provider === 'kinozal') {
+        try {
+            const result = await kinozal(query, page, year)
+            return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(500).json({ error: 'No data' })
+        }
+    }
+
+    // FastsTorrent
+    else if (provider === 'faststorrent') {
+        try {
+            const result = await fastsTorrent(query)
+            return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(500).json({error: 'No data' })
+        }
+    }
+
+    // Если провайдер не обнаружен, отвечаем
+    else {
+        return res.json({error: 'Endpoint format: /api/<PROVIDER>/<TITLE>/<PAGE>/<YEAR>'})
     }
 })
 
-const PORT = process.env.PORT || port
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)
-})
+const port = process.env.PORT || listen_port
+web.listen(port)
+console.log(`Server is running on port: ${port}`)

@@ -12,7 +12,7 @@ An unofficial API server for Russian-speaking torrent providers to receive torre
 
 📄 Released under the [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
 
-### 🔗 Providers:
+### 🔗 Providers list:
 
 - ✅✳️ [Kinozal](https://kinozal.tv)
 - ❎✳️ [RuTracker](https://rutracker.org)
@@ -31,19 +31,28 @@ npm start # Start the server
 
 The server will start on the default port `8443`.
 
-## 🚀 Request:
+## 📚 Info
 
-### Format:
+### Endpoint format:
 
 ```
-/api/<PROVIDER>/<TITLE>/<YEAR>/<PAGE>
+/api/<PROVIDER>/<TITLE>/<PAGE>/<YEAR>
 ```
 
-### Examples
+### Parameters:
+
+* 🔵 PROVIDER - provider name (corresponds to the [list of providers](#-providers-list))
+* 🔵 TITLE - name of the movie or TV series (the `+` symbol is used instead of a space)
+* ⚪ *PAGE* - page number from which the response will be received (`0 to 100`)
+* ⚪ *YEAR* - year of the movie or TV series
+
+🔵 Mandatory parameter
+
+## 🚀 Requests:
 
 - **Kinozal:**
 
-`curl -s http://192.168.3.100:8443/api/kinozal/the+rookie/2018/0 | jq .`
+`curl -s http://192.168.3.100:8443/api/kinozal/the+rookie/0/2018 | jq .`
 
 ```json
 [

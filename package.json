@@ -10,15 +10,15 @@
   "author": "Lifailon",
   "license": "MIT",
   "dependencies": {
+    "express": "^4.17.1",
     "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.3",
     "iconv-lite": "^0.6.3",
-    "express": "^4.17.1",
     "nodemon": "^2.0.4",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
   },
-  "description": "Unofficial API server of Russian torrent providers to get torrent files and other information by movie or series title",
+  "description": "An unofficial API server for Russian-speaking torrent providers to receive torrent files and other information by movie title, TV series or ID",
   "repository": {
     "type": "git",
     "url": "https://github.com/Lifailon/TorAPI"
