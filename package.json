@@ -1,26 +1,23 @@
 {
-  "name": "TorAPI",
-  "version": "1.1.0",
-  "main": "main.js",
-  "scripts": {
-    "start": "nodemon main.js",
-    "start-server": "node main.js"
-  },
-  "keywords": [],
-  "author": "Lifailon",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.17.1",
-    "axios": "^0.21.1",
-    "cheerio": "^1.0.0-rc.3",
-    "iconv-lite": "^0.6.3",
-    "nodemon": "^2.0.4",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.6"
-  },
-  "description": "An unofficial API server for Russian-speaking torrent providers to receive torrent files and other information by movie title, TV series or ID",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Lifailon/TorAPI"
-  }
+    "name": "torapi",
+    "version": "0.1.0",
+    "main": "main.js",
+    "scripts": {
+        "start": "nodemon main.js"
+    },
+    "keywords": [],
+    "author": "Lifailon",
+    "license": "MIT",
+    "dependencies": {
+        "express": "^4.17.1",
+        "axios": "^0.21.1",
+        "cheerio": "^1.0.0-rc.3",
+        "iconv-lite": "^0.6.3",
+        "nodemon": "^2.0.4"
+    },
+    "description": "An unofficial API server for Russian-speaking torrent providers to receive torrent files and other information by movie title, TV series or ID",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Lifailon/TorAPI"
+    }
 }

@@ -14,39 +14,42 @@ An unofficial API server for Russian-speaking torrent providers to receive torre
 
 ### 🔗 Providers list:
 
-- ✅✳️ [Kinozal](https://kinozal.tv)
-- ❎✳️ [RuTracker](https://rutracker.org)
+- ✅ [Kinozal](https://kinozal.tv) \*
+- ❎ [RuTracker](https://rutracker.org) \*
 - ❎ [RuTor](https://rutor.info)
-- ❎ [NoName-Club](https://nnmclub.to)
+- ❎ [NoNameClub](https://nnmclub.to)
+- ✅ [FastsTorrent](http://fasts-torrent.net) \**
 
-✳️ To download torrent files via direct link, authorization is required (parameter `Torrent`).
+\*  To download torrent files via direct link, authorization is required (parameter `Torrent`).
+\** No authorization and VPN required.
 
 ## ▶️ Start
 
+Clone the repository, install dependencies and start the server:
+
 ```shell
-git clone https://github.com/Lifailon/TorAPI # Clone the repository
-npm install # Install dependencies
-npm start # Start the server
+git clone https://github.com/Lifailon/TorAPI
+cd TorAPI
+npm install
+npm start
 ```
 
-The server will start on the default port `8443`.
+The server will start on the port `8443` (default).
 
 ## 📚 Info
 
-### Endpoint format:
+#### Endpoint format:
 
 ```
 /api/<PROVIDER>/<TITLE>/<PAGE>/<YEAR>
 ```
 
-### Parameters:
+#### Parameters:
 
-* 🔵 PROVIDER - provider name (corresponds to the [list of providers](#-providers-list))
-* 🔵 TITLE - name of the movie or TV series (the `+` symbol is used instead of a space)
-* ⚪ *PAGE* - page number from which the response will be received (`0 to 100`)
-* ⚪ *YEAR* - year of the movie or TV series
-
-🔵 Mandatory parameter
+* *PROVIDER* (**mandatory**) - provider name (corresponds to the [list of providers](#-providers-list))
+* *TITLE* (**mandatory**) - name of the movie or TV series (the `+` symbol is used instead of a space)
+* *PAGE* - page number from which the response will be received (`0 to 100`)
+* *YEAR* - year of the movie or TV series
 
 ## 🚀 Requests:
 
