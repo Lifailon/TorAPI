@@ -21,7 +21,7 @@ This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torren
 
 - ✅ [Kinozal](https://kinozal.tv)
 - ❌ [RuTracker](https://rutracker.org)
-- ❌ [RuTor](https://rutor.info) \*
+- ✅ [RuTor](https://rutor.info) \*
 - ✅ [NoNameClub](https://nnmclub.to) \*
 - ✅ [FastsTorrent](http://fasts-torrent.net) \**
 
@@ -68,6 +68,7 @@ Only `GET` method is supported
 #### Requests and responses:
 
 - [Kinozal](#kinozal)
+- [RuTor](#rutor)
 - [NoNameClub](#nonameclub)
 
 #### Kinozal
@@ -195,6 +196,75 @@ Only `GET` method is supported
     "Peers": "2",
     "Comments": "2",
     "Date": "19.04.2019 09:32"
+  }
+]
+```
+
+#### RuTor
+
+`curl -s http://192.168.3.100:8443/api/rutor/the+rookie+2018 | jq .`
+
+```json
+[
+  {
+    "Name": "Новичок / Новобранец / The Rookie [S01] (2018) WEBRip 720p | Gears Media",
+    "Id": "678894",
+    "Url": "https://rutor.info/torrent/678894/novichok_novobranec_the-rookie-s01-2018-webrip-720p-gears-media",
+    "Torrent": "https://d.rutor.info/download/678894",
+    "Magnet": "magnet:?xt=urn:btih:bc6bc000ba9f4b608693770da3657b9e28af6c33&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
+    "Size": "22.88 GB",
+    "Comments": "0",
+    "Seed": "0",
+    "Peer": "1",
+    "Date": "26.04.2019"
+  },
+  {
+    "Name": "Новичок / Новобранец / The Rookie [S01] (2018) WEB-DLRip | LostFilm",
+    "Id": "660719",
+    "Url": "https://rutor.info/torrent/660719/novichok_novobranec_the-rookie-s01-2018-web-dlrip-lostfilm",
+    "Torrent": "https://d.rutor.info/download/660719",
+    "Magnet": "magnet:?xt=urn:btih:339f1b0bb4e85fec0df8ac96d367c16ab7de6efa&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
+    "Size": "10.55 GB",
+    "Comments": "15",
+    "Seed": "5",
+    "Peer": "0",
+    "Date": "19.04.2019"
+  },
+  {
+    "Name": "Новичок / Новобранец / The Rookie [S01] (2018) WEB-DL 1080p | Lostfilm",
+    "Id": "694558",
+    "Url": "https://rutor.info/torrent/694558/novichok_novobranec_the-rookie-s01-2018-web-dl-1080p-lostfilm",
+    "Torrent": "https://d.rutor.info/download/694558",
+    "Magnet": "magnet:?xt=urn:btih:85d075c90e0c64403824bd116eb98645082e3fcc&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
+    "Size": "52.69 GB",
+    "Comments": "2",
+    "Seed": "5",
+    "Peer": "2",
+    "Date": "19.04.2019"
+  },
+  {
+    "Name": "Новичок / Новобранец / The Rookie [S01] (2018) WEBRip 1080p | Profix Media",
+    "Id": "660369",
+    "Url": "https://rutor.info/torrent/660369/novichok_novobranec_the-rookie-s01-2018-webrip-1080p-profix-media",
+    "Torrent": "https://d.rutor.info/download/660369",
+    "Magnet": "magnet:?xt=urn:btih:df1efa415b3449ae89f066ce5abbb37b9faa880f&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
+    "Size": "37.80 GB",
+    "Comments": "0",
+    "Seed": "0",
+    "Peer": "1",
+    "Date": "18.04.2019"
+  },
+  {
+    "Name": "Новичок / Новобранец / The Rookie [S01] (2018) WEBRip 720p | Profix Media",
+    "Id": "660368",
+    "Url": "https://rutor.info/torrent/660368/novichok_novobranec_the-rookie-s01-2018-webrip-720p-profix-media",
+    "Torrent": "https://d.rutor.info/download/660368",
+    "Magnet": "magnet:?xt=urn:btih:74abd7bbfce689bce5578566ca485f643bd1ab0f&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
+    "Size": "24.55 GB",
+    "Comments": "0",
+    "Seed": "0",
+    "Peer": "1",
+    "Date": "18.04.2019"
   }
 ]
 ```
