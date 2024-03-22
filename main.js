@@ -6,6 +6,17 @@ const iconv   = require('iconv-lite')
 // Configuration
 const listen_port = 8443
 
+// Имя агента в заголовке запросов (вместо 'axios/0.21.4')
+const headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 Win64 x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+}
+
+// Cookie для автроризации на сайте RuTracker
+const headers_RuTracker = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 Win64 x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Cookie': 'bb_guid=OX8UGBHMi1DW; bb_ssl=1; bb_session=0-44590272-Sp8wQfjonpx37QjDuZUD; bb_t=a%3A5%3A%7Bi%3A6489937%3Bi%3A1709887615%3Bi%3A6496948%3Bi%3A1709891767%3Bi%3A6387499%3Bi%3A1690356948%3Bi%3A6387500%3Bi%3A1689726770%3Bi%3A6358163%3Bi%3A1684231793%3B%7D; _ym_uid=1675005035139917782; _ym_d=1697464991; _ym_isad=1; cf_clearance=3BsUm3qZLnU1DbxOWHDKEYQiqF3txcKZtck9A3SZOcs-1711117293-1.0.1.1-MoRPAGq.5IDiUQJnZGAcp5fTSwniloZIDKnaG2UR4kTy.g4TY3cGcdSDQDuRRgSGGzju3rLynXLvc1Vbzurl8A'
+}
+
 // Функция получения текущего времени для логирования
 function getCurrentTime() {
     const now = new Date()
@@ -15,19 +26,8 @@ function getCurrentTime() {
     return `${hours}:${minutes}:${seconds}`
 }
 
-// Функция преобразования времени из unix timestamp
-function unixTimestamp(timestamp) {
-    const date = new Date(timestamp * 1000)
-    const day = String(date.getDate()).padStart(2, '0')
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const year = date.getFullYear()
-    const hours = String(date.getHours()).padStart(2, '0')
-    const minutes = String(date.getMinutes()).padStart(2, '0')
-    return `${day}.${month}.${year} ${hours}:${minutes}`
-}
-
-// Функция преобразования времени в формат dd.mm.yyyy
-function formatDate(dateString) {
+// Функция преобразования времени в формат 'dd.mm.yyyy' (для RuTracker и RuTor)
+function formatDate(dateString, type) {
     const months = {
         'Янв': '01',
         'Фев': '02',
@@ -41,17 +41,23 @@ function formatDate(dateString) {
         'Окт': '10',
         'Ноя': '11',
         'Дек': '12'
-    };
-    const parts = dateString.split(' ');
-    const day = parts[0].trim();
-    const month = months[parts[1].trim()];
-    const year = '20' + parts[2].trim();
-    return `${day}.${month}.${year}`;
+    }
+    const parts = dateString.split(`${type}`)
+    const day = parts[0].trim()
+    const month = months[parts[1].trim()]
+    const year = '20' + parts[2].trim()
+    return `${day}.${month}.${year}`
 }
 
-// Изменяем имя агента в заголовке запросов (вместо 'axios/0.21.4')
-const headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 Win64 x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+// Функция преобразования времени из Unix Timestamp в 'dd.mm.yyyy HH:MM' (для NoNameClub)
+function unixTimestamp(timestamp) {
+    const date = new Date(timestamp * 1000)
+    const day = String(date.getDate()).padStart(2, '0')
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const year = date.getFullYear()
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    return `${day}.${month}.${year} ${hours}:${minutes}`
 }
 
 // Kinozal
@@ -103,9 +109,9 @@ async function Kinozal(query,page,year) {
                 'Url': "https://kinozal.tv"+torrentName.attr('href'),
                 'Torrent': "https://dl.kinozal.tv" + data(element).find('.nam a').attr('href').replace(/details/, 'download'),
                 'Size': s.eq(1).text().trim(),
+                'Comments': s.eq(0).text().trim(),
                 'Seeds': data(element).find('.sl_s').text().trim(), // раздает
                 'Peers': data(element).find('.sl_p').text().trim(), // качает
-                'Comments': s.eq(0).text().trim(),
                 'Date': `${date[0]} ${date[2]}`
             }
             torrents.push(torrent)
@@ -118,45 +124,17 @@ async function Kinozal(query,page,year) {
     }
 }
 
-// FastsTorrent
-async function FastsTorrent(query) {
-    const url = `http://fasts-torrent.net/engine/ajax/search_torrent.php?title=${query}`
+// RuTracker
+async function RuTracker(query) {
+    const url = `https://rutracker.org/forum/tracker.php?nm=${query}` // &start=50
+    // https://rutracker.net
+    // https://rutracker.nl
     const torrents = []
     let html
     try {
-        html = await axios.get(url, {
+        response = await axios.get(url, {
             responseType: 'arraybuffer',
-            headers: headers
-        })
-    } catch (error) {
-        console.error(`${getCurrentTime()}: [ERROR] ${error.hostname} (Code: ${error.code})`)
-        return {'Result': `The ${error.hostname} server is not available`}
-    }
-    const data = cheerio.load(html.data)
-    data('.restable tbody tr').each((_, element) => {
-        const torrent = {
-            'Name': data(element).find('.torrent-title b').text().trim(),
-            'Size': data(element).find('.torrent-sp').eq(0).text().trim(),
-            'Torrent': "http://fasts-torrent.net" + data(element).find('.torrent-d-btn a').attr('href')
-        }
-        torrents.push(torrent)
-    })
-    if (torrents.length === 0) {
-        return {'Result': 'No matches were found for your title'}
-    } else {
-        return torrents
-    }
-}
-
-// NoNameClub
-async function NoNameClub(query) {
-    const url = `https://nnmclub.to/forum/tracker.php?nm=${query}` // &start=50
-    const torrents = []
-    let html
-    try {
-        const response = await axios.get(url, {
-            responseType: 'arraybuffer',
-            headers: headers
+            headers: headers_RuTracker
         })
         // Декодируем HTML-страницу в кодировку win-1251
         html = iconv.decode(response.data, 'win1251')
@@ -165,27 +143,25 @@ async function NoNameClub(query) {
         return {'Result': `The ${error.hostname} server is not available`}
     }
     const data = cheerio.load(html)
-    data('.forumline:eq(1) tbody tr').each((_, element) => {
-        // Получаем количество элементов с классом 'gensmall'
-        const count = data(element).find('.gensmall').length
-        // Определяем индекс для выбора размера
-        const sizeIndex = count === 4 ? 1 : count === 5 ? 2 : 1
-        // Исключаем первый элемент байт из массива (slice(1))
-        const size = data(element).find(`.gensmall:eq(${sizeIndex})`).text().trim().split(' ', 3).slice(1).join(' ')
+    data('table .forumline tbody tr').each((_, element) => {
         const torrent = {
-            'Name': data(element).find('.genmed a b').text().trim(),
-            'Id': data(element).find('.genmed a').attr('href').replace(/.+t=/,''),
-            'Url': "https://nnmclub.to/forum/"+data(element).find('a:eq(1)').attr('href'),
-            'Torrent': "https://nnmclub.to/forum/"+data(element).find('a:eq(3)').attr('href'),
-            'Size': size,
-            'Seed': data(element).find('.seedmed').text().trim(),
-            'Peer': data(element).find('.leechmed').text().trim(),
-            'Comments': data(element).find(`.gensmall:eq(${sizeIndex + 1})`).text().trim(),
-            'Genre': data(element).find('.gen').text().trim(),
-            'Genre_Link': "https://nnmclub.to/forum/"+data(element).find('.gen').attr('href'),
-            // Забираем и преобразуем timestamp
-            'Date': unixTimestamp(
-                data(element).find(`.gensmall:eq(${sizeIndex + 2})`).text().trim().split(' ')[0]
+            'Name': data(element).find('.row4 .wbr .med').text().trim(),
+            'Id': data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g,''),
+            'Url': "https://rutracker.net/forum/" + data(element).find('.row4 .wbr .med').attr('href'),
+            'Torrent': "https://rutracker.net/forum/dl.php?t=" + data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g,''),
+            // Забираем первые два значения (размер и тип данных)
+            /// 'Size': data(element).find('.row4.small:eq(0)').text().trim().split(' ').slice(0,1).join(' '),
+            'Size': data(element).find('a.small.tr-dl.dl-stub').text().trim().split(' ').slice(0,1).join(' '),
+            'Downloads': data(element).find('td.row4.small.number-format').text().trim(),
+            'Checked': data(element).find('td.row1.t-ico').text().trim(),
+            'Type': data(element).find('.row1 .f-name .gen').text().trim(),
+            'Type_Link': "https://rutracker.net/forum/" + data(element).find('.row1 .f-name .gen').attr('href'),
+            'Seed': data(element).find('b.seedmed').text().trim(),
+            'Peer': data(element).find('td.row4.leechmed.bold').text().trim(),
+            // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
+            'Date': formatDate(
+                data(element).find('td.row4 p').text().trim(),
+                "-"
             )
         }
         torrents.push(torrent)
@@ -234,11 +210,93 @@ async function RuTor(query) {
                 'Seed': data(element).find('.green').text().trim(),
                 'Peer': data(element).find('.red').text().trim(),
                 // 'Date': data(element).find('td:eq(0)').text().trim(),
-                // Заменяем все символы пробела на обычные пробелы и форматируем дату
-                'Date': formatDate(data(element).find('td:eq(0)').text().trim().replace(/\s+/g, ' ')),
+                // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
+                'Date': formatDate(
+                    data(element).find('td:eq(0)').text().trim().replace(/\s+/g, ' '),
+                    " "
+                )
             }
             torrents.push(torrent)
         }
+    })
+    if (torrents.length === 0) {
+        return {'Result': 'No matches were found for your title'}
+    } else {
+        return torrents
+    }
+}
+
+// NoNameClub
+async function NoNameClub(query) {
+    const url = `https://nnmclub.to/forum/tracker.php?nm=${query}` // &start=50
+    const torrents = []
+    let html
+    try {
+        const response = await axios.get(url, {
+            responseType: 'arraybuffer',
+            headers: headers
+        })
+        // Декодируем HTML-страницу в кодировку win-1251
+        html = iconv.decode(response.data, 'win1251')
+    } catch (error) {
+        console.error(`${getCurrentTime()}: [ERROR] ${error.hostname} (Code: ${error.code})`)
+        return {'Result': `The ${error.hostname} server is not available`}
+    }
+    const data = cheerio.load(html)
+    data('.forumline:eq(1) tbody tr').each((_, element) => {
+        // Получаем количество элементов с классом 'gensmall'
+        const count = data(element).find('.gensmall').length
+        // Определяем индекс для выбора размера
+        const sizeIndex = count === 4 ? 1 : count === 5 ? 2 : 1
+        // Исключаем первый элемент байт из массива (slice(1))
+        const size = data(element).find(`.gensmall:eq(${sizeIndex})`).text().trim().split(' ', 3).slice(1).join(' ')
+        const torrent = {
+            'Name': data(element).find('.genmed a b').text().trim(),
+            'Id': data(element).find('.genmed a').attr('href').replace(/.+t=/,''),
+            'Url': "https://nnmclub.to/forum/"+data(element).find('a:eq(1)').attr('href'),
+            'Torrent': "https://nnmclub.to/forum/"+data(element).find('a:eq(3)').attr('href'),
+            'Size': size,
+            'Comments': data(element).find(`.gensmall:eq(${sizeIndex + 1})`).text().trim(),
+            'Type': data(element).find('.gen').text().trim(),
+            'Type_Link': "https://nnmclub.to/forum/"+data(element).find('.gen').attr('href'),
+            'Seed': data(element).find('.seedmed').text().trim(),
+            'Peer': data(element).find('.leechmed').text().trim(),
+            // Забираем и преобразуем timestamp
+            'Date': unixTimestamp(
+                data(element).find(`.gensmall:eq(${sizeIndex + 2})`).text().trim().split(' ')[0]
+            )
+        }
+        torrents.push(torrent)
+    })
+    if (torrents.length === 0) {
+        return {'Result': 'No matches were found for your title'}
+    } else {
+        return torrents
+    }
+}
+
+// FastsTorrent
+async function FastsTorrent(query) {
+    const url = `http://fasts-torrent.net/engine/ajax/search_torrent.php?title=${query}`
+    const torrents = []
+    let html
+    try {
+        html = await axios.get(url, {
+            responseType: 'arraybuffer',
+            headers: headers
+        })
+    } catch (error) {
+        console.error(`${getCurrentTime()}: [ERROR] ${error.hostname} (Code: ${error.code})`)
+        return {'Result': `The ${error.hostname} server is not available`}
+    }
+    const data = cheerio.load(html.data)
+    data('.restable tbody tr').each((_, element) => {
+        const torrent = {
+            'Name': data(element).find('.torrent-title b').text().trim(),
+            'Size': data(element).find('.torrent-sp').eq(0).text().trim(),
+            'Torrent': "http://fasts-torrent.net" + data(element).find('.torrent-d-btn a').attr('href')
+        }
+        torrents.push(torrent)
     })
     if (torrents.length === 0) {
         return {'Result': 'No matches were found for your title'}
@@ -306,10 +364,22 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
             )
         }
     }
-    // FastsTorrent
-    else if (provider === 'faststorrent') {
+    // RuTracker
+    else if (provider === 'rutracker') {
         try {
-            const result = await FastsTorrent(query)
+            const result = await RuTracker(query)
+            return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                {Result: 'No data'}
+            )
+        }
+    }
+    // RuTor
+    else if (provider === 'rutor') {
+        try {
+            const result = await RuTor(query)
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)
@@ -330,10 +400,10 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
             )
         }
     }
-    // RuTor
-    else if (provider === 'rutor') {
+    // FastsTorrent
+    else if (provider === 'faststorrent') {
         try {
-            const result = await RuTor(query)
+            const result = await FastsTorrent(query)
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)

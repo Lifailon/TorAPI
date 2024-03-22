@@ -22,10 +22,19 @@ This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torren
 ### 🔗 Providers list:
 
 - ✅ [Kinozal](https://kinozal.tv)
-- ❌ [RuTracker](https://rutracker.org)
-- ✅ [RuTor](https://rutor.info) \*
-- ✅ [NoNameClub](https://nnmclub.to) \*
-- ✅ [FastsTorrent](http://fasts-torrent.net) \**
+- ✅ [RuTracker](https://rutracker.org) ***
+- ✅ [RuTor](https://rutor.info) *
+- ✅ [NoNameClub](https://nnmclub.to) *
+- ✅ [FastsTorrent](http://fasts-torrent.net) **
+
+<!--
+| Name       | Mandatory | Description                                                                                    |
+|-           |-          |-                                                                                               |
+| *PROVIDER* | True      | Provider name (corresponds to the [list of providers](#-providers-list))                       | 
+| *TITLE*    | True      | Name of the movie or TV series (the `+` symbol is used instead of a space)                     |
+| *PAGE*     | False     | Page number from which the response will be received (`0 to 100`)                              |
+| *YEAR*     | False     | Year of release of the film or series for filtering (supported only by the provider *Kinozal*) |
+-->
 
 \*  To download torrent files via a direct link (the `Torrent` parameter), authorization is not required. \
 \** No authorization and VPN required.
