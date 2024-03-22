@@ -1,31 +1,34 @@
-# TorAPI
 
----
+<h3 align='center'>🎞️ TorAPI 🎞️</h3>
+<p align="center">
+<a href="https://github.com/Lifailon"><img title="Author" src="https://img.shields.io/badge/Author-Lifailon-blue.svg?style=for-the-badge&logo=github"></a>
+</p>
 
-💁 *In active development stage* ⚠️
-
----
-
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
-![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+<p align="center">
+<a href="https://github.com/nodejs/node"><img title="Node" src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white"></a>
+<a href="https://github.com/expressjs/express"><img title="Express" src="https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB"></a>
+</p>
 
 An unofficial API server for Russian-speaking torrent providers to receive torrent files and other information by movie title, TV series or ID.
 
-This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) 💛. All code is completely rewritten. The server is based on [Express.js](https://github.com/expressjs/express).
+This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) ✨ (all code is completely rewritten). The server is based on [Express.js](https://github.com/expressjs/express).
 
 📄 Released under the [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
 
+---
+
 ### 🔗 Providers list:
 
-- ✅ [Kinozal](https://kinozal.tv) \*
-- ❌ [RuTracker](https://rutracker.org) \*
-- ❌ [RuTor](https://rutor.info)
-- ✅ [NoNameClub](https://nnmclub.to)
+- ✅ [Kinozal](https://kinozal.tv)
+- ❌ [RuTracker](https://rutracker.org)
+- ❌ [RuTor](https://rutor.info) \*
+- ✅ [NoNameClub](https://nnmclub.to) \*
 - ✅ [FastsTorrent](http://fasts-torrent.net) \**
 
-\*  To download torrent files via direct link (parameter `Torrent`), authorization is required. \
+\*  To download torrent files via a direct link (the `Torrent` parameter), authorization is not required. \
 \** No authorization and VPN required.
+
+---
 
 ## ▶️ Start
 
@@ -46,16 +49,19 @@ The server will start on the port `8443` (default).
 
 #### Endpoint format
 
-```
+```js
 /api/<PROVIDER>/<TITLE>/<PAGE>/<YEAR>
 ```
 
 #### Parameters
 
-* *PROVIDER* (**mandatory**) - provider name (corresponds to the [list of providers](#-providers-list))
-* *TITLE* (**mandatory**) - name of the movie or TV series (the `+` symbol is used instead of a space)
-* *PAGE* - page number from which the response will be received (`0 to 100`)
-* *YEAR* - year of the movie or TV series (supported only by the *Kinozal* provider)
+| Name       | Mandatory | Description                                                                                    |
+|-           |-          |-                                                                                               |
+| *PROVIDER* | True      | Provider name (corresponds to the [list of providers](#-providers-list))                       | 
+| *TITLE*    | True      | Name of the movie or TV series (the `+` symbol is used instead of a space)                     |
+| *PAGE*     | False     | Page number from which the response will be received (`0 to 100`)                              |
+| *YEAR*     | False     | Year of release of the film or series for filtering (supported only by the provider *Kinozal*) |
+
 
 #### Requests
 
