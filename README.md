@@ -39,6 +39,8 @@ This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torren
 \*  To download torrent files via a direct link (the `Torrent` parameter), authorization is not required. \
 \** No authorization and VPN required.
 
+In case it is unavailable to receive data from a remote resource, mirror URLs have been added for each provider.
+
 ---
 
 ## ▶️ Start
@@ -74,7 +76,6 @@ Only `GET` method is supported
 | *TITLE*    | True      | Name of the movie or TV series (the `+` symbol is used instead of a space)                     |
 | *PAGE*     | False     | Page number from which the response will be received (`0 to 100`)                              |
 | *YEAR*     | False     | Year of release of the film or series for filtering (supported only by the provider *Kinozal*) |
-
 
 #### Requests and responses:
 

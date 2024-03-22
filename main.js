@@ -26,6 +26,34 @@ function getCurrentTime() {
     return `${hours}:${minutes}:${seconds}`
 }
 
+// Функция для преобразования номера страницы (для RuTracker и NoNameClub)
+function getPage(page) {
+    const pages = {
+        '0' : '0',
+        '1' : '50',
+        '2' : '100',
+        '3' : '150',
+        '4' : '200',
+        '5' : '250',
+        '6' : '300',
+        '7' : '350',
+        '8' : '400',
+        '9' : '450',
+        '10': '500',
+        '11': '550',
+        '12': '600',
+        '13': '650',
+        '14': '700',
+        '15': '750',
+        '16': '800',
+        '17': '850',
+        '18': '900',
+        '19': '950',
+        '20': '1000'
+    }
+    return pages[page]
+}
+
 // Функция преобразования времени в формат 'dd.mm.yyyy' (для RuTracker и RuTor)
 function formatDate(dateString, type) {
     const months = {
@@ -61,7 +89,7 @@ function unixTimestamp(timestamp) {
 }
 
 // Kinozal
-async function Kinozal(query,page,year) {
+async function Kinozal(query, page, year) {
     const url = `https://kinozal.tv/browse.php?s=${query}&page=${page}&d=${year}`
     const torrents = []
     let html
@@ -125,21 +153,37 @@ async function Kinozal(query,page,year) {
 }
 
 // RuTracker
-async function RuTracker(query) {
-    const url = `https://rutracker.org/forum/tracker.php?nm=${query}` // &start=50
-    // https://rutracker.net
-    // https://rutracker.nl
+async function RuTracker(query, page) {
+    // Получаем кастомный номер страницы через функцию (кратный 50)
+    const p = getPage(page)
+    // Список все зеркальных URL провайдера для перебора в цикле в случае недоступности одного
+    const urls = [
+        'https://rutracker.org/forum/tracker.php?nm=',
+        'https://rutracker.net/forum/tracker.php?nm=',
+        'https://rutracker.nl/forum/tracker.php?nm='
+    ]
+    // Переменная для отслеживания успешного выполнения запроса
+    let checkUrl = false
     const torrents = []
     let html
-    try {
-        response = await axios.get(url, {
-            responseType: 'arraybuffer',
-            headers: headers_RuTracker
-        })
-        // Декодируем HTML-страницу в кодировку win-1251
-        html = iconv.decode(response.data, 'win1251')
-    } catch (error) {
-        console.error(`${getCurrentTime()}: [ERROR] ${error.hostname} (Code: ${error.code})`)
+    for (let i = 0; i < urls.length; i++) {
+        const url = `${urls[i]}${query}&start=${p}`
+        try {
+            const response = await axios.get(url, {
+                responseType: 'arraybuffer',
+                headers: headers_RuTracker
+            })
+            // Декодируем HTML-страницу в кодировку win-1251
+            html = iconv.decode(response.data, 'win1251')
+            // Если удалось получить данные, выходим из цикла
+            checkUrl = true
+            console.log(`${getCurrentTime()} [Request] ${url}`)
+            break
+        } catch (error) {
+            console.error(`${getCurrentTime()} [ERROR] ${error.hostname} (Code: ${error.code})`)
+        }
+    }
+    if (!checkUrl) {
         return {'Result': `The ${error.hostname} server is not available`}
     }
     const data = cheerio.load(html)
@@ -174,12 +218,12 @@ async function RuTracker(query) {
 }
 
 // RuTor
-async function RuTor(query) {
-    const url = `https://rutor.info/search/0/0/300/0/${query}` // /search/1/0/300/0/castle
+async function RuTor(query, page) {
+    const url = `https://rutor.info/search/${page}/0/300/0/${query}`
     const torrents = []
     let html
     try {
-        response = await axios.get(url, {
+        const response = await axios.get(url, {
             responseType: 'arraybuffer',
             headers: headers
         })
@@ -227,8 +271,9 @@ async function RuTor(query) {
 }
 
 // NoNameClub
-async function NoNameClub(query) {
-    const url = `https://nnmclub.to/forum/tracker.php?nm=${query}` // &start=50
+async function NoNameClub(query, page) {
+    const p = getPage(page)
+    const url = `https://nnmclub.to/forum/tracker.php?nm=${query}&start=${p}`
     const torrents = []
     let html
     try {
@@ -367,7 +412,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     // RuTracker
     else if (provider === 'rutracker') {
         try {
-            const result = await RuTracker(query)
+            const result = await RuTracker(query, page)
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)
@@ -379,7 +424,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     // RuTor
     else if (provider === 'rutor') {
         try {
-            const result = await RuTor(query)
+            const result = await RuTor(query, page)
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)
@@ -391,7 +436,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     // NoNameClub
     else if (provider === 'nonameclub') {
         try {
-            const result = await NoNameClub(query)
+            const result = await NoNameClub(query, page)
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)
