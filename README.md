@@ -1,5 +1,5 @@
 
-<h3 align='center'>🎞️ TorAPI 🎞️</h3>
+<h2 align='center'>🎞️ TorAPI 🎞️</h2>
 <p align="center">
 <a href="https://github.com/Lifailon"><img title="Author" src="https://img.shields.io/badge/Author-Lifailon-blue.svg?style=for-the-badge&logo=github"></a>
 </p>
@@ -47,13 +47,15 @@ The server will start on the port `8443` (default).
 
 ## 📚 Doc
 
-#### Endpoint format
+#### Endpoint format:
 
 ```js
 /api/<PROVIDER>/<TITLE>/<PAGE>/<YEAR>
 ```
 
-#### Parameters
+Only `GET` method is supported
+
+#### Parameters:
 
 | Name       | Mandatory | Description                                                                                    |
 |-           |-          |-                                                                                               |
@@ -63,7 +65,7 @@ The server will start on the port `8443` (default).
 | *YEAR*     | False     | Year of release of the film or series for filtering (supported only by the provider *Kinozal*) |
 
 
-#### Requests
+#### Requests and responses:
 
 - [Kinozal](#kinozal)
 - [NoNameClub](#nonameclub)
@@ -71,6 +73,7 @@ The server will start on the port `8443` (default).
 #### Kinozal
 
 `curl -s http://192.168.3.100:8443/api/kinozal/the+rookie/0/2018 | jq .`
+
 ```json
 [
   {
@@ -199,6 +202,7 @@ The server will start on the port `8443` (default).
 #### NoNameClub
 
 `curl -s http://192.168.3.100:8443/api/nonameclub/the+rookie+2018 | jq .`
+
 ```json
 [
   {
