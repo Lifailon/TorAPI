@@ -11,6 +11,8 @@
 
 An unofficial API server for Russian-speaking torrent providers to receive torrent files and other information by movie title, TV series or ID.
 
+> Search by ID will be implemented in future releases.
+
 This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) ✨ (all code is completely rewritten). The server is based on [Express.js](https://github.com/expressjs/express).
 
 📄 Released under the [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
