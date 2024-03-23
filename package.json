@@ -15,7 +15,7 @@
         "iconv-lite": "^0.6.3",
         "nodemon": "^2.0.4"
     },
-    "description": "An unofficial API server for Russian-speaking torrent providers to receive torrent files and other information by movie title, TV series or ID",
+    "description": "Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torrent files and other information by movie title, series or id",
     "repository": {
         "type": "git",
         "url": "https://github.com/Lifailon/TorAPI"
