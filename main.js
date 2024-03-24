@@ -1,7 +1,7 @@
-const express = require('express')
-const cheerio = require('cheerio')
-const axios   = require('axios')
-const iconv   = require('iconv-lite')
+const express   = require('express')
+const cheerio   = require('cheerio')
+const axios     = require('axios')
+const iconv     = require('iconv-lite')
 
 // Configuration
 const listen_port = 8443
@@ -225,6 +225,106 @@ async function Kinozal(query, page, year) {
     })
     if (torrents.length === 0) {
         return {'Result': 'No matches were found for your title'}
+    } else {
+        return torrents
+    }
+}
+
+////////// Puppeteer
+const puppeteer = require('puppeteer')
+
+async function RuTorFilesPuppeteer(query) {
+    const torrents = []
+    // Запускаем браузер и открываем новую пустую страницу 
+    const browser = await puppeteer.launch({
+        headless: true // Скрыть отображение браузера (по умолчанию)
+    })
+    const page = await browser.newPage()
+    // Открываем страницу с ожиданием загрузки 60 сек
+    await page.goto(`https://rutor.info/torrent/${query}`,{
+        timeout: 60000,
+        waitUntil: 'domcontentloaded' // ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
+    })
+    // await page.goto(`https://rutor.info/torrent/970650`, {timeout: 60000})
+    await page.evaluate(() => {
+        // Находим кнопку по JavaScript пути и нажимаем на нее
+        // document.querySelector("#details > tbody > tr:nth-child(11) > td.header > span").click()
+        // document.querySelector("#details > tbody > tr:nth-child(12) > td.header > span").click()
+        // Находим все кпноки
+        const buttons = document.querySelectorAll('span.button')
+        // Проходимся по найденным кнопкам
+        buttons.forEach(button => {
+            // Проверяем, содержит ли кнопка текст "Файлы" и нажимаем на нее
+            if (button.textContent.includes('Файлы')) {
+                button.click()
+            }
+        })
+    })
+    // Дождаться загрузки результатов
+    // const elementHandle = await page.waitForSelector('#files')
+    // Ищем элемент с идентификатором #files и проверяем, что элемент существует его содержимое не содержит текст загрузки
+    await page.waitForFunction(() => {
+        const element = document.querySelector('#files')
+        return element && !element.textContent.includes("Происходит загрузка списка файлов...")
+    }, {
+        timeout: 30000, // Ожидать результат 30 секунд
+        polling: 50   // Проверка каждые 50мс (по умолчанию 100мс)
+    })
+    // Забираем результат после успешной проверки
+    const elementContent = await page.evaluate(() => {
+        const element = document.querySelector('#files')
+        return element ? element.textContent : null
+    })
+    // Закрываем браузер
+    await browser.close()
+    // Разбиваем на массив из строк исключая первую строку
+    const lines = elementContent.trim().split('\n').slice(1)
+    // Регулярное выражение для разбиения строки на название и размер
+    const regex = /^(.+?)([\d.]+\s*\S+)\s+\((\d+)\)$/
+    for (const line of lines) {
+        const match = line.match(regex)
+        const torrent = {
+            'Name': match[1],
+            'Size': match[2]
+        }
+        torrents.push(torrent)
+    }
+    if (torrents.length === 0) {
+        return {'Result': 'No matches were found for your ID'}
+    } else {
+        return torrents
+    }
+}
+////////////////////////////////////////////////////////////
+
+// RuTor Files
+async function RuTorFiles(query) {
+    const url = `https://rutor.info/descriptions/${query}.files`
+    const torrents = []
+    let html
+    try {
+        const response = await axios.get(url, {
+            responseType: 'arraybuffer',
+            headers: headers
+        })
+        // Получаем байты и преобразуем их в строку UTF-8
+        html = response.data.toString('utf-8')
+        console.log(`${getCurrentTime()} [Request] ${url}`)
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return {'Result': `The ${error.hostname} server is not available`}
+    }
+    // Оборачиваем строки таблицы в тег <table> для правильного разбора с помощью Cheerio
+    const data = cheerio.load(`<table>${html}</table>`)
+    data('tr').each((_, element) => {
+        const torrent = {
+            'Name': data(element).find('td').eq(0).text().trim(),
+            'Size': data(element).find('td').eq(1).text().replace(/\(.+/g,'').trim()
+        }
+        torrents.push(torrent)
+    })
+    if (torrents.length === 0) {
+        return {'Result': 'No matches were found for your ID'}
     } else {
         return torrents
     }
@@ -463,6 +563,19 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     else if (provider === 'kinozal') {
         try {
             const result = await Kinozal(query, page, year)
+            return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                {Result: 'No data'}
+            )
+        }
+    }
+    // RuTor Files
+    else if (provider === 'rutor' && /^\d{5,}$/.test(query)) {
+        try {
+            // const result = await RuTorFilesPuppeteer(query)
+            const result = await RuTorFiles(query)
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)

@@ -17,17 +17,17 @@ Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torren
 
 ### 🔗 Full list of available providers:
 
-| Name                                     | Release | Mirrors | Registration | VPN |
-| -                                        | -       | -       | -            | -   |
-| [RuTracker](https://rutracker.org)       | 2004    | 3       | Yes          | Yes |
-| [Kinozal](https://kinozal.tv)            | 2006    | 2       | Yes          | Yes |
-| [RuTor](https://rutor.info)              | 2009    | 2       | No           | Yes |
-| [NoNameClub](https://nnmclub.to)         | 2006    | 1       | No           | Yes |
-| [FastsTorrent](http://fasts-torrent.net) | 2022    | 1       | No           | No  |
+| Name                                     | Release | Mirrors | Registration | VPN | Search by ID |
+| -                                        | -       | -       | -            | -   | -            |
+| [RuTracker](https://rutracker.org)       | 2004    | 3       | Yes          | Yes | False        |
+| [Kinozal](https://kinozal.tv)            | 2006    | 2       | Yes          | Yes | False        |
+| [RuTor](https://rutor.info)              | 2009    | 2       | No           | Yes | True         |
+| [NoNameClub](https://nnmclub.to)         | 2006    | 1       | No           | Yes | False        |
+| [FastsTorrent](http://fasts-torrent.net) | 2022    | 1       | No           | No  | False        |
 
 ---
 
-## ▶️ Start
+## 🚀 Start
 
 Clone the repository, install dependencies and start the server:
 
@@ -47,7 +47,7 @@ The server will start on the port `8443` (default).
 #### Endpoint format:
 
 ```js
-/api/<PROVIDER/ALL>/<TITLE>/<PAGE>/<YEAR>
+/api/<PROVIDER/ALL>/<TITLE/ID>/<PAGE>/<YEAR>
 ```
 
 #### Methods:
@@ -59,9 +59,14 @@ Only `GET`
 | Name       | Mandatory | Type  | Description                                                                                          |
 | -          | -         | -     | -                                                                                                    |
 | *PROVIDER* | True      | *str* | Provider name (corresponds to the [list of providers](#-full-list-of-available-providers))  or *ALL* | 
-| *TITLE*    | True      | *str* | Name of the movie or TV series (the `+` symbol is used instead of a space)                           |
+| *TITLE*    | True*     | *str* | *Name* of the movie or TV series (the `+` symbol is used instead of a space)                         |
+| *ID*       | True*     | *str* | Getting additional ID information from a specific provider                                           |
 | *PAGE*     | False     | *int* | Page number from which the response will be received (`0 to 20`)                                     |
 | *YEAR*     | False     | *int* | Year of release of the film or series for filtering (supported only by the provider *Kinozal*)       |
+
+\* You can use either title or ID
+
+> ⚠️ Obtaining data by identifier is under development.
 
 #### Requests and responses:
 
@@ -73,7 +78,7 @@ Only `GET`
 
 #### RuTracker
 
-⏩ `curl -s http://192.168.3.100:8443/api/rutracker/the+rookie+2024/0 | jq .`
+▶️ `curl -s http://192.168.3.100:8443/api/rutracker/the+rookie+2024/0 | jq .`
 
 ```json
 [
@@ -138,7 +143,7 @@ Only `GET`
 
 #### Kinozal
 
-⏩ `curl -s http://192.168.3.100:8443/api/kinozal/the+rookie/0/2024 | jq .`
+▶️ `curl -s http://192.168.3.100:8443/api/kinozal/the+rookie/0/2024 | jq .`
 
 ```json
 [
@@ -207,7 +212,7 @@ Only `GET`
 
 #### RuTor
 
-⏩ `curl -s http://192.168.3.100:8443/api/rutor/the+rookie+2024/0 | jq .`
+▶️ `curl -s http://192.168.3.100:8443/api/rutor/the+rookie+2024/0 | jq .`
 
 ```json
 [
@@ -238,9 +243,30 @@ Only `GET`
 ]
 ```
 
+Search by ID allows you to get a list of files contained in the torrent and their size. This way you can find out the extension of the source files (avi, mkv, mp4, etc.) and evaluate the content of the torrent.
+
+▶️ `curl -s http://192.168.3.100:8443/api/rutor/970650 | jq .`
+
+```json
+[
+  {
+    "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E01.400p.Kerob.avi",
+    "Size": "602.01 MB"
+  },
+  {
+    "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E02.400p.Kerob.avi",
+    "Size": "562.48 MB"
+  },
+  {
+    "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E03.400p.Kerob.avi",
+    "Size": "621.50 MB"
+  }
+]
+```
+
 #### NoNameClub
 
-⏩ `curl -s http://192.168.3.100:8443/api/nonameclub/the+rookie+2018/0 | jq .`
+▶️ `curl -s http://192.168.3.100:8443/api/nonameclub/the+rookie+2018/0 | jq .`
 
 ```json
 [
@@ -297,7 +323,7 @@ Only `GET`
 
 #### FastsTorrent
 
-⏩ `curl -s http://192.168.3.100:8443/api/faststorrent/taxi/0 | jq .`
+▶️ `curl -s http://192.168.3.100:8443/api/faststorrent/taxi/0 | jq .`
 
 ```json
 [
