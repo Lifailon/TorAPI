@@ -47,7 +47,7 @@ The server will start on the port `8443` (default).
 #### Endpoint format:
 
 ```js
-/api/<PROVIDER>/<TITLE>/<PAGE>/<YEAR>
+/api/<PROVIDER/ALL>/<TITLE>/<PAGE>/<YEAR>
 ```
 
 #### Methods:
@@ -56,12 +56,12 @@ Only `GET`
 
 #### Parameters:
 
-| Name       | Mandatory | Type  | Description                                                                                    |
-| -          | -         | -     | -                                                                                              |
-| *PROVIDER* | True      | *str* | Provider name (corresponds to the [list of providers](#-full-list-of-available-providers))     | 
-| *TITLE*    | True      | *str* | Name of the movie or TV series (the `+` symbol is used instead of a space)                     |
-| *PAGE*     | False     | *int* | Page number from which the response will be received (`0 to 20`)                               |
-| *YEAR*     | False     | *int* | Year of release of the film or series for filtering (supported only by the provider *Kinozal*) |
+| Name       | Mandatory | Type  | Description                                                                                          |
+| -          | -         | -     | -                                                                                                    |
+| *PROVIDER* | True      | *str* | Provider name (corresponds to the [list of providers](#-full-list-of-available-providers))  or *ALL* | 
+| *TITLE*    | True      | *str* | Name of the movie or TV series (the `+` symbol is used instead of a space)                           |
+| *PAGE*     | False     | *int* | Page number from which the response will be received (`0 to 20`)                                     |
+| *YEAR*     | False     | *int* | Year of release of the film or series for filtering (supported only by the provider *Kinozal*)       |
 
 #### Requests and responses:
 

@@ -124,28 +124,31 @@ async function RuTracker(query, page) {
     }
     const data = cheerio.load(html)
     data('table .forumline tbody tr').each((_, element) => {
-        const torrent = {
-            'Name': data(element).find('.row4 .wbr .med').text().trim(),
-            'Id': data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g,''),
-            'Url': "https://rutracker.net/forum/" + data(element).find('.row4 .wbr .med').attr('href'),
-            'Torrent': "https://rutracker.net/forum/dl.php?t=" + data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g,''),
-            // Забираем первые два значения (размер и тип данных)
-            /// 'Size': data(element).find('.row4.small:eq(0)').text().trim().split(' ').slice(0,1).join(' '),
-            'Size': data(element).find('a.small.tr-dl.dl-stub').text().trim().split(' ').slice(0,1).join(' '),
-            'Downloads': data(element).find('td.row4.small.number-format').text().trim(),
-            // Проверяем проверенный ли торрент и изменяем формат вывода
-            'Checked': data(element).find('td.row1.t-ico').text().trim() === '√' ? 'True' : 'False',
-            'Type': data(element).find('.row1 .f-name .gen').text().trim(),
-            'Type_Link': "https://rutracker.net/forum/" + data(element).find('.row1 .f-name .gen').attr('href'),
-            'Seed': data(element).find('b.seedmed').text().trim(),
-            'Peer': data(element).find('td.row4.leechmed.bold').text().trim(),
-            // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
-            'Date': formatDate(
-                data(element).find('td.row4 p').text().trim(),
-                "-"
-            )
+        const checkData = data(element).find('.row4 .wbr .med').text().trim()
+        if (checkData.length > 0) {
+            const torrent = {
+                'Name': data(element).find('.row4 .wbr .med').text().trim(),
+                'Id': data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g,''),
+                'Url': "https://rutracker.net/forum/" + data(element).find('.row4 .wbr .med').attr('href'),
+                'Torrent': "https://rutracker.net/forum/dl.php?t=" + data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g,''),
+                // Забираем первые два значения (размер и тип данных)
+                /// 'Size': data(element).find('.row4.small:eq(0)').text().trim().split(' ').slice(0,1).join(' '),
+                'Size': data(element).find('a.small.tr-dl.dl-stub').text().trim().split(' ').slice(0,1).join(' '),
+                'Downloads': data(element).find('td.row4.small.number-format').text().trim(),
+                // Проверяем проверенный ли торрент и изменяем формат вывода
+                'Checked': data(element).find('td.row1.t-ico').text().trim() === '√' ? 'True' : 'False',
+                'Type': data(element).find('.row1 .f-name .gen').text().trim(),
+                'Type_Link': "https://rutracker.net/forum/" + data(element).find('.row1 .f-name .gen').attr('href'),
+                'Seed': data(element).find('b.seedmed').text().trim(),
+                'Peer': data(element).find('td.row4.leechmed.bold').text().trim(),
+                // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
+                'Date': formatDate(
+                    data(element).find('td.row4 p').text().trim(),
+                    "-"
+                )
+            }
+            torrents.push(torrent)
         }
-        torrents.push(torrent)
     })
     if (torrents.length === 0) {
         return {'Result': 'No matches were found for your title'}
@@ -313,29 +316,32 @@ async function NoNameClub(query, page) {
     }
     const data = cheerio.load(html)
     data('.forumline:eq(1) tbody tr').each((_, element) => {
-        // Получаем количество элементов с классом 'gensmall'
-        const count = data(element).find('.gensmall').length
-        // Определяем индекс для выбора размера
-        const sizeIndex = count === 4 ? 1 : count === 5 ? 2 : 1
-        // Исключаем первый элемент байт из массива (slice(1))
-        const size = data(element).find(`.gensmall:eq(${sizeIndex})`).text().trim().split(' ', 3).slice(1).join(' ')
-        const torrent = {
-            'Name': data(element).find('.genmed a b').text().trim(),
-            // 'Id': data(element).find('.genmed a').attr('href').replace(/.+t=/,''),
-            'Url': "https://nnmclub.to/forum/"+data(element).find('a:eq(1)').attr('href'),
-            'Torrent': "https://nnmclub.to/forum/"+data(element).find('a:eq(3)').attr('href'),
-            'Size': size,
-            'Comments': data(element).find(`.gensmall:eq(${sizeIndex + 1})`).text().trim(),
-            'Type': data(element).find('.gen').text().trim(),
-            'Type_Link': "https://nnmclub.to/forum/"+data(element).find('.gen').attr('href'),
-            'Seed': data(element).find('.seedmed').text().trim(),
-            'Peer': data(element).find('.leechmed').text().trim(),
-            // Забираем и преобразуем timestamp
-            'Date': unixTimestamp(
-                data(element).find(`.gensmall:eq(${sizeIndex + 2})`).text().trim().split(' ')[0]
-            )
+        const checkData = data(element).find('.genmed a b').text().trim()
+        if (checkData.length > 0) {
+            // Получаем количество элементов с классом 'gensmall'
+            const count = data(element).find('.gensmall').length
+            // Определяем индекс для выбора размера
+            const sizeIndex = count === 4 ? 1 : count === 5 ? 2 : 1
+            // Исключаем первый элемент байт из массива (slice(1))
+            const size = data(element).find(`.gensmall:eq(${sizeIndex})`).text().trim().split(' ', 3).slice(1).join(' ')
+            const torrent = {
+                'Name': data(element).find('.genmed a b').text().trim(),
+                // 'Id': data(element).find('.genmed a').attr('href').replace(/.+t=/,''),
+                'Url': "https://nnmclub.to/forum/"+data(element).find('a:eq(1)').attr('href'),
+                'Torrent': "https://nnmclub.to/forum/"+data(element).find('a:eq(3)').attr('href'),
+                'Size': size,
+                'Comments': data(element).find(`.gensmall:eq(${sizeIndex + 1})`).text().trim(),
+                'Type': data(element).find('.gen').text().trim(),
+                'Type_Link': "https://nnmclub.to/forum/"+data(element).find('.gen').attr('href'),
+                'Seed': data(element).find('.seedmed').text().trim(),
+                'Peer': data(element).find('.leechmed').text().trim(),
+                // Забираем и преобразуем timestamp
+                'Date': unixTimestamp(
+                    data(element).find(`.gensmall:eq(${sizeIndex + 2})`).text().trim().split(' ')[0]
+                )
+            }
+            torrents.push(torrent)
         }
-        torrents.push(torrent)
     })
     if (torrents.length === 0) {
         return {'Result': 'No matches were found for your title'}
@@ -422,8 +428,27 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     // Логируем запросы
     console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:','')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
     // Проверяем конечные точки провайдеров
+    if (provider === 'all') {
+        try {
+            const RuTrackerResult = await RuTracker(query, page)
+            const KinozalResult = await Kinozal(query, page)
+            const RuTorResult = await RuTor(query, page)
+            const NoNameClubResult = await NoNameClub(query, page)
+            // Объединяем результаты в один массив
+            const Results = {
+                RuTracker: RuTrackerResult,
+                Kinozal: KinozalResult,
+                RuTor: RuTorResult,
+                NoNameClub: NoNameClubResult
+            }
+            return res.json(Results)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json({ Result: 'No data' })
+        }
+    }
     // RuTracker
-    if (provider === 'rutracker') {
+    else if (provider === 'rutracker') {
         try {
             const result = await RuTracker(query, page)
             return res.json(result)
