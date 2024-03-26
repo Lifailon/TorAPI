@@ -17,6 +17,12 @@ const headers_RuTracker = {
     'Cookie': 'bb_guid=OX8UGBHMi1DW; bb_ssl=1; bb_session=0-44590272-Sp8wQfjonpx37QjDuZUD; bb_t=a%3A5%3A%7Bi%3A6489937%3Bi%3A1709887615%3Bi%3A6496948%3Bi%3A1709891767%3Bi%3A6387499%3Bi%3A1690356948%3Bi%3A6387500%3Bi%3A1689726770%3Bi%3A6358163%3Bi%3A1684231793%3B%7D; _ym_uid=1675005035139917782; _ym_d=1697464991; _ym_isad=1; cf_clearance=3BsUm3qZLnU1DbxOWHDKEYQiqF3txcKZtck9A3SZOcs-1711117293-1.0.1.1-MoRPAGq.5IDiUQJnZGAcp5fTSwniloZIDKnaG2UR4kTy.g4TY3cGcdSDQDuRRgSGGzju3rLynXLvc1Vbzurl8A'
 }
 
+// Cookie для автроризации на сайте Kinozal
+const headers_Kinozal = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 Win64 x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Cookie': 'uid=20631917; pass=KOJ4DJf1VS; chash=4GPagC3lyL; _ma=bd5e8639-b468-45ee-b985-a37d236b69d9; _ym_uid=1676045081150190531; adrcid=AyOHe7Bo41EA-dljunU4d4g; adtech_uid=e2dc7224-a3e7-4668-bb1a-e66540433903%3Akinozal.tv; top100_id=t1.7627570.1643663093.1685299403536; last_visit=1685288911412%3A%3A1685299711412; t3_sid_7627570=s1.1160736113.1685299403538.1685299712381.1.18; _ac_oid=e8d96ae4a3e0ddf7f1dc00adeb090382%3A1685329226280; _buzz_fpc=JTdCJTIycGF0aCUyMiUzQSUyMiUyRiUyMiUyQyUyMmRvbWFpbiUyMiUzQSUyMi5raW5vemFsLnR2JTIyJTJDJTIyZXhwaXJlcyUyMiUzQSUyMlRodSUyQyUyMDEyJTIwU2VwJTIwMjAyNCUyMDIwJTNBMzAlM0ExMiUyMEdNVCUyMiUyQyUyMlNhbWVTaXRlJTIyJTNBJTIyTGF4JTIyJTJDJTIydmFsdWUlMjIlM0ElMjIlN0IlNUMlMjJ1ZnAlNUMlMjIlM0ElNUMlMjJmNTFiNzlkYzk1MDgxMGM0NTMwMzhmNWNmMWU5ZDQwYiU1QyUyMiUyQyU1QyUyMmJyb3dzZXJWZXJzaW9uJTVDJTIyJTNBJTVDJTIyMTE2LjAlNUMlMjIlN0QlMjIlN0Q=; _ym_d=1701461342; la_page_depth=%7B%22last%22%3A%22https%3A%2F%2Fkinozal.tv%2Fbrowse.php%3Fs%3Dcastle%26g%3D0%26c%3D0%26v%3D0%26d%3D2020%26w%3D0%26t%3D0%26f%3D0%22%2C%22depth%22%3A400%7D; page_load_uuid=c29f5be0-f58b-49c2-bb75-90ba88038c6d'
+}
+
 // Функция получения текущего времени для логирования
 function getCurrentTime() {
     const now = new Date()
@@ -157,20 +163,13 @@ async function RuTracker(query, page) {
     }
 }
 
-// Comment:
-// https://kinozal.tv/get_srv_details.php?id=1656552&pagesd=0
-// Screenshots:
-// https://kinozal.tv/get_srv_details.php?id=1656552&pagesd=2
-// Files and hash:
-// https://kinozal.tv/get_srv_details.php?id=1656552&action=2
-
 // Kinozal ID
 async function KinozalID(query) {
     const url = `https://kinozal.tv/details.php?id=${query}`
     const torrents = []
     let html
     try {
-        response = await axios.get(url, {
+        const response = await axios.get(url, {
             responseType: 'arraybuffer',
             headers: headers
         })
@@ -181,7 +180,23 @@ async function KinozalID(query) {
         return {'Result': `The ${error.hostname} server is not available`}
     }
     const data = cheerio.load(html)
+    // Hash and files
+    const url_get_srv_details = `https://kinozal.tv/get_srv_details.php?id=${query}&action=2`
+    let html2
+    try {
+        const response = await axios.get(url_get_srv_details, {
+            responseType: 'arraybuffer',
+            headers: headers_Kinozal
+        })
+        html2 = iconv.decode(response.data, 'utf8')
+        console.log(`${getCurrentTime()} [Request] ${url}`)
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return {'Result': `The ${error.hostname} server is not available`}
+    }
+    data2 = cheerio.load(html2)
     const torrent = {
+        'Hash': data2('li').eq(0).text().replace(/.+:/,'').trim(),
         'Title': data('div.mn1_content').find('.bx1 b').eq(1)[0].nextSibling.nodeValue.trim(),
         'Original': data('div.mn1_content').find('.bx1 b').eq(2)[0].nextSibling.nodeValue.trim(),
         'Year': data('div.mn1_content').find('.bx1 b').eq(3)[0].nextSibling.nodeValue.trim(),

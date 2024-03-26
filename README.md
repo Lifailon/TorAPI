@@ -67,9 +67,7 @@ Only `GET`
 | *PAGE*     | False     | *int* | Page number from which the response will be received (`0 to 20`)                                     |
 | *YEAR*     | False     | *int* | Year of release of the film or series for filtering (supported only by the provider *Kinozal*)       |
 
-\* You can use either title or ID
-
-> ⚠️ Obtaining data by identifier is under development.
+\* You can use one of two parameters in the endpoint path: *TITLE* or *ID*.
 
 #### Requests and responses:
 
@@ -222,6 +220,7 @@ Only `GET`
 ```json
 [
   {
+    "Hash": "9250D2B648F42D45AD2D8B516E9AEF3D1BAC2D95",
     "Title": "Новичок (Новобранец)",
     "Original": "The Rookie",
     "Year": "2018-2024",
