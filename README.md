@@ -1,12 +1,15 @@
 
 <h2 align='center'>🎞️ TorAPI 🎞️</h2>
-<p align="center">
-<a href="https://github.com/Lifailon"><img title="Author" src="https://img.shields.io/badge/Author-Lifailon-blue.svg?style=for-the-badge&logo=github"></a>
-</p>
 
 <p align="center">
 <a href="https://github.com/nodejs/node"><img title="Node" src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white"></a>
 <a href="https://github.com/expressjs/express"><img title="Express" src="https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB"></a>
+</p>
+
+<p align="center">
+<a href="https://github.com/Lifailon/TorAPI"><img title="Language"src="https://img.shields.io/github/languages/top/lifailon/TorAPI?logo=javascript&color=gold"></a>
+<a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=Git&label=version&color=blue"></a>
+<a href="https://github.com/Lifailon/TorAPI"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=GitHub&color=green"></a>
 </p>
 
 Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torrent files and other information by movie title, series or id. This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) ✨ (all code is completely rewritten) for Russian-speaking torrent providers.
@@ -17,10 +20,10 @@ Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torren
 
 ### 🔗 Full list of available providers:
 
-| Name                                     | Release | Mirrors | Registration | VPN | Search by ID |
+| Provider name                            | Release | Mirrors | Registration | VPN | Search by ID |
 | -                                        | -       | -       | -            | -   | -            |
 | [RuTracker](https://rutracker.org)       | 2004    | 3       | Yes          | Yes | False        |
-| [Kinozal](https://kinozal.tv)            | 2006    | 2       | Yes          | Yes | False        |
+| [Kinozal](https://kinozal.tv)            | 2006    | 2       | Yes          | Yes | True         |
 | [RuTor](https://rutor.info)              | 2009    | 2       | No           | Yes | True         |
 | [NoNameClub](https://nnmclub.to)         | 2006    | 1       | No           | Yes | False        |
 | [FastsTorrent](http://fasts-torrent.net) | 2022    | 1       | No           | No  | False        |
@@ -143,6 +146,8 @@ Only `GET`
 
 #### Kinozal
 
+- Search by title:
+
 ▶️ `curl -s http://192.168.3.100:8443/api/kinozal/the+rookie/0/2024 | jq .`
 
 ```json
@@ -210,7 +215,45 @@ Only `GET`
 ]
 ```
 
+- Search by ID:
+
+▶️ `curl -s http://192.168.3.100:8443/api/kinozal/1656552 | jq .`
+
+```json
+[
+  {
+    "Title": "Новичок (Новобранец)",
+    "Original": "The Rookie",
+    "Year": "2018-2024",
+    "Type": "Драма, криминал",
+    "Release": "США, eOne Television, ABC Studios",
+    "Directer": "Грег Биман, Адам Дэвидсон, Тоа Фрейзер",
+    "Actors": "Натан Филлион, Сара Шахи, Алисса Диас, Эли Лартер, Энни Вершинг, Хэролд Перрино, Ричард Т. Джонс, Титус Макин мл., Мелисса О`Нил, Эрик Винтер, Эфтон Уильямсон, Мекиа Кокс, Мерседес Масон, Шон Эшмор, Сет Грин",
+    "Description": "Начинать с чистого листа всегда нелегко, особенно для уроженца маленького городка Джона Нолана, который после инцидента, перевернувшего его жизнь, решил воплотить в жизнь давнюю мечту и присоединиться к полиции Лос-Анджелеса. Возрастного новичка встречают с понятным скептицизмом, однако жизненный опыт, упорство и чувство юмора дают Джону преимущество.",
+    "Quality": "WEB-DLRip (1080p)",
+    "Video": "MPEG-4 AVC, ~ 6800 Кбит/с, 1920x1080",
+    "Audio": "Русский, английский (AC3, 2 ch, 384 Кбит/с)",
+    "Size": "233.22 ГБ",
+    "Duration": "101 х ~ 00:44:00",
+    "Transcript": "Профессиональный многоголосый",
+    "Seeds": "11",
+    "Peers": "19",
+    "Downloaded": "2693",
+    "Files": "101",
+    "Comments": "130",
+    "IMDb": "8.0",
+    "Kinopoisk": "8.4",
+    "Kinozal": "8.4",
+    "Votes": "122",
+    "Added": "26 октября 2018 в 00:00",
+    "Update": "8 марта 2024 в 09:08"
+  }
+]
+```
+
 #### RuTor
+
+- Search by title:
 
 ▶️ `curl -s http://192.168.3.100:8443/api/rutor/the+rookie+2024/0 | jq .`
 
@@ -243,7 +286,7 @@ Only `GET`
 ]
 ```
 
-Search by ID allows you to get a list of files contained in the torrent and their size. This way you can find out the extension of the source files (avi, mkv, mp4, etc.) and evaluate the content of the torrent.
+- Search by ID:
 
 ▶️ `curl -s http://192.168.3.100:8443/api/rutor/970650 | jq .`
 

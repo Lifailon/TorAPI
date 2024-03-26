@@ -157,6 +157,66 @@ async function RuTracker(query, page) {
     }
 }
 
+// Comment:
+// https://kinozal.tv/get_srv_details.php?id=1656552&pagesd=0
+// Screenshots:
+// https://kinozal.tv/get_srv_details.php?id=1656552&pagesd=2
+// Files and hash:
+// https://kinozal.tv/get_srv_details.php?id=1656552&action=2
+
+// Kinozal ID
+async function KinozalID(query) {
+    const url = `https://kinozal.tv/details.php?id=${query}`
+    const torrents = []
+    let html
+    try {
+        response = await axios.get(url, {
+            responseType: 'arraybuffer',
+            headers: headers
+        })
+        html = iconv.decode(response.data, 'win1251')
+        console.log(`${getCurrentTime()} [Request] ${url}`)
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return {'Result': `The ${error.hostname} server is not available`}
+    }
+    const data = cheerio.load(html)
+    const torrent = {
+        'Title': data('div.mn1_content').find('.bx1 b').eq(1)[0].nextSibling.nodeValue.trim(),
+        'Original': data('div.mn1_content').find('.bx1 b').eq(2)[0].nextSibling.nodeValue.trim(),
+        'Year': data('div.mn1_content').find('.bx1 b').eq(3)[0].nextSibling.nodeValue.trim(),
+        'Type': data('div.mn1_content').find('.lnks_tobrs').eq(0).text().trim(),
+        'Release': data('div.mn1_content').find('.lnks_tobrs').eq(1).text().trim(),
+        'Directer': data('div.mn1_content').find('.lnks_toprs').eq(0).text().trim(),
+        'Actors': data('div.mn1_content').find('.lnks_toprs').eq(1).text().trim(),
+        'Description': data('div.mn1_content').find('.bx1.justify:eq(2) p b').eq(0)[0].nextSibling.nodeValue.trim(),
+        'Quality': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(0)[0].nextSibling.nodeValue.trim(),
+        'Video': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(1)[0].nextSibling.nodeValue.trim(),
+        'Audio': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(2)[0].nextSibling.nodeValue.trim(),
+        'Size': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(3)[0].nextSibling.nodeValue.trim(),
+        'Duration': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(4)[0].nextSibling.nodeValue.trim(),
+        'Transcript': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(5)[0].nextSibling.nodeValue.trim(),
+        'Seeds': data('div.mn1_menu').find('span.floatright').eq(0).text().trim(),
+        'Peers': data('div.mn1_menu').find('span.floatright').eq(1).text().trim(),
+        'Downloaded': data('div.mn1_menu').find('span.floatright').eq(2).text().trim(),
+        'Files': data('div.mn1_menu').find('span.floatright').eq(3).text().trim(),
+        'Comments': data('div.mn1_menu').find('span.floatright').eq(4).text().trim(),
+        'IMDb': data('div.mn1_menu').find('span.floatright').eq(5).text().trim(),
+        'Kinopoisk': data('div.mn1_menu').find('span.floatright').eq(6).text().trim(),
+        'Kinozal': data('div.mn1_menu').find('span.floatright').eq(7).text().trim().replace(/\s.+/,''),
+        'Votes': data('div.mn1_menu').find('span.floatright').eq(8).text().trim(),
+        'Size': data('div.mn1_menu').find('span.floatright.green.n').eq(0).text().replace(/\(.+/,'').trim(),
+        'Added': data('div.mn1_menu').find('span.floatright.green.n').eq(1).text().trim(),
+        'Update': data('div.mn1_menu').find('span.floatright.green.n').eq(2).text().trim()
+    }
+    torrents.push(torrent)
+    if (torrents.length === 0) {
+        return {'Result': 'No matches were found for your title'}
+    } else {
+        return torrents
+    }
+}
+
 // Kinozal
 async function Kinozal(query, page, year) {
     const urls = [
@@ -559,6 +619,18 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
             )
         }
     }
+    // Kinozal ID
+    else if (provider === 'kinozal' && /^\d{5,}$/.test(query)) {
+        try {
+            const result = await KinozalID(query)
+            return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                {Result: 'No data'}
+            )
+        }
+    }
     // Kinozal
     else if (provider === 'kinozal') {
         try {
@@ -571,7 +643,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
             )
         }
     }
-    // RuTor Files
+    // RuTor ID
     else if (provider === 'rutor' && /^\d{5,}$/.test(query)) {
         try {
             // const result = await RuTorFilesPuppeteer(query)
