@@ -305,9 +305,8 @@ async function Kinozal(query, page, year) {
     }
 }
 
-////////// Puppeteer
-const puppeteer = require('puppeteer')
-
+// RuTor Puppeteer
+// const puppeteer = require('puppeteer')
 async function RuTorFilesPuppeteer(query) {
     const torrents = []
     // Запускаем браузер и открываем новую пустую страницу 
@@ -370,38 +369,53 @@ async function RuTorFilesPuppeteer(query) {
         return torrents
     }
 }
-////////////////////////////////////////////////////////////
 
-// RuTor Files
+// RuTor ID
 async function RuTorFiles(query) {
-    const url = `https://rutor.info/descriptions/${query}.files`
+    const url_files = `https://rutor.info/descriptions/${query}.files`
     const torrents = []
     let html
+    // Hash
+    const url = `https://rutor.info/torrent/${query}`
     try {
         const response = await axios.get(url, {
             responseType: 'arraybuffer',
             headers: headers
         })
-        // Получаем байты и преобразуем их в строку UTF-8
         html = response.data.toString('utf-8')
         console.log(`${getCurrentTime()} [Request] ${url}`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
         return {'Result': `The ${error.hostname} server is not available`}
     }
+    const data = cheerio.load(html)
+    let hash = data('#download a').attr('href').replace(/magnet:\?xt=urn:btih:|\&dn=.+/g,'').trim()
+    // Files list
+    try {
+        const response = await axios.get(url_files, {
+            responseType: 'arraybuffer',
+            headers: headers
+        })
+        // Получаем байты и преобразуем их в строку UTF-8
+        html = response.data.toString('utf-8')
+        console.log(`${getCurrentTime()} [Request] ${url_files}`)
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return {'Result': `The ${error.hostname} server is not available`}
+    }
     // Оборачиваем строки таблицы в тег <table> для правильного разбора с помощью Cheerio
-    const data = cheerio.load(`<table>${html}</table>`)
-    data('tr').each((_, element) => {
+    const data_files = cheerio.load(`<table>${html}</table>`)
+    data_files('tr').each((_, element) => {
         const torrent = {
-            'Name': data(element).find('td').eq(0).text().trim(),
-            'Size': data(element).find('td').eq(1).text().replace(/\(.+/g,'').trim()
+            'Name': data_files(element).find('td').eq(0).text().trim(),
+            'Size': data_files(element).find('td').eq(1).text().replace(/\(.+/g,'').trim().replace(/'\s| |┬а'/g,'')
         }
         torrents.push(torrent)
     })
     if (torrents.length === 0) {
         return {'Result': 'No matches were found for your ID'}
     } else {
-        return torrents
+        return { Hash: hash, Files: torrents }
     }
 }
 

@@ -290,20 +290,35 @@ Only `GET`
 ▶️ `curl -s http://192.168.3.100:8443/api/rutor/970650 | jq .`
 
 ```json
-[
-  {
-    "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E01.400p.Kerob.avi",
-    "Size": "602.01 MB"
-  },
-  {
-    "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E02.400p.Kerob.avi",
-    "Size": "562.48 MB"
-  },
-  {
-    "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E03.400p.Kerob.avi",
-    "Size": "621.50 MB"
-  }
-]
+{
+  "Hash": "f3377c04134adeac02c4e191e0e6317436afddda",
+  "Files": [
+    {
+      "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E01.400p.Kerob.avi",
+      "Size": "602.01 MB"
+    },
+    {
+      "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E02.400p.Kerob.avi",
+      "Size": "562.48 MB"
+    },
+    {
+      "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E03.400p.Kerob.avi",
+      "Size": "621.50 MB"
+    },
+    {
+      "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E04.400p.Kerob.avi",
+      "Size": "690.81 MB"
+    },
+    {
+      "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E05.400p.Kerob.avi",
+      "Size": "460.92 MB"
+    },
+    {
+      "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E06.400p.Kerob.avi",
+      "Size": "531.88 MB"
+    }
+  ]
+}
 ```
 
 #### NoNameClub
