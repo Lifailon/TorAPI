@@ -392,6 +392,23 @@ async function RuTorFiles(query) {
     let name = data('#all h1').text().trim()
     let torrent_url = 'https:' + data('#download a:eq(1)').attr('href').trim()
     let hash = data('#download a').attr('href').replace(/magnet:\?xt=urn:btih:|\&dn=.+/g,'').trim()
+    // IMDb + Kinopoisk
+    let imdb
+    data('a[href*="imdb.com"]').each((index, element) => {
+        const href = data(element).attr('href')
+        if (href.includes('imdb.com')) {
+            imdb = href
+            return false // прерываем цикл после нахождения первого элемента
+        }
+    })
+    let kp
+    data('a[href*="kinopoisk.ru"]').each((index, element) => {
+        const href = data(element).attr('href')
+        if (href.includes('kinopoisk.ru')) {
+            kp = href
+            return false
+        }
+    })
     // Определяем порядковый номер индекса с содержимым рейтинга
     let index
     let test = data('#details > tbody > tr:nth-child(2) > td.header').text()
@@ -441,6 +458,10 @@ async function RuTorFiles(query) {
             Name: name,
             Hash: hash,
             Torrent: torrent_url,
+            IMDb: imdb,
+            Kinopoisk: kp,
+            IMDb_id: imdb.replace(/[^0-9]/g, ''),
+            KP_id: kp.replace(/[^0-9]/g, ''),
             Rating: rating,
             Category: category,
             Seeds: seeds,
