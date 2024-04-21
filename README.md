@@ -213,7 +213,7 @@ Only `GET`
 ]
 ```
 
-- Search by ID:
+- Search by id:
 
 ▶️ `curl -s http://192.168.3.100:8443/api/kinozal/1656552 | jq .`
 
@@ -285,13 +285,22 @@ Only `GET`
 ]
 ```
 
-- Search by ID:
+- Search by id:
 
 ▶️ `curl -s http://192.168.3.100:8443/api/rutor/970650 | jq .`
 
 ```json
 {
+  "Name": "Новичок / Новобранец / The Rookie [06x01-06 из 22] (2024) WEBRip от Kerob | L2",
   "Hash": "f3377c04134adeac02c4e191e0e6317436afddda",
+  "Torrent": "https://d.rutor.info/download/970650",
+  "Rating": "10 из 10 (1 голосов, самая низкая оценка - 10, самая высокая - 10)",
+  "Category": "Зарубежные сериалы",
+  "Seeds": "4",
+  "Peers": "9",
+  "Seed_Date": "21-04-2024 12:19:07 (29 минут назад)",
+  "Add_Date": "10-04-2024 23:24:09  (11 день назад)",
+  "Size": "3.39 GB (3638136322 Bytes)",
   "Files": [
     {
       "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E01.400p.Kerob.avi",

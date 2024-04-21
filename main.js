@@ -389,7 +389,29 @@ async function RuTorFiles(query) {
         return {'Result': `The ${error.hostname} server is not available`}
     }
     const data = cheerio.load(html)
+    let name = data('#all h1').text().trim()
+    let torrent_url = 'https:' + data('#download a:eq(1)').attr('href').trim()
     let hash = data('#download a').attr('href').replace(/magnet:\?xt=urn:btih:|\&dn=.+/g,'').trim()
+    // Определяем порядковый номер индекса с содержимым рейтинга
+    let index
+    let test = data('#details > tbody > tr:nth-child(2) > td.header').text()
+    if (test == 'Оценка') {
+        index = 2
+        test = false
+    } else {
+        test = data('#details > tbody > tr:nth-child(3) > td.header').text()
+    }
+    if (test == 'Оценка' && test != false) {
+        index = 3
+        test = false
+    }
+    let rating = data(`#details > tbody > tr:nth-child(${index}) > td:nth-child(2)`).text()
+    let category = data(`#details > tbody > tr:nth-child(${index+1}) > td:nth-child(2) > a`).text()
+    let seeds = data(`#details > tbody > tr:nth-child(${index+2}) > td:nth-child(2)`).text()
+    let peers = data(`#details > tbody > tr:nth-child(${index+3}) > td:nth-child(2)`).text()
+    let seed_date = data(`#details > tbody > tr:nth-child(${index+4}) > td:nth-child(2)`).text()
+    let add_date = data(`#details > tbody > tr:nth-child(${index+5}) > td:nth-child(2)`).text()
+    let size = data(`#details > tbody > tr:nth-child(${index+6}) > td:nth-child(2)`).text().replace(/\s+/g,' ')
     // Files list
     try {
         const response = await axios.get(url_files, {
@@ -415,7 +437,19 @@ async function RuTorFiles(query) {
     if (torrents.length === 0) {
         return {'Result': 'No matches were found for your ID'}
     } else {
-        return { Hash: hash, Files: torrents }
+        return {
+            Name: name,
+            Hash: hash,
+            Torrent: torrent_url,
+            Rating: rating,
+            Category: category,
+            Seeds: seeds,
+            Peers: peers,
+            Seed_Date: seed_date,
+            Add_Date: add_date,
+            Size: size,
+            Files: torrents
+        }
     }
 }
 
