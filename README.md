@@ -259,28 +259,28 @@ Only `GET`
 ```json
 [
   {
-    "Name": "Новичок / Новобранец / The Rookie [06x01-03 из 22] (2024) WEBRip от Kerob | L2",
+    "Name": "Новичок / Новобранец / The Rookie [06x01-06 из 22] (2024) WEBRip от Kerob | L2",
     "Id": "970650",
-    "Url": "https://rutor.info/torrent/970650/novichok_novobranec_the-rookie-06x01-03-iz-22-2024-webrip-ot-kerob-l2",
+    "Url": "https://rutor.info/torrent/970650/novichok_novobranec_the-rookie-06x01-06-iz-22-2024-webrip-ot-kerob-l2",
     "Torrent": "https://d.rutor.info/download/970650",
-    "Magnet": "magnet:?xt=urn:btih:150c072d8e97e9f47fe1adb9d41f19e5a6e045c7&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
-    "Size": "1.74 GB",
-    "Comments": "3",
-    "Seed": "12",
-    "Peer": "8",
-    "Date": "07.03.2024"
+    "Magnet": "magnet:?xt=urn:btih:f3377c04134adeac02c4e191e0e6317436afddda&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
+    "Size": "3.39 GB",
+    "Comments": "5",
+    "Seed": "9",
+    "Peer": "9",
+    "Date": "10.04.2024"
   },
   {
-    "Name": "Новичок / Новобранец / The Rookie [06x01-03 из 22] (2024) WEBRip 720p от Kerob | L2",
+    "Name": "Новичок / Новобранец / The Rookie [06x01-06 из 22] (2024) WEBRip 720p от Kerob | L2",
     "Id": "970647",
-    "Url": "https://rutor.info/torrent/970647/novichok_novobranec_the-rookie-06x01-03-iz-22-2024-webrip-720p-ot-kerob-l2",
+    "Url": "https://rutor.info/torrent/970647/novichok_novobranec_the-rookie-06x01-06-iz-22-2024-webrip-720p-ot-kerob-l2",
     "Torrent": "https://d.rutor.info/download/970647",
-    "Magnet": "magnet:?xt=urn:btih:6848c14a3a45d3fe8d47e2c980ae342f0793c2db&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
-    "Size": "3.33 GB",
+    "Magnet": "magnet:?xt=urn:btih:4b6ec5d821d844831ae30e9c851cbf72a9528c85&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
+    "Size": "7.18 GB",
     "Comments": "0",
-    "Seed": "27",
-    "Peer": "24",
-    "Date": "07.03.2024"
+    "Seed": "10",
+    "Peer": "13",
+    "Date": "10.04.2024"
   }
 ]
 ```
