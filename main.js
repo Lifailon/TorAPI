@@ -677,10 +677,9 @@ async function FastsTorrent(query) {
 
 // Express
 const web = express()
-
 web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
-    // Проверяем методы (пропускаем только GET)
-    if (req.method !== 'GET') {
+    // Проверяем методы (пропускаем только GET без учета регистра)
+    if (req.method.toLowerCase() !== 'get') {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:','')} (${req.headers['user-agent']}) [405] Method not available. Endpoint: ${req.path}`)
         return res.status(405).send(`Method not available`)
     }
@@ -709,6 +708,8 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:','')} (${req.headers['user-agent']}) [400] Search request not specified. Endpoint: ${req.path}`)
         return res.status(400).send('Search request not specified')
     }
+    // Кодируем запрос в формат URL (заменяется последовательностью процентов и двумя шестнадцатеричными числами, представляющими ASCII-код символа в кодировке UTF-8)
+    query = encodeURIComponent(query)
     // Обрабатываем остальные параметры
     let page = req.params.page
     let year = req.params.year
@@ -722,6 +723,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     // Логируем запросы
     console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:','')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
     // Проверяем конечные точки провайдеров
+    // ALL
     if (provider === 'all') {
         try {
             const RuTrackerResult = await RuTracker(query, page)

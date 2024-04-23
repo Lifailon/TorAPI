@@ -61,11 +61,11 @@ Only `GET`
 
 | Name       | Mandatory | Type  | Description                                                                                          |
 | -          | -         | -     | -                                                                                                    |
-| *PROVIDER* | True      | *str* | Provider name (corresponds to the [list of providers](#-full-list-of-available-providers))  or *ALL* | 
-| *TITLE*    | True*     | *str* | *Name* of the movie or TV series (the `+` symbol is used instead of a space)                         |
-| *ID*       | True*     | *str* | Getting additional ID information from a specific provider                                           |
-| *PAGE*     | False     | *int* | Page number from which the response will be received (`0 to 20`)                                     |
-| *YEAR*     | False     | *int* | Year of release of the film or series for filtering (supported only by the provider *Kinozal*)       |
+| *PROVIDER* | True      | *str* | Provider name (corresponds to the [list of providers](#-full-list-of-available-providers)) or *ALL*. | 
+| *TITLE*    | True*     | *str* | *Name* of the movie or TV series. Cyrillic characters are supported. You can use spaces if the query is enclosed in inverted commas, or use an addition character (+) instead. |
+| *ID*       | True*     | *str* | Get more information about a film or TV series by the ID of the specified provider.                  |
+| *PAGE*     | False     | *int* | Page number from which the response will be received (`0 to 20`).                                    |
+| *YEAR*     | False     | *int* | Year of release of the film or series for filtering (supported only by the provider *Kinozal*).      |
 
 \* You can use one of two parameters in the endpoint path: *TITLE* or *ID*.
 
@@ -252,6 +252,138 @@ Only `GET`
     "Update": "12 апреля 2024 в 01:09"
   }
 ]
+```
+
+- Example of using Cyrillic characters in a search query from PowerShell:
+
+`Invoke-RestMethod "http://192.168.3.100:8443/api/kinozal/засланец из космоса/0/2024"`
+
+```PowerShell
+Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
+OriginalName : Resident Alien
+Year         : 2024
+Language     : 4 x ПМ, ПД (Кубик в Кубе)
+Format       : WEB-DLRip (720p)
+Id           : 2021670
+Url          : https://kinozal.tv/details.php?id=2021670
+Torrent      : https://dl.kinozal.tv/download.php?id=2021670
+Size         : 14.98 ГБ
+Comments     : 23
+Seeds        : 16
+Peers        : 8
+Date         : 15.04.2024 22:00
+
+Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
+OriginalName : Resident Alien
+Year         : 2024
+Language     : 4 x ПМ, ПД (Кубик в Кубе)
+Format       : WEB-DL (1080p)
+Id           : 2021740
+Url          : https://kinozal.tv/details.php?id=2021740
+Torrent      : https://dl.kinozal.tv/download.php?id=2021740
+Size         : 27.41 ГБ
+Comments     : 54
+Seeds        : 67
+Peers        : 24
+Date         : 15.04.2024 14:33
+
+Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
+OriginalName : Resident Alien
+Year         : 2024
+Language     : 4 x ПМ, ПД (Кубик в Кубе)
+Format       : WEB-DL (720p)
+Id           : 2021741
+Url          : https://kinozal.tv/details.php?id=2021741
+Torrent      : https://dl.kinozal.tv/download.php?id=2021741
+Size         : 14.51 ГБ
+Comments     : 12
+Seeds        : 11
+Peers        : 1
+Date         : 08.04.2024 23:54
+
+Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
+OriginalName : Resident Alien
+Year         : 2024
+Language     : ПМ (HDRezka Studio, LostFilm, AlexFilm), ЛМ (ColdFilm)
+Format       : WEB-DL (1080p)
+Id           : 2021611
+Url          : https://kinozal.tv/details.php?id=2021611
+Torrent      : https://dl.kinozal.tv/download.php?id=2021611
+Size         : 27.49 ГБ
+Comments     : 56
+Seeds        : 65
+Peers        : 11
+Date         : 07.04.2024 07:22
+
+Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
+OriginalName : Resident Alien
+Year         : 2024
+Language     : ПМ (AlexFilm)
+Format       : WEB-DL (1080p)
+Id           : 2021716
+Url          : https://kinozal.tv/details.php?id=2021716
+Torrent      : https://dl.kinozal.tv/download.php?id=2021716
+Size         : 24.99 ГБ
+Comments     : 13
+Seeds        : 5
+Peers        : 2
+Date         : 06.04.2024 21:18
+
+Name         : Засланец из космоса (1-3 сезоны: 1-34 серии из 34)
+OriginalName : Resident Alien
+Year         : 2021-2024
+Language     : ПМ (LostFilm)
+Format       : WEB-DLRip
+Id           : 1896581
+Url          : https://kinozal.tv/details.php?id=1896581
+Torrent      : https://dl.kinozal.tv/download.php?id=1896581
+Size         : 18.53 ГБ
+Comments     : 3
+Seeds        : 15
+Peers        : 12
+Date         : 06.04.2024 14:02
+
+Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
+OriginalName : Resident Alien
+Year         : 2024
+Language     : ПМ (LostFilm)
+Format       : WEB-DLRip
+Id           : 2021731
+Url          : https://kinozal.tv/details.php?id=2021731
+Torrent      : https://dl.kinozal.tv/download.php?id=2021731
+Size         : 4.96 ГБ
+Comments     : 20
+Seeds        : 89
+Peers        : 13
+Date         : 06.04.2024 14:00
+
+Name         : Засланец из космоса (3 сезон: 1-3 серии из 8)
+OriginalName : Resident Alien
+Year         : 2024
+Language     : 4 x ПМ, ПД (Кубик в Кубе)
+Format       :  4K, HEVC, HDR
+Id           : 2023267
+Url          : https://kinozal.tv/details.php?id=2023267
+Torrent      : https://dl.kinozal.tv/download.php?id=2023267
+Size         : 16.01 ГБ
+Comments     : 13
+Seeds        : 12
+Peers        : 2
+Date         : 10.03.2024 09:48
+
+Name         : Засланец из космоса (3 сезон: 1-3 серии из 8)
+OriginalName : Resident Alien
+Year         : 2024
+Language     : 5 x ПМ, ПД
+Format       : WEB-DLRip (AVC)
+Id           : 2022362
+Url          : https://kinozal.tv/details.php?id=2022362
+Torrent      : https://dl.kinozal.tv/download.php?id=2022362
+Size         : 3 ГБ
+Comments     : 4
+Seeds        : 0
+Peers        : 0
+Date         : 03.03.2024 05:49
 ```
 
 #### RuTor
