@@ -151,22 +151,7 @@ Only `GET`
 ```json
 [
   {
-    "Name": "Новичок (Новобранец) (6 сезон: 1-3 серии из 13)",
-    "OriginalName": "The Rookie",
-    "Year": "2024",
-    "Language": "3 x ПМ, СТ",
-    "Format": "WEB-DL (720p)",
-    "Id": "2026484",
-    "Url": "https://kinozal.tv/details.php?id=2026484",
-    "Torrent": "https://dl.kinozal.tv/download.php?id=2026484",
-    "Size": "5.75 ГБ",
-    "Comments": "1",
-    "Seeds": "5",
-    "Peers": "7",
-    "Date": "11.03.2024 23:28"
-  },
-  {
-    "Name": "Новичок (Новобранец) (6 сезон: 1-3 серии из 13)",
+    "Name": "Новичок (Новобранец) (6 сезон: 1-6 серии из 13)",
     "OriginalName": "The Rookie",
     "Year": "2024",
     "Language": "3 x ПМ, СТ",
@@ -174,14 +159,14 @@ Only `GET`
     "Id": "2023066",
     "Url": "https://kinozal.tv/details.php?id=2023066",
     "Torrent": "https://dl.kinozal.tv/download.php?id=2023066",
-    "Size": "9.92 ГБ",
-    "Comments": "12",
-    "Seeds": "38",
-    "Peers": "27",
-    "Date": "09.03.2024 00:29"
+    "Size": "19.63 ГБ",
+    "Comments": "22",
+    "Seeds": "40",
+    "Peers": "23",
+    "Date": "12.04.2024 23:43"
   },
   {
-    "Name": "Новичок (Новобранец) (6 сезон: 1-3 серии из 10)",
+    "Name": "Новичок (Новобранец) (6 сезон: 1-6 серии из 10)",
     "OriginalName": "The Rookie",
     "Year": "2024",
     "Language": "ПМ (LostFilm)",
@@ -189,14 +174,14 @@ Only `GET`
     "Id": "2022944",
     "Url": "https://kinozal.tv/details.php?id=2022944",
     "Torrent": "https://dl.kinozal.tv/download.php?id=2022944",
-    "Size": "1.78 ГБ",
-    "Comments": "7",
-    "Seeds": "31",
-    "Peers": "14",
-    "Date": "08.03.2024 11:53"
+    "Size": "3.57 ГБ",
+    "Comments": "12",
+    "Seeds": "32",
+    "Peers": "33",
+    "Date": "12.04.2024 08:31"
   },
   {
-    "Name": "Новичок (Новобранец) (1-6 сезоны: 1-101 серии из 120)",
+    "Name": "Новичок (Новобранец) (1-6 сезоны: 1-104 серии из 120)",
     "OriginalName": "The Rookie",
     "Year": "2018-2024",
     "Language": "ПМ (LostFilm)",
@@ -204,11 +189,26 @@ Only `GET`
     "Id": "1656552",
     "Url": "https://kinozal.tv/details.php?id=1656552",
     "Torrent": "https://dl.kinozal.tv/download.php?id=1656552",
-    "Size": "233.22 ГБ",
-    "Comments": "130",
-    "Seeds": "10",
-    "Peers": "24",
-    "Date": "08.03.2024 09:08"
+    "Size": "240.24 ГБ",
+    "Comments": "133",
+    "Seeds": "6",
+    "Peers": "15",
+    "Date": "12.04.2024 01:09"
+  },
+  {
+    "Name": "Новичок (Новобранец) (6 сезон: 1-4 серии из 13)",
+    "OriginalName": "The Rookie",
+    "Year": "2024",
+    "Language": "3 x ПМ, СТ",
+    "Format": "WEB-DL (720p)",
+    "Id": "2026484",
+    "Url": "https://kinozal.tv/details.php?id=2026484",
+    "Torrent": "https://dl.kinozal.tv/download.php?id=2026484",
+    "Size": "7.65 ГБ",
+    "Comments": "1",
+    "Seeds": "4",
+    "Peers": "3",
+    "Date": "30.03.2024 15:27"
   }
 ]
 ```
@@ -220,9 +220,13 @@ Only `GET`
 ```json
 [
   {
-    "Hash": "9250D2B648F42D45AD2D8B516E9AEF3D1BAC2D95",
-    "Title": "Новичок (Новобранец)",
     "Original": "The Rookie",
+    "Title": "Новичок (Новобранец)",
+    "Hash": "91FD5276F3429F253F952394DE6D3949581853D6",
+    "IMDb_link": "https://www.imdb.com/title/tt7587890/",
+    "Kinopoisk_link": "https://www.kinopoisk.ru/film/1142153",
+    "IMDB_id": "7587890",
+    "Kinopoisk_id": "1142153",
     "Year": "2018-2024",
     "Type": "Драма, криминал",
     "Release": "США, eOne Television, ABC Studios",
@@ -232,20 +236,20 @@ Only `GET`
     "Quality": "WEB-DLRip (1080p)",
     "Video": "MPEG-4 AVC, ~ 6800 Кбит/с, 1920x1080",
     "Audio": "Русский, английский (AC3, 2 ch, 384 Кбит/с)",
-    "Size": "233.22 ГБ",
-    "Duration": "101 х ~ 00:44:00",
+    "Size": "240.24 ГБ",
+    "Duration": "104 х ~ 00:44:00",
     "Transcript": "Профессиональный многоголосый",
-    "Seeds": "11",
-    "Peers": "19",
-    "Downloaded": "2693",
-    "Files": "101",
-    "Comments": "130",
+    "Seeds": "6",
+    "Peers": "15",
+    "Downloaded": "2721",
+    "Files": "104",
+    "Comments": "133",
     "IMDb": "8.0",
     "Kinopoisk": "8.4",
-    "Kinozal": "8.4",
-    "Votes": "122",
+    "Kinozal": "8.3",
+    "Votes": "127",
     "Added": "26 октября 2018 в 00:00",
-    "Update": "8 марта 2024 в 09:08"
+    "Update": "12 апреля 2024 в 01:09"
   }
 ]
 ```
@@ -294,15 +298,15 @@ Only `GET`
   "Name": "Новичок / Новобранец / The Rookie [06x01-06 из 22] (2024) WEBRip от Kerob | L2",
   "Hash": "f3377c04134adeac02c4e191e0e6317436afddda",
   "Torrent": "https://d.rutor.info/download/970650",
-  "IMDb": "http://www.imdb.com/title/tt7587890/",
-  "Kinopoisk": "http://www.kinopoisk.ru/film/1142153/",
+  "IMDb_link": "http://www.imdb.com/title/tt7587890/",
+  "Kinopoisk_link": "http://www.kinopoisk.ru/film/1142153/",
   "IMDb_id": "7587890",
   "KP_id": "1142153",
   "Rating": "10 из 10 (1 голосов, самая низкая оценка - 10, самая высокая - 10)",
   "Category": "Зарубежные сериалы",
-  "Seeds": "4",
-  "Peers": "9",
-  "Seed_Date": "21-04-2024 12:19:07 (29 минут назад)",
+  "Seeds": "8",
+  "Peers": "11",
+  "Seed_Date": "21-04-2024 16:19:09 (38 минут назад)",
   "Add_Date": "10-04-2024 23:24:09  (11 день назад)",
   "Size": "3.39 GB (3638136322 Bytes)",
   "Files": [

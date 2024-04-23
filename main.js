@@ -195,16 +195,65 @@ async function KinozalID(query) {
         return {'Result': `The ${error.hostname} server is not available`}
     }
     data2 = cheerio.load(html2)
+    // IMDb
+    let imdb
+    data('a[href*="imdb.com"]').each((index, element) => {
+        const href = data(element).attr('href')
+        if (href.includes('imdb.com')) {
+            imdb = href
+            return false
+        }
+    })
+    // Kinopoisk
+    let kp
+    data('a[href*="kinopoisk.ru"]').each((index, element) => {
+        const href = data(element).attr('href')
+        if (href.includes('kinopoisk.ru')) {
+            kp = href
+            return false
+        }
+    })
     const torrent = {
+        'Original': (() => {
+            // Обращаемся к элементу b по наименованию контейнера
+            const element = data('div.mn1_content .bx1 b:contains("Оригинальное название:")')[0]
+            // Проверяем наличие контейнера (что оно не является null или undefined)
+            if (element) {
+                // Свойство DOM, которое возвращает следующий узел после элемента <b>
+                const nextNode = element.nextSibling
+                // Используем тернарный оператор, проверяем, что nextNode не является null или undefined и тип узла равен текстовому значению DOM
+                return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : '' // Возвращаем текстовое содержимое узла или пустое значение
+            } else {
+                return ''
+            }
+        })(),
+        'Title': (() => {
+            const element = data('div.mn1_content .bx1 b:contains("Название:")')[0]
+            if (element) {
+                const nextNode = element.nextSibling
+                return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+            } else {
+                return ''
+            }
+        })(),
         'Hash': data2('li').eq(0).text().replace(/.+:/,'').trim(),
-        'Title': data('div.mn1_content').find('.bx1 b').eq(1)[0].nextSibling.nodeValue.trim(),
-        'Original': data('div.mn1_content').find('.bx1 b').eq(2)[0].nextSibling.nodeValue.trim(),
-        'Year': data('div.mn1_content').find('.bx1 b').eq(3)[0].nextSibling.nodeValue.trim(),
+        'IMDb_link': imdb,
+        'Kinopoisk_link': kp,
+        'IMDB_id': imdb.replace(/[^0-9]/g, ''),
+        'Kinopoisk_id': kp.replace(/[^0-9]/g, ''),
+        // Находим нужный контейнер который содержит год выпуска и забираем текстовое значение следующего узла
+        'Year': data('div.mn1_content .bx1 b:contains("Год выпуска:")')[0].nextSibling.nodeValue.trim(),
         'Type': data('div.mn1_content').find('.lnks_tobrs').eq(0).text().trim(),
         'Release': data('div.mn1_content').find('.lnks_tobrs').eq(1).text().trim(),
         'Directer': data('div.mn1_content').find('.lnks_toprs').eq(0).text().trim(),
         'Actors': data('div.mn1_content').find('.lnks_toprs').eq(1).text().trim(),
-        'Description': data('div.mn1_content').find('.bx1.justify:eq(2) p b').eq(0)[0].nextSibling.nodeValue.trim(),
+        // 'Description': data('div.mn1_content').find('.bx1.justify:eq(2) p b').eq(0)[0].nextSibling.nodeValue.trim(),
+        'Description': data('div#main div.content div.mn_wrap div.mn1_content div.bx1.justify p')
+        .clone()       // Клонируем элемент, чтобы не модифицировать исходный
+        .children('b') // Выбираем все дочерние элементы 'b'
+        .remove()      // Удаляем их
+        .end()         // Возвращаемся к исходному элементу
+        .text().trim(),
         'Quality': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(0)[0].nextSibling.nodeValue.trim(),
         'Video': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(1)[0].nextSibling.nodeValue.trim(),
         'Audio': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(2)[0].nextSibling.nodeValue.trim(),
@@ -375,7 +424,6 @@ async function RuTorFiles(query) {
     const url_files = `https://rutor.info/descriptions/${query}.files`
     const torrents = []
     let html
-    // Hash
     const url = `https://rutor.info/torrent/${query}`
     try {
         const response = await axios.get(url, {
@@ -391,8 +439,9 @@ async function RuTorFiles(query) {
     const data = cheerio.load(html)
     let name = data('#all h1').text().trim()
     let torrent_url = 'https:' + data('#download a:eq(1)').attr('href').trim()
+    // Hash
     let hash = data('#download a').attr('href').replace(/magnet:\?xt=urn:btih:|\&dn=.+/g,'').trim()
-    // IMDb + Kinopoisk
+    // IMDb
     let imdb
     data('a[href*="imdb.com"]').each((index, element) => {
         const href = data(element).attr('href')
@@ -401,6 +450,7 @@ async function RuTorFiles(query) {
             return false // прерываем цикл после нахождения первого элемента
         }
     })
+    // Kinopoisk
     let kp
     data('a[href*="kinopoisk.ru"]').each((index, element) => {
         const href = data(element).attr('href')
@@ -409,7 +459,7 @@ async function RuTorFiles(query) {
             return false
         }
     })
-    // Определяем порядковый номер индекса с содержимым рейтинга
+    // Определяем порядковый номер индекса с содержимым рейтинга и забираем остальные данные по порядку
     let index
     let test = data('#details > tbody > tr:nth-child(2) > td.header').text()
     if (test == 'Оценка') {
@@ -429,7 +479,7 @@ async function RuTorFiles(query) {
     let seed_date = data(`#details > tbody > tr:nth-child(${index+4}) > td:nth-child(2)`).text()
     let add_date = data(`#details > tbody > tr:nth-child(${index+5}) > td:nth-child(2)`).text()
     let size = data(`#details > tbody > tr:nth-child(${index+6}) > td:nth-child(2)`).text().replace(/\s+/g,' ')
-    // Files list
+    // Получаем список файлов
     try {
         const response = await axios.get(url_files, {
             responseType: 'arraybuffer',
@@ -458,8 +508,8 @@ async function RuTorFiles(query) {
             Name: name,
             Hash: hash,
             Torrent: torrent_url,
-            IMDb: imdb,
-            Kinopoisk: kp,
+            IMDb_link: imdb,
+            Kinopoisk_link: kp,
             IMDb_id: imdb.replace(/[^0-9]/g, ''),
             KP_id: kp.replace(/[^0-9]/g, ''),
             Rating: rating,
