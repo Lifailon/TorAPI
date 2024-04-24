@@ -256,134 +256,64 @@ Only `GET`
 
 - Example of using Cyrillic characters in a search query from PowerShell:
 
-`Invoke-RestMethod "http://192.168.3.100:8443/api/kinozal/засланец из космоса/0/2024"`
+`Invoke-RestMethod "http://192.168.3.100:8443/api/kinozal/новобранец/0/2024"`
 
 ```PowerShell
-Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
-OriginalName : Resident Alien
+Name         : Новичок (Новобранец) (6 сезон: 1-6 серии из 13)
+Id           : 2023066
+OriginalName : The Rookie
 Year         : 2024
-Language     : 4 x ПМ, ПД (Кубик в Кубе)
-Format       : WEB-DLRip (720p)
-Id           : 2021670
-Url          : https://kinozal.tv/details.php?id=2021670
-Torrent      : https://dl.kinozal.tv/download.php?id=2021670
-Size         : 14.98 ГБ
+Language     : 3 x ПМ, СТ
+Format       : WEB-DL (1080p)
+Url          : https://kinozal.tv/details.php?id=2023066
+Torrent      : https://dl.kinozal.tv/download.php?id=2023066
+Size         : 19.63 ГБ
 Comments     : 23
-Seeds        : 16
-Peers        : 8
-Date         : 15.04.2024 22:00
+Seeds        : 47
+Peers        : 26
+Date         : 12.04.2024 23:43
 
-Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
-OriginalName : Resident Alien
+Name         : Новичок (Новобранец) (6 сезон: 1-6 серии из 10)
+Id           : 2022944
+OriginalName : The Rookie
 Year         : 2024
-Language     : 4 x ПМ, ПД (Кубик в Кубе)
-Format       : WEB-DL (1080p)
-Id           : 2021740
-Url          : https://kinozal.tv/details.php?id=2021740
-Torrent      : https://dl.kinozal.tv/download.php?id=2021740
-Size         : 27.41 ГБ
-Comments     : 54
-Seeds        : 67
-Peers        : 24
-Date         : 15.04.2024 14:33
-
-Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
-OriginalName : Resident Alien
-Year         : 2024
-Language     : 4 x ПМ, ПД (Кубик в Кубе)
-Format       : WEB-DL (720p)
-Id           : 2021741
-Url          : https://kinozal.tv/details.php?id=2021741
-Torrent      : https://dl.kinozal.tv/download.php?id=2021741
-Size         : 14.51 ГБ
+Language     : ПМ (LostFilm)
+Format       : WEB-DLRip
+Url          : https://kinozal.tv/details.php?id=2022944
+Torrent      : https://dl.kinozal.tv/download.php?id=2022944
+Size         : 3.57 ГБ
 Comments     : 12
-Seeds        : 11
-Peers        : 1
-Date         : 08.04.2024 23:54
+Seeds        : 43
+Peers        : 37
+Date         : 12.04.2024 08:31
 
-Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
-OriginalName : Resident Alien
-Year         : 2024
-Language     : ПМ (HDRezka Studio, LostFilm, AlexFilm), ЛМ (ColdFilm)
-Format       : WEB-DL (1080p)
-Id           : 2021611
-Url          : https://kinozal.tv/details.php?id=2021611
-Torrent      : https://dl.kinozal.tv/download.php?id=2021611
-Size         : 27.49 ГБ
-Comments     : 56
-Seeds        : 65
-Peers        : 11
-Date         : 07.04.2024 07:22
+Name         : Новичок (Новобранец) (1-6 сезоны: 1-104 серии из 120)
+Id           : 1656552
+OriginalName : The Rookie
+Year         : 2018-2024
+Language     : ПМ (LostFilm)
+Format       : WEB-DLRip (1080p)
+Url          : https://kinozal.tv/details.php?id=1656552
+Torrent      : https://dl.kinozal.tv/download.php?id=1656552
+Size         : 240.24 ГБ
+Comments     : 133
+Seeds        : 6
+Peers        : 18
+Date         : 12.04.2024 01:09
 
-Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
-OriginalName : Resident Alien
+Name         : Новичок (Новобранец) (6 сезон: 1-4 серии из 13)
+Id           : 2026484
+OriginalName : The Rookie
 Year         : 2024
-Language     : ПМ (AlexFilm)
-Format       : WEB-DL (1080p)
-Id           : 2021716
-Url          : https://kinozal.tv/details.php?id=2021716
-Torrent      : https://dl.kinozal.tv/download.php?id=2021716
-Size         : 24.99 ГБ
-Comments     : 13
+Language     : 3 x ПМ, СТ
+Format       : WEB-DL (720p)
+Url          : https://kinozal.tv/details.php?id=2026484
+Torrent      : https://dl.kinozal.tv/download.php?id=2026484
+Size         : 7.65 ГБ
+Comments     : 1
 Seeds        : 5
-Peers        : 2
-Date         : 06.04.2024 21:18
-
-Name         : Засланец из космоса (1-3 сезоны: 1-34 серии из 34)
-OriginalName : Resident Alien
-Year         : 2021-2024
-Language     : ПМ (LostFilm)
-Format       : WEB-DLRip
-Id           : 1896581
-Url          : https://kinozal.tv/details.php?id=1896581
-Torrent      : https://dl.kinozal.tv/download.php?id=1896581
-Size         : 18.53 ГБ
-Comments     : 3
-Seeds        : 15
-Peers        : 12
-Date         : 06.04.2024 14:02
-
-Name         : Засланец из космоса (3 сезон: 1-8 серии из 8)
-OriginalName : Resident Alien
-Year         : 2024
-Language     : ПМ (LostFilm)
-Format       : WEB-DLRip
-Id           : 2021731
-Url          : https://kinozal.tv/details.php?id=2021731
-Torrent      : https://dl.kinozal.tv/download.php?id=2021731
-Size         : 4.96 ГБ
-Comments     : 20
-Seeds        : 89
-Peers        : 13
-Date         : 06.04.2024 14:00
-
-Name         : Засланец из космоса (3 сезон: 1-3 серии из 8)
-OriginalName : Resident Alien
-Year         : 2024
-Language     : 4 x ПМ, ПД (Кубик в Кубе)
-Format       :  4K, HEVC, HDR
-Id           : 2023267
-Url          : https://kinozal.tv/details.php?id=2023267
-Torrent      : https://dl.kinozal.tv/download.php?id=2023267
-Size         : 16.01 ГБ
-Comments     : 13
-Seeds        : 12
-Peers        : 2
-Date         : 10.03.2024 09:48
-
-Name         : Засланец из космоса (3 сезон: 1-3 серии из 8)
-OriginalName : Resident Alien
-Year         : 2024
-Language     : 5 x ПМ, ПД
-Format       : WEB-DLRip (AVC)
-Id           : 2022362
-Url          : https://kinozal.tv/details.php?id=2022362
-Torrent      : https://dl.kinozal.tv/download.php?id=2022362
-Size         : 3 ГБ
-Comments     : 4
-Seeds        : 0
 Peers        : 0
-Date         : 03.03.2024 05:49
+Date         : 30.03.2024 15:27
 ```
 
 #### RuTor

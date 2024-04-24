@@ -330,12 +330,12 @@ async function Kinozal(query, page, year) {
             // Заполняем новый временный массив
             const torrent = {
                 // Заполняем параметры из заголовка
-                'Name': arrTitle[0],
-                'OriginalName': arrTitle[1],
-                'Year': arrTitle[2],
-                'Language': arrTitle[3],
-                'Format': arrTitle[4],
+                'Name': arrTitle[0].trim(),
                 'Id': torrentName.attr('href').replace(/.+id=/,''),
+                'OriginalName': arrTitle[1].trim(),
+                'Year': arrTitle[2].trim(),
+                'Language': arrTitle[3].trim(),
+                'Format': arrTitle[4],
                 'Url': "https://kinozal.tv"+torrentName.attr('href'),
                 'Torrent': "https://dl.kinozal.tv" + data(element).find('.nam a').attr('href').replace(/details/, 'download'),
                 'Size': s.eq(1).text().trim(),
@@ -590,6 +590,32 @@ async function RuTor(query, page) {
     }
 }
 
+// NoNameClub ID
+
+// https://nnmclub.to/forum/filelst.php?attach_id=1306530
+
+async function NoNameClubID(query) {
+    const url = `https://nnmclub.to/forum/viewtopic.php?t=${query}`
+    // const torrents = []
+    let html
+    try {
+        const response = await axios.get(url, {
+            responseType: 'arraybuffer',
+            headers: headers
+        })
+        html = iconv.decode(response.data, 'win1251')
+        console.log(`${getCurrentTime()} [Request] ${url}`)
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return {'Result': `The ${error.hostname} server is not available`}
+    }
+    const data = cheerio.load(html)
+    let name = data('body > div.wrap > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > table:nth-child(2) > tbody > tr > td:nth-child(1) > h1 > a').text().trim()
+    return {
+        Name: name,
+    }
+}
+
 // NoNameClub
 async function NoNameClub(query, page) {
     const p = getPage(page)
@@ -620,7 +646,7 @@ async function NoNameClub(query, page) {
             const size = data(element).find(`.gensmall:eq(${sizeIndex})`).text().trim().split(' ', 3).slice(1).join(' ')
             const torrent = {
                 'Name': data(element).find('.genmed a b').text().trim(),
-                // 'Id': data(element).find('.genmed a').attr('href').replace(/.+t=/,''),
+                'Id': data(element).find('.genmed a').attr('href').replace(/.+t=/,''),
                 'Url': "https://nnmclub.to/forum/"+data(element).find('a:eq(1)').attr('href'),
                 'Torrent': "https://nnmclub.to/forum/"+data(element).find('a:eq(3)').attr('href'),
                 'Size': size,
@@ -796,6 +822,18 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     else if (provider === 'rutor') {
         try {
             const result = await RuTor(query, page)
+            return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                {Result: 'No data'}
+            )
+        }
+    }
+    // NoNameClub ID
+    else if (provider === 'nonameclub' && /^\d{5,}$/.test(query)) {
+        try {
+            const result = await NoNameClubID(query)
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)
