@@ -12,12 +12,12 @@
 <a href="https://github.com/Lifailon/TorAPI"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=GitHub&color=green"></a>
 </p>
 
-Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torrent files and other information by movie title, series or id. This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) ✨ (all code is completely rewritten) for Russian-speaking torrent providers.
+Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torrent files and other information by movie title, TV series or id. This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) ✨ (all code is completely rewritten) for Russian-speaking torrent providers.
 
 There are 2 types of queries: 
 
 - **Search by title**, in which we will get all available distributions from the specified torrent tracker (its ID and brief information with a link to download the torrent file).
-- **Search by ID** of the specified provider, where we will get additional information: hash for direct download through torrent-client, links to Kinopoisk and IMDb databases, detailed description of the movie or series, as well as the content of the torrent-file (list and size of files). 
+- **Search by ID** of the specified provider, where we will get additional information: hash for direct download through torrent-client, links to Kinopoisk and IMDb databases, detailed description of the movie or TV series, as well as the content of the torrent-file (list and size of files). 
 
 📄 Released under the [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
 
@@ -72,7 +72,7 @@ Only `GET`
 | *TITLE*    | True*     | *str* | *Name* of the movie or TV series. Cyrillic characters are supported. You can use spaces if the query is enclosed in inverted commas, or use an addition character (+) instead. |
 | *ID*       | True*     | *str* | Get more information about a film or TV series by the ID of the specified provider.                  |
 | *PAGE*     | False     | *int* | Page number from which the response will be received (`0 to 20`).                                    |
-| *YEAR*     | False     | *int* | Year of release of the film or series for filtering (supported only by the provider *Kinozal*).      |
+| *YEAR*     | False     | *int* | Year of release of the film or TV series for filtering (supported only by the provider *Kinozal*).      |
 
 \* You can use one of two parameters in the endpoint path: *TITLE* or *ID*.
 
@@ -617,8 +617,8 @@ Name                                                                Size      To
 Новичок (3 сезон: 1-11 серии из 20) (2021) WEBRip | LakeFilms       4.31 Gb   http://fasts-torrent.net/download/397471/torrent/-3-1-11-20-2021-webrip-lakefilms/
 Новичок (3 сезон: 1-11 серии из 20) (2021) WEBRip 720p | LakeFilms  8.58 Gb   http://fasts-torrent.net/download/397470/torrent/-3-1-11-20-2021-webrip-720p-lakefilms/
 Новичок (3 сезон: 1-11 серии из 20) (2021) WEBRip 1080p | LakeFilms 14.06 Gb  http://fasts-torrent.net/download/397469/torrent/-3-1-11-20-2021-webrip-1080p-lakefilms/
-Новичок   (3 сезон: 1-3 серии из 20)  (2020)  WEB-DLRip | LostFilm  1.8 Gb    http://fasts-torrent.net/download/390632/torrent/-3-1-3-20-2020-web-dlrip-lostfilm/
-Новичок   (3 сезон: 1 серии из 20)  (2020)  WEB-DL 720p | LostFilm  1.67 Gb   http://fasts-torrent.net/download/389588/torrent/-3-1-20-2020-web-dl-720p-lostfilm/
+Новичок (3 сезон: 1-3 серии из 20)  (2020)  WEB-DLRip | LostFilm    1.8 Gb    http://fasts-torrent.net/download/390632/torrent/-3-1-3-20-2020-web-dlrip-lostfilm/
+Новичок (3 сезон: 1 серии из 20)  (2020)  WEB-DL 720p | LostFilm    1.67 Gb   http://fasts-torrent.net/download/389588/torrent/-3-1-20-2020-web-dl-720p-lostfilm/
 Новичок (3 сезон: 1 серии из 20) (2021) WEBRip 1080p | Ultradox     1.53 Gb   http://fasts-torrent.net/download/389406/torrent/-3-1-20-2021-webrip-1080p-ultradox/
 Новичок (3 сезон: 1 серии из 20) (2021) WEBRip 720p | Ultradox      982.68 Mb http://fasts-torrent.net/download/389405/torrent/-3-1-20-2021-webrip-720p-ultradox/
 ```

@@ -1112,7 +1112,7 @@ async function FastsTorrent(query) {
     const data = cheerio.load(html.data)
     data('.restable tbody tr').each((_, element) => {
         const torrent = {
-            'Name': data(element).find('.torrent-title b').text().trim(),
+            'Name': data(element).find('.torrent-title b').text().trim().replace(/\s+/,' '),
             'Size': data(element).find('.torrent-sp').eq(0).text().trim(),
             'Torrent': "http://fasts-torrent.net" + data(element).find('.torrent-d-btn a').attr('href')
         }
