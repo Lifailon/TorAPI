@@ -14,19 +14,26 @@
 
 Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torrent files and other information by movie title, series or id. This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) ✨ (all code is completely rewritten) for Russian-speaking torrent providers.
 
+There are 2 types of queries: 
+
+- **Search by title**, in which we will get all available distributions from the specified torrent tracker (its ID and brief information with a link to download the torrent file).
+- **Search by ID** of the specified provider, where we will get additional information: hash for direct download through torrent-client, links to Kinopoisk and IMDb databases, detailed description of the movie or series, as well as the content of the torrent-file (list and size of files). 
+
 📄 Released under the [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
 
 ---
 
 ### 🔗 Full list of available providers:
 
-| Provider name                            | Release | Mirrors | Registration | VPN | Search by ID |
-| -                                        | -       | -       | -            | -   | -            |
-| [RuTracker](https://rutracker.org)       | 2004    | 3       | Yes          | Yes | False        |
-| [Kinozal](https://kinozal.tv)            | 2006    | 2       | Yes          | Yes | True         |
-| [RuTor](https://rutor.info)              | 2009    | 2       | No           | Yes | True         |
-| [NoNameClub](https://nnmclub.to)         | 2006    | 1       | No           | Yes | True        |
-| [FastsTorrent](http://fasts-torrent.net) | 2022    | 1       | No           | No  | False        |
+| Provider name                            | Release | Mirrors | Registration | VPN | Search by ID | Torrent content |
+| -                                        | -       | -       | -            | -   | -            | -               |
+| [RuTracker](https://rutracker.org)       | 2004    | 3       | Yes*         | Yes | Yes          | No              |
+| [Kinozal](https://kinozal.tv)            | 2006    | 2       | Yes*         | Yes | Yes          | Yes             |
+| [RuTor](https://rutor.info)              | 2009    | 2       | No           | Yes | Yes          | Yes             |
+| [NoNameClub](https://nnmclub.to)         | 2006    | 1       | No           | Yes | Yes          | Yes             |
+| [FastsTorrent](http://fasts-torrent.net) | 2022    | 1       | No           | No  | No           | -               |
+
+\* Registration is required only when downloading a torrent file via a direct link. All distributions when searching by ID contain hashes (magnet-links), allowing you to download the content and form a torrent file using a torrent-client.
 
 ---
 
@@ -140,6 +147,32 @@ Only `GET`
     "Date": "8.03.2024"
   }
 ]
+```
+
+- Search by id:
+
+`curl -s http://192.168.3.100:8443/api/rutracker/6489937 | jq .`
+
+```json
+{
+  "Name": "Новичок / Новобранец / The Rookie / Сезон: 6 / Серии: 1-6 из 10 (Билл Роу, Майкл Гои) [2024, США, боевик, драма, криминал, WEB-DLRip] MVO (LostFilm) + Original",
+  "Hash": "E5B7183C1E987471F31186D3ADDA6E77176804D1",
+  "Torrent": "https://rutracker.org/forum/dl.php?t=6489937",
+  "IMDb_link": "https://www.imdb.com/title/tt7587890/",
+  "Kinopoisk_link": "https://www.kinopoisk.ru/series/1142153/",
+  "IMDb_id": "7587890",
+  "Kinopoisk_id": "1142153",
+  "Year": "2024",
+  "Release": "США",
+  "Type": "боевик, драма, криминал",
+  "Duration": "00:43:00",
+  "Audio": "Профессиональный (многоголосый закадровый) -",
+  "Directer": "Билл Роу, Майкл Гои",
+  "Actors": "Нэйтан Филлион, Мелисса О’Нил, Эрик Винтер, Дженна Деван, Шон Эшмор, Лиззет Чавез, Мекиа Кокс, Алисса Диас, Тру Валентино, Ричард Т. Джонс ,Бриджет Риган, Трой Кастанеда, Мэллори Томпсон, Алекс Элин Гойко, Констанс Эджума",
+  "Description": "Начинать с чистого листа всегда нелегко, особенно для уроженца маленького городка Джона Нолана, который после перевернувшего его жизнь случая решил воплотить в жизнь давнюю мечту и вступить в ряды полиции Лос-Анджелеса. Возрастного новичка встречают с понятным скептицизмом, однако жизненный опыт, упорство и чувство юмора дают Джону преимущество.",
+  "Video_Quality": "WEB-DLRip",
+  "Video": "XviD, 720x400 (16:9), 23.976 fps, 1600 Kbps"
+}
 ```
 
 #### Kinozal

@@ -2,6 +2,7 @@ const express   = require('express')
 const cheerio   = require('cheerio')
 const axios     = require('axios')
 const iconv     = require('iconv-lite')
+const puppeteer = require('puppeteer')
 
 // Configuration
 const listen_port = 8443
@@ -92,6 +93,248 @@ function unixTimestamp(timestamp) {
     const hours = String(date.getHours()).padStart(2, '0')
     const minutes = String(date.getMinutes()).padStart(2, '0')
     return `${day}.${month}.${year} ${hours}:${minutes}`
+}
+
+// RuTracker ID
+async function RuTrackerID(query) {
+    const url = `https://rutracker.org/forum/viewtopic.php?t=${query}`
+    let html
+    try {
+        const response = await axios.get(url, {
+            responseType: 'arraybuffer',
+            headers: headers_RuTracker
+        })
+        html = iconv.decode(response.data, 'win1251')
+        console.log(`${getCurrentTime()} [Request] ${url}`)
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return {'Result': `The ${error.hostname} server is not available`}
+    }
+    const data = cheerio.load(html)
+    let Name =  data('a#topic-title').text().trim()
+    // Hash
+    let Hash = data('a[href*="magnet:?xt=urn:btih:"]').attr('href').replace(/.+btih:|&.+/g,'')
+    // Получение ссылки на загрузку торрент файла (по поиску части содержимого атрибута и по классу необходимы Cookie)
+    // let Torrent = data('a[href*="dl.php?t="]').attr('href')
+    // let Torrent = data('a.dl-stub.dl-link.dl-topic').attr('href')
+    let Torrent = `https://rutracker.org/forum/dl.php?t=${query}`
+    // IMDb
+    let imdb
+    data('a[href*="imdb.com"]').each((index, element) => {
+        const href = data(element).attr('href')
+        if (href.includes('imdb.com')) {
+            imdb = href
+            return false
+        }
+    })
+    if (!imdb) {
+        imdb = ""
+    }
+    // Kinopoisk
+    let kp
+    data('a[href*="kinopoisk.ru"]').each((index, element) => {
+        const href = data(element).attr('href')
+        if (href.includes('kinopoisk.ru')) {
+            kp = href
+            return false
+        }
+    })
+    if (!kp) {
+        kp = ""
+    }
+    // Год выпуска
+    const Year = (() => {
+        const element = data('span.post-b:contains("Год")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Страна
+    let Release = (() => {
+        const element = data('span.post-b:contains("Страна")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Жанр
+    const Type = (() => {
+        const element = data('span.post-b:contains("Жанр")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Продолжительность
+    const Duration = (() => {
+        const element = data('span.post-b:contains("Продолжительность")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Перевод
+    const Audio = (() => {
+        const element = data('span.post-b:contains("Перевод")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Режиссёр
+    const Directer = (() => {
+        const element = data('span.post-b:contains("Режиссёр")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // В ролях
+    const Actors = (() => {
+        const element = data('span.post-b:contains("В ролях")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Описание
+    const Description = (() => {
+        const element = data('span.post-b:contains("Описание")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Качество
+    const videoQuality = (() => {
+        const element = data('span.post-b:contains("Качество")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Видео
+    const Video = (() => {
+        const element = data('span.post-b:contains("Видео")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    //  // Puppeteer
+    //  const torrents = []
+    //  // Запускаем браузер
+    //  const browser = await puppeteer.launch({
+    //      // Скрыть отображение браузера (по умолчанию)
+    //      headless: false
+    //  })
+    //  // Открываем новую пустую страницу 
+    //  const page = await browser.newPage()
+    //  // Устанавливаем Cookie
+    //  const cookies = [
+    //      { name: '_ym_d', value: '1713608104', domain: '.rutracker.org', path: '/' },
+    //      { name: '_ym_isad', value: '1', domain: '.rutracker.org', path: '/' },
+    //      { name: '_ym_uid', value: '1675005035139917782', domain: '.rutracker.org', path: '/' },
+    //      { name: 'bb_guid', value: 'OX8UGBHMi1DW', domain: '.rutracker.org', path: '/' },
+    //      { name: 'bb_session', value: '0-44590272-Sp8wQfjonpx37QjDuZUD', domain: '.rutracker.org', path: '/' },
+    //      { name: 'bb_ssl', value: '1', domain: '.rutracker.org', path: '/' },
+    //      { name: 'bb_t', value: 'a%3A6%3A%7Bi%3A6487040%3Bi%3A1711832640%3Bi%3A6489937%3Bi%3A1712340699%3Bi%3A6496948%3Bi%3A1709891767%3Bi%3A6387499%3Bi%3A1690356948%3Bi%3A6387500%3Bi%3A1689726770%3Bi%3A6358163%3Bi%3A1684231793%3B%7D', domain: '.rutracker.org', path: '/' },
+    //      { name: 'cf_clearance', value: 'Nru732Vi6LTb.p_fm1orml.24cTnJtFB6eQ2Qn1dw6g-1714060753-1.0.1.1-nWAl13hHBBGeHcJNVjYB5VcI65OaR26C46BKP6Wyrkj6n2k4Eu2SQ.17JdRXKcM.lnsEFGPHGxDaktfSzmFVZw', domain: '.rutracker.org', path: '/' }
+    //  ];
+    //  for (const cookie of cookies) {
+    //      await page.setCookie(cookie)
+    //  }
+    //  // Открываем страницу
+    //  // await page.goto(`https://rutracker.org/forum/viewtopic.php?t=6489937`, {timeout: 60000, waitUntil: 'domcontentloaded'})
+    //  await page.goto(url,{
+    //      // Ожиданием загрузку страницы 60 секунд
+    //      timeout: 60000,
+    //      // Ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
+    //      waitUntil: 'domcontentloaded'
+    //  })
+    //  await page.evaluate(() => {
+    //      // Находим кнопку по пути JavaScript (по id) и нажимаем на нее
+    //      // document.querySelector("#tor-filelist-btn").click()
+    //      // Находим все кпноки (по классу)
+    //      const buttons = document.querySelectorAll('.lite')
+    //      // Проходимся по найденным кнопкам
+    //      buttons.forEach(button => {
+    //          // Проверяем, содержит ли кнопка текст "Список файлов" и нажимаем на нее
+    //          if (button.textContent.includes('Список файлов')) {
+    //              button.click()
+    //          }
+    //      })
+    //  })
+    //  // Дожидаемся загрузки нового элемента
+    //  // const elementHandle = await page.waitForSelector('#tor-filelist')
+    //  // Находим элемент с идентификатором #tor-filelist или по классу .med.ftree-windowed
+    //  await page.waitForFunction(() => {
+    //      const element = document.querySelector('#tor-filelist')
+    //      // Проверяем, что элемент существует и его содержимое не содержит текст загрузки
+    //      return element && !element.textContent.includes("Загружается...")
+    //  }, {
+    //      // Ожидать результат 30 секунд
+    //      timeout: 30000,
+    //      // Проверка каждые 50мс (по умолчанию 100мс)
+    //      polling: 50
+    //  })
+    //  // Забираем результат после успешной проверки
+    //  const elementTable = await page.evaluate(() => {
+    //      const element = document.querySelector('#tor-filelist')
+    //      return element ? element : null
+    //  })
+    //  // Закрываем браузер
+    //  await browser.close()
+    //  const $ = cheerio.load(elementTable)
+    //  $('li.file').each((index, element) => {
+    //      const fileName = $(element).find('b').text().trim()
+    //      const fileSize = $(element).find('s').text().trim()
+    //      torrents.push({
+    //          name: fileName,
+    //          size: fileSize
+    //      })
+    //  })
+    return {
+        Name: Name,
+        Hash: Hash,
+        Torrent: Torrent,
+        IMDb_link: imdb,
+        Kinopoisk_link: kp,
+        IMDb_id: imdb.replace(/[^0-9]/g, ''),
+        Kinopoisk_id: kp.replace(/[^0-9]/g, ''),
+        Year: Year.replace(/:\s/g,''),
+        Release: Release.replace(/:\s/g,''),
+        Type: Type.replace(/:\s/g,''),
+        Duration: Duration.replace(/:\s/g,'').replace(/~ |~/g,''),
+        Audio: Audio.replace(/:\s/g,''),
+        Directer: Directer.replace(/:\s/g,''),
+        Actors: Actors.replace(/:\s/g,''),
+        Description: Description.replace(/:\s/g,''),
+        Video_Quality: videoQuality.replace(/:\s/g,''),
+        Video: Video.replace(/:\s/g,''),
+        // Files: torrents
+    }
 }
 
 // RuTracker
@@ -361,7 +604,6 @@ async function Kinozal(query, page, year) {
 }
 
 // RuTor Puppeteer
-// const puppeteer = require('puppeteer')
 async function RuTorFilesPuppeteer(query) {
     const torrents = []
     // Запускаем браузер и открываем новую пустую страницу 
@@ -949,6 +1191,18 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json({ Result: 'No data' })
+        }
+    }
+    // RuTracker ID
+    else if (provider === 'rutracker' && /^\d{5,}$/.test(query)) {
+        try {
+            const result = await RuTrackerID(query)
+            return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                {Result: 'No data'}
+            )
         }
     }
     // RuTracker
