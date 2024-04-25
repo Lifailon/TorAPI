@@ -329,10 +329,10 @@ Date         : 30.03.2024 15:27
     "Id": "970650",
     "Url": "https://rutor.info/torrent/970650/novichok_novobranec_the-rookie-06x01-06-iz-22-2024-webrip-ot-kerob-l2",
     "Torrent": "https://d.rutor.info/download/970650",
-    "Magnet": "magnet:?xt=urn:btih:f3377c04134adeac02c4e191e0e6317436afddda&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
+    "Hash": "f3377c04134adeac02c4e191e0e6317436afddda",
     "Size": "3.39 GB",
     "Comments": "5",
-    "Seed": "9",
+    "Seed": "7",
     "Peer": "9",
     "Date": "10.04.2024"
   },
@@ -341,11 +341,11 @@ Date         : 30.03.2024 15:27
     "Id": "970647",
     "Url": "https://rutor.info/torrent/970647/novichok_novobranec_the-rookie-06x01-06-iz-22-2024-webrip-720p-ot-kerob-l2",
     "Torrent": "https://d.rutor.info/download/970647",
-    "Magnet": "magnet:?xt=urn:btih:4b6ec5d821d844831ae30e9c851cbf72a9528c85&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
+    "Hash": "4b6ec5d821d844831ae30e9c851cbf72a9528c85",
     "Size": "7.18 GB",
     "Comments": "0",
-    "Seed": "10",
-    "Peer": "13",
+    "Seed": "8",
+    "Peer": "5",
     "Date": "10.04.2024"
   }
 ]
@@ -464,7 +464,6 @@ Date         : 30.03.2024 15:27
 {
   "Name": "Новичок / The Rookie (2018) WEB-DL [H.264/1080p-LQ] (сезон 1, серии 1-20 из 20) TVShows",
   "Hash": "C4E5F91AB1F8BBDF79B51C6E6167CFC806E2AA2B",
-  "Magnet": "magnet:?xt=urn:btih:C4E5F91AB1F8BBDF79B51C6E6167CFC806E2AA2B",
   "Torrent": "https://nnmclub.to/forum/download.php?id=1018672",
   "IMDb_link": "https://www.imdb.com/title/tt7587890/?ref_=plg_rt_1",
   "Kinopoisk_link": "https://www.kinopoisk.ru/film/1142153/",
@@ -574,19 +573,34 @@ Date         : 30.03.2024 15:27
 
 #### FastsTorrent
 
-▶️ `curl -s http://192.168.3.100:8443/api/faststorrent/taxi/0 | jq .`
+▶️ `Invoke-RestMethod "http://192.168.3.100:8443/api/faststorrent/новичок/0"`
 
-```json
-[
-  {
-    "Name": "Такси / Taxi (2015) BDRip 720p | Лицензия",
-    "Size": "3.06 Gb",
-    "Torrent": "http://fasts-torrent.net/download/168797/torrent/-taxi-2015-bdrip-720p-/"
-  },
-  {
-    "Name": "Такси / Taxi (2015) HDRip | Лицензия",
-    "Size": "1.37 Gb",
-    "Torrent": "http://fasts-torrent.net/download/168798/torrent/-taxi-2015-hdrip-/"
-  }
-]
+```PowerShell
+Name                                                                Size      Torrent
+----                                                                ----      -------
+Новичок (2023) WEB-DLRip                                            1,37 ГБ   http://fasts-torrent.net/download/444562/torrent/-2023-web-dlrip/
+Новичок (2023) WEB-DLRip 1080p                                      4,31 ГБ   http://fasts-torrent.net/download/444563/torrent/-2023-web-dlrip-1080p/
+Новичок: Федералы (сезон 1, серия 1-22 из 22) (2022) WEBRip | RuDub 11,39 ГБ  http://fasts-torrent.net/download/433754/torrent/-1-1-22-22-2022-webrip-rudub/
+Новичок (3 сезон: 1-11 серии из 20) (2021) WEBRip | LakeFilms       4.31 Gb   http://fasts-torrent.net/download/397471/torrent/-3-1-11-20-2021-webrip-lakefilms/
+Новичок (3 сезон: 1-11 серии из 20) (2021) WEBRip 720p | LakeFilms  8.58 Gb   http://fasts-torrent.net/download/397470/torrent/-3-1-11-20-2021-webrip-720p-lakefilms/
+Новичок (3 сезон: 1-11 серии из 20) (2021) WEBRip 1080p | LakeFilms 14.06 Gb  http://fasts-torrent.net/download/397469/torrent/-3-1-11-20-2021-webrip-1080p-lakefilms/
+Новичок   (3 сезон: 1-3 серии из 20)  (2020)  WEB-DLRip | LostFilm  1.8 Gb    http://fasts-torrent.net/download/390632/torrent/-3-1-3-20-2020-web-dlrip-lostfilm/
+Новичок   (3 сезон: 1 серии из 20)  (2020)  WEB-DL 720p | LostFilm  1.67 Gb   http://fasts-torrent.net/download/389588/torrent/-3-1-20-2020-web-dl-720p-lostfilm/
+Новичок (3 сезон: 1 серии из 20) (2021) WEBRip 1080p | Ultradox     1.53 Gb   http://fasts-torrent.net/download/389406/torrent/-3-1-20-2021-webrip-1080p-ultradox/
+Новичок (3 сезон: 1 серии из 20) (2021) WEBRip 720p | Ultradox      982.68 Mb http://fasts-torrent.net/download/389405/torrent/-3-1-20-2021-webrip-720p-ultradox/
+```
+
+▶️ `Invoke-RestMethod "http://192.168.3.100:8443/api/faststorrent/засланец из космоса/0"`
+
+```PowerShell
+Name                                                                           Size      Torrent
+----                                                                           ----      -------
+Засланец из космоса (3 сезон: 1-8 серии из 12) (2024) WEBRip | RuDub           4,28 ГБ   http://fasts-torrent.net/download/451290/torrent/-3-1-8-12-2024-webrip-rudub/
+Засланец из космоса (3 сезон: 1-2 серия из 12)  (2024)  WEB-DLRip |  LostFilm  1,24 ГБ   http://fasts-torrent.net/download/448905/torrent/-3-1-2-12-2024-web-dlrip-lostfilm/
+Засланец из космоса (1 сезон: 1-10 серии из 10) (2021) WEBRip | WestFilm       5.45 Gb   http://fasts-torrent.net/download/396204/torrent/-1-1-10-10-2021-webrip-westfilm/
+Засланец из космоса (1 сезон: 1-10 серии из 10) (2021) WEBRip 720p | WestFilm  7.23 Gb   http://fasts-torrent.net/download/396205/torrent/-1-1-10-10-2021-webrip-720p-westfilm/
+Засланец из космоса (1 сезон: 1-10 серии из 10) (2021) WEBRip 1080p | WestFilm 29.54 Gb  http://fasts-torrent.net/download/396206/torrent/-1-1-10-10-2021-webrip-1080p-westfilm/
+Засланец из космоса (1 сезон: 1-10 серия из 10) (2021) WEBRip | BaibaKo        5.48 Gb   http://fasts-torrent.net/download/396225/torrent/-1-1-10-10-2021-webrip-baibako/
+Засланец из космоса (1 сезон: 1 серии из 10) (2021) WEBRip 720p | Ultradox     1.01 Gb   http://fasts-torrent.net/download/391194/torrent/-1-1-10-2021-webrip-720p-ultradox/
+Засланец из космоса (1 сезон: 1 серии из 10) (2021) WEBRip | Ultradox          650.75 Mb http://fasts-torrent.net/download/391193/torrent/-1-1-10-2021-webrip-ultradox/
 ```

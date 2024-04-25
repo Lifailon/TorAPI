@@ -585,7 +585,7 @@ async function RuTor(query, page) {
                 'Id': data(element).find('a:eq(2)').attr('href').replace(/\/torrent\//g, "").replace(/\/.+/g, ""),
                 'Url': "https://rutor.info" + data(element).find('a:eq(2)').attr('href'),
                 'Torrent': "https:" + data(element).find('a:eq(0)').attr('href'),
-                'Magnet': data(element).find('a:eq(1)').attr('href'),
+                'Hash': data(element).find('a:eq(1)').attr('href').replace(/.+btih:|&.+/g,''),
                 'Size': data(element).find(`td:eq(${sizeIndex})`).text().trim(),
                 'Comments': comments,
                 'Seed': data(element).find('.green').text().trim(),
@@ -649,7 +649,7 @@ async function NoNameClubID(query) {
     }
     // Hash
     let Hash = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td.gensmall > a').attr('href').replace(/.+:/,'')
-    let Magnet = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td.gensmall > a').attr('href')
+    // let Magnet = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td.gensmall > a').attr('href')
     // Torrent
     let Torrent = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td.gensmall > span > b > a').attr('href')
     Torrent = `https://nnmclub.to/forum/${Torrent}`
@@ -777,7 +777,6 @@ async function NoNameClubID(query) {
     return {
         Name: Name,
         Hash: Hash,
-        Magnet: Magnet,
         Torrent: Torrent,
         IMDb_link: imdb,
         Kinopoisk_link: kp,
