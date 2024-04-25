@@ -25,7 +25,7 @@ Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torren
 | [RuTracker](https://rutracker.org)       | 2004    | 3       | Yes          | Yes | False        |
 | [Kinozal](https://kinozal.tv)            | 2006    | 2       | Yes          | Yes | True         |
 | [RuTor](https://rutor.info)              | 2009    | 2       | No           | Yes | True         |
-| [NoNameClub](https://nnmclub.to)         | 2006    | 1       | No           | Yes | False        |
+| [NoNameClub](https://nnmclub.to)         | 2006    | 1       | No           | Yes | True        |
 | [FastsTorrent](http://fasts-torrent.net) | 2022    | 1       | No           | No  | False        |
 
 ---
@@ -256,7 +256,7 @@ Only `GET`
 
 - Example of using Cyrillic characters in a search query from PowerShell:
 
-`Invoke-RestMethod "http://192.168.3.100:8443/api/kinozal/новобранец/0/2024"`
+`Invoke-RestMethod "http://192.168.3.100:8443/api/kinozal/Новичок (Новобранец)/0/2024"`
 
 ```PowerShell
 Name         : Новичок (Новобранец) (6 сезон: 1-6 серии из 13)
@@ -269,8 +269,8 @@ Url          : https://kinozal.tv/details.php?id=2023066
 Torrent      : https://dl.kinozal.tv/download.php?id=2023066
 Size         : 19.63 ГБ
 Comments     : 23
-Seeds        : 47
-Peers        : 26
+Seeds        : 37
+Peers        : 17
 Date         : 12.04.2024 23:43
 
 Name         : Новичок (Новобранец) (6 сезон: 1-6 серии из 10)
@@ -283,8 +283,8 @@ Url          : https://kinozal.tv/details.php?id=2022944
 Torrent      : https://dl.kinozal.tv/download.php?id=2022944
 Size         : 3.57 ГБ
 Comments     : 12
-Seeds        : 43
-Peers        : 37
+Seeds        : 42
+Peers        : 36
 Date         : 12.04.2024 08:31
 
 Name         : Новичок (Новобранец) (1-6 сезоны: 1-104 серии из 120)
@@ -298,7 +298,7 @@ Torrent      : https://dl.kinozal.tv/download.php?id=1656552
 Size         : 240.24 ГБ
 Comments     : 133
 Seeds        : 6
-Peers        : 18
+Peers        : 23
 Date         : 12.04.2024 01:09
 
 Name         : Новичок (Новобранец) (6 сезон: 1-4 серии из 13)
@@ -311,7 +311,7 @@ Url          : https://kinozal.tv/details.php?id=2026484
 Torrent      : https://dl.kinozal.tv/download.php?id=2026484
 Size         : 7.65 ГБ
 Comments     : 1
-Seeds        : 5
+Seeds        : 4
 Peers        : 0
 Date         : 30.03.2024 15:27
 ```
@@ -363,13 +363,13 @@ Date         : 30.03.2024 15:27
   "IMDb_link": "http://www.imdb.com/title/tt7587890/",
   "Kinopoisk_link": "http://www.kinopoisk.ru/film/1142153/",
   "IMDb_id": "7587890",
-  "KP_id": "1142153",
+  "Kinopoisk_id": "1142153",
   "Rating": "10 из 10 (1 голосов, самая низкая оценка - 10, самая высокая - 10)",
   "Category": "Зарубежные сериалы",
-  "Seeds": "8",
-  "Peers": "11",
-  "Seed_Date": "21-04-2024 16:19:09 (38 минут назад)",
-  "Add_Date": "10-04-2024 23:24:09  (11 день назад)",
+  "Seeds": "7",
+  "Peers": "6",
+  "Seed_Date": "25-04-2024 10:19:07 (59 минут назад)",
+  "Add_Date": "10-04-2024 23:24:09  (14 дня назад)",
   "Size": "3.39 GB (3638136322 Bytes)",
   "Files": [
     {
@@ -408,53 +408,168 @@ Date         : 30.03.2024 15:27
 [
   {
     "Name": "Новичок / The Rookie (2018) WEB-DL [H.264/1080p-LQ] (сезон 1, серии 1-20 из 20) TVShows",
+    "Id": "1259608",
     "Url": "https://nnmclub.to/forum/viewtopic.php?t=1259608",
     "Torrent": "https://nnmclub.to/forum/download.php?id=1018672",
     "Size": "51.2 GB",
     "Comments": "6",
     "Type": "Зарубежные сериалы",
-    "Type_Link": "https://nnmclub.to/forum/tracker.php?f=768&nm=the rookie 2018",
-    "Seed": "2",
+    "Seed": "1",
     "Peer": "0",
     "Date": "22.04.2019 12:09"
   },
   {
     "Name": "Новичок / The Rookie (2018) WEB-DL [H.264/1080p-LQ] (сезон 1, серии 1-20 из 20) LostFilm",
+    "Id": "1278446",
     "Url": "https://nnmclub.to/forum/viewtopic.php?t=1278446",
     "Torrent": "https://nnmclub.to/forum/download.php?id=1030902",
     "Size": "52.7 GB",
     "Comments": "6",
     "Type": "Зарубежные сериалы",
-    "Type_Link": "https://nnmclub.to/forum/tracker.php?f=768&nm=the rookie 2018",
-    "Seed": "4",
-    "Peer": "0",
+    "Seed": "3",
+    "Peer": "1",
     "Date": "20.04.2019 03:30"
   },
   {
     "Name": "Новичок / The Rookie (2018) WEB-DLRip (сезон 1, серии 1-20 из 20) LostFilm",
+    "Id": "1256703",
     "Url": "https://nnmclub.to/forum/viewtopic.php?t=1256703",
     "Torrent": "https://nnmclub.to/forum/download.php?id=1016767",
     "Size": "10.5 GB",
     "Comments": "31",
     "Type": "Зарубежные сериалы",
-    "Type_Link": "https://nnmclub.to/forum/tracker.php?f=768&nm=the rookie 2018",
-    "Seed": "11",
+    "Seed": "7",
     "Peer": "2",
     "Date": "19.04.2019 01:55"
   },
   {
     "Name": "Новобранец / The Rookie (2018) WEB-DLRip [H.264/720p] (сезон 1, серия 1-8 из 20) LostFilm (обновляемая)",
+    "Id": "1265982",
     "Url": "https://nnmclub.to/forum/viewtopic.php?t=1265982",
     "Torrent": "https://nnmclub.to/forum/download.php?id=1022722",
     "Size": "10.2 GB",
     "Comments": "6",
     "Type": "Архив Сериалов и Архив Старого многосерийного кино до 90-х",
-    "Type_Link": "https://nnmclub.to/forum/tracker.php?f=802&nm=the rookie 2018",
     "Seed": "0",
-    "Peer": "0",
+    "Peer": "1",
     "Date": "22.12.2018 07:00"
-  }
-]
+
+```
+
+- Search by id:
+
+`curl -s http://192.168.3.100:8443/api/nonameclub/1259608 | jq .`
+
+```json
+{
+  "Name": "Новичок / The Rookie (2018) WEB-DL [H.264/1080p-LQ] (сезон 1, серии 1-20 из 20) TVShows",
+  "Hash": "C4E5F91AB1F8BBDF79B51C6E6167CFC806E2AA2B",
+  "Magnet": "magnet:?xt=urn:btih:C4E5F91AB1F8BBDF79B51C6E6167CFC806E2AA2B",
+  "Torrent": "https://nnmclub.to/forum/download.php?id=1018672",
+  "IMDb_link": "https://www.imdb.com/title/tt7587890/?ref_=plg_rt_1",
+  "Kinopoisk_link": "https://www.kinopoisk.ru/film/1142153/",
+  "IMDb_id": "75878901",
+  "Kinopoisk_id": "1142153",
+  "Release": "США / eOne Television, Perfectmon Pictures, ABC Studios",
+  "Type": "драма, криминал",
+  "Directer": "Грег Биман, Адам Дэвидсон, Тоа Фрейзер",
+  "Actors": "Нэйтан Филлион, Алисса Диас, Титус Макин мл., Эрик Винтер, Ричард Т. Джонс, Мелисса О’Нил, Мерседес Масон, Эфтон Уильямсон, Марсей Монро, Дэвид ДеСантос и др.",
+  "Description": "Начинать с чистого листа всегда нелегко, особенно для уроженца маленького городка Джона Нолана, который после инцидента, перевернувшего его жизнь, решил воплотить в жизнь давнюю мечту и присоединиться к полиции Лос-Анджелеса. Возрастного новичка встречают с понятным скептицизмом, однако жизненный опыт, упорство и чувство юмора дают Джону преимущество",
+  "Duration": "00:43:00 серия",
+  "Video_Quality": "WEB-DL",
+  "Video": "AVC/H.264, 1920x1080 (16:9), ~7024 kbps",
+  "Audio": "Многоголосый закадровый, любительский (TVShows)",
+  "Registration": "22 Апр 2019 12:09:12",
+  "Rating": "4.7",
+  "Votes": "56",
+  "Size": "51.2 GB",
+  "Files": [
+    {
+      "Name": "The.Rookie.S01.1080p.TVShows",
+      "Size": "Directory"
+    },
+    {
+      "Name": "The.Rookie.S01E01.1080p.TVShows.mkv",
+      "Size": "2.42 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E02.1080p.TVShows.mkv",
+      "Size": "2.68 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E03.1080p.TVShows.mkv",
+      "Size": "2.61 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E04.1080p.TVShows.mkv",
+      "Size": "2.11 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E05.1080p.TVShows.mkv",
+      "Size": "2.16 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E06.1080p.TVShows.mkv",
+      "Size": "2.43 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E07.1080p.TVShows.mkv",
+      "Size": "2.23 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E08.1080p.TVShows.mkv",
+      "Size": "1.85 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E09.1080p.TVShows.mkv",
+      "Size": "2.03 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E10.1080p.TVShows.mkv",
+      "Size": "2.81 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E11.1080p.TVShows.mkv",
+      "Size": "3 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E12.1080p.TVShows.mkv",
+      "Size": "2.74 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E13.1080p.TVShows.mkv",
+      "Size": "2.88 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E14.1080p.TVShows.mkv",
+      "Size": "2.88 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E15.1080p.TVShows.mkv",
+      "Size": "2.68 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E16.1080p.TVShows.mkv",
+      "Size": "2.85 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E17.1080p.TVShows.mkv",
+      "Size": "2.68 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E18.1080p.TVShows.mkv",
+      "Size": "2.67 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E19.1080p.TVShows.mkv",
+      "Size": "2.76 GB"
+    },
+    {
+      "Name": "The.Rookie.S01E20.1080p.TVShows.mkv",
+      "Size": "2.7 GB"
+    }
+  ]
+}
 ```
 
 #### FastsTorrent

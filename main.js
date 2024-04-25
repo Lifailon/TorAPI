@@ -204,6 +204,9 @@ async function KinozalID(query) {
             return false
         }
     })
+    if (!imdb) {
+        imdb = ""
+    }
     // Kinopoisk
     let kp
     data('a[href*="kinopoisk.ru"]').each((index, element) => {
@@ -213,6 +216,9 @@ async function KinozalID(query) {
             return false
         }
     })
+    if (!kp) {
+        kp = ""
+    }
     const torrent = {
         'Original': (() => {
             // Обращаемся к элементу b по наименованию контейнера
@@ -443,13 +449,21 @@ async function RuTorFiles(query) {
     let hash = data('#download a').attr('href').replace(/magnet:\?xt=urn:btih:|\&dn=.+/g,'').trim()
     // IMDb
     let imdb
+    // Ищем во всех элементах "a" атрибут "href" который содержит строку "imdb.com"
     data('a[href*="imdb.com"]').each((index, element) => {
+        // Извлекаем значение атрибута href из текущего элемента
         const href = data(element).attr('href')
+        // Проверяем, содержит ли значение атрибута href строку "imdb.com"
         if (href.includes('imdb.com')) {
             imdb = href
-            return false // прерываем цикл после нахождения первого элемента
+            // Прерываем цикл после нахождения первого элемента
+            return false
         }
     })
+    // Если элемент содержащий imdb не найден, возвращаем пустой параметр
+    if (!imdb) {
+        imdb = ""
+    }
     // Kinopoisk
     let kp
     data('a[href*="kinopoisk.ru"]').each((index, element) => {
@@ -459,6 +473,9 @@ async function RuTorFiles(query) {
             return false
         }
     })
+    if (!kp) {
+        kp = ""
+    }
     // Определяем порядковый номер индекса с содержимым рейтинга и забираем остальные данные по порядку
     let index
     let test = data('#details > tbody > tr:nth-child(2) > td.header').text()
@@ -511,7 +528,7 @@ async function RuTorFiles(query) {
             IMDb_link: imdb,
             Kinopoisk_link: kp,
             IMDb_id: imdb.replace(/[^0-9]/g, ''),
-            KP_id: kp.replace(/[^0-9]/g, ''),
+            Kinopoisk_id: kp.replace(/[^0-9]/g, ''),
             Rating: rating,
             Category: category,
             Seeds: seeds,
@@ -591,12 +608,8 @@ async function RuTor(query, page) {
 }
 
 // NoNameClub ID
-
-// https://nnmclub.to/forum/filelst.php?attach_id=1306530
-
 async function NoNameClubID(query) {
     const url = `https://nnmclub.to/forum/viewtopic.php?t=${query}`
-    // const torrents = []
     let html
     try {
         const response = await axios.get(url, {
@@ -610,9 +623,180 @@ async function NoNameClubID(query) {
         return {'Result': `The ${error.hostname} server is not available`}
     }
     const data = cheerio.load(html)
-    let name = data('body > div.wrap > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > table:nth-child(2) > tbody > tr > td:nth-child(1) > h1 > a').text().trim()
+    let Name = data('body > div.wrap > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > table:nth-child(2) > tbody > tr > td:nth-child(1) > h1 > a').text().trim()
+    // Забираем imdb и kp если они существуют на странице
+    let imdb
+    data('a[href*="imdb.com"]').each((index, element) => {
+        const href = data(element).attr('href')
+        if (href.includes('imdb.com')) {
+            imdb = href
+            return false
+        }
+    })
+    if (!imdb) {
+        imdb = ""
+    }
+    let kp
+    data('a[href*="kinopoisk.ru"]').each((index, element) => {
+        const href = data(element).attr('href')
+        if (href.includes('kinopoisk.ru')) {
+            kp = href
+            return false
+        }
+    })
+    if (!kp) {
+        kp = ""
+    }
+    // Hash
+    let Hash = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td.gensmall > a').attr('href').replace(/.+:/,'')
+    let Magnet = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td.gensmall > a').attr('href')
+    // Torrent
+    let Torrent = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td.gensmall > span > b > a').attr('href')
+    Torrent = `https://nnmclub.to/forum/${Torrent}`
+    // Собираем данные со страницы с проверкой наличия по наименованию контейнеров
+    // Производство
+    const Release = (() => {
+        const element = data('tbody > tr:nth-child(1) > td > div > span:contains("Производство:")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Жанр
+    // Забираем все элементы "a" содержащие массив, разбиваем их с помощью запятой и объеденям в строку удаляя последнюю запятую
+    const Type = data('tbody > tr:nth-child(1) > td > div > a').map((index, element) => {
+        return data(element).text().trim()
+    }).get().join(', ').replace(/, $/,"")
+    // Режиссер
+    const Directer = (() => {
+        const element = data('tbody > tr:nth-child(1) > td > div > span:contains("Режиссер:")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Актеры
+    const Actors = (() => {
+        const element = data('tbody > tr:nth-child(1) > td > div > span:contains("Актеры:")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Описание
+    const Description = (() => {
+        const element = data('tbody > tr:nth-child(1) > td > div > span:contains("Описание:")')[0]
+        if (element) {
+            // Забираем второй элемент (после <br>)
+            const nextNode = element.nextSibling.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Продолжительность
+    const Duration = (() => {
+        const element = data('tbody > tr:nth-child(1) > td > div > span:contains("Продолжительность:")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Качество видео
+    const videoQuality = (() => {
+        const element = data('tbody > tr:nth-child(1) > td > div > span:contains("Качество видео:")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Перевод
+    const Audio = (() => {
+        const element = data('tbody > tr:nth-child(1) > td > div > span:contains("Перевод:")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Video
+    const Video = (() => {
+        const element = data('tbody > tr:nth-child(1) > td > div > span:contains("Видео:")')[0]
+        if (element) {
+            const nextNode = element.nextSibling
+            return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+        } else {
+            return ''
+        }
+    })()
+    // Статические данные (регистрация торрента, рейтинг и размер)
+    const Registration = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(3) > td:nth-child(2)').text().trim()
+    let Rating = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(5) > td:nth-child(2) > span > span:nth-child(4)').text().trim()
+    let ratingNum = Rating.replace(/\s.+/g,'')
+    let votesCount = Rating.replace(/.+: /g,'')
+    const Size = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(4) > td:nth-child(2) > span:nth-child(1)').text().trim()
+    // Получаем список файлов
+    let torrentId = Torrent.replace(/.+id=/,'')
+    let urlTorrentFiles = `https://nnmclub.to/forum/filelst.php?attach_id=${torrentId}`
+    const torrents = []
+    try {
+        const response = await axios.get(urlTorrentFiles, {
+            responseType: 'arraybuffer',
+            headers: headers
+        })
+        html =  iconv.decode(response.data, 'win1251')
+        console.log(`${getCurrentTime()} [Request] ${urlTorrentFiles}`)
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return {'Result': `The ${error.hostname} server is not available`}
+    }
+    const data_files = cheerio.load(html)
+    data_files('tr').each((_, element) => {
+        let sizeFile = data_files(element).find('td').eq(2).text().replace(/\(.+/g,'').trim()
+        // Проверяем, присутствует ли размер в значение столбца
+        if (sizeFile === 'Размер') {
+            sizeFile = 'Directory'
+        }
+        const torrent = {
+            'Name': data_files(element).find('td').eq(1).text().trim(),
+            'Size': sizeFile
+        }
+        torrents.push(torrent)
+    })
     return {
-        Name: name,
+        Name: Name,
+        Hash: Hash,
+        Magnet: Magnet,
+        Torrent: Torrent,
+        IMDb_link: imdb,
+        Kinopoisk_link: kp,
+        IMDb_id: imdb.replace(/[^0-9]/g, ''),
+        Kinopoisk_id: kp.replace(/[^0-9]/g, ''),
+        Release: Release,
+        Type: Type,
+        Directer: Directer,
+        Actors: Actors,
+        Description: Description,
+        Duration: Duration.replace(/~/,''),
+        Video_Quality: videoQuality,
+        Video: Video,
+        Audio: Audio,
+        Registration: Registration,
+        Rating: ratingNum,
+        Votes: votesCount,
+        Size: Size,
+        Files: torrents
     }
 }
 
@@ -652,7 +836,6 @@ async function NoNameClub(query, page) {
                 'Size': size,
                 'Comments': data(element).find(`.gensmall:eq(${sizeIndex + 1})`).text().trim(),
                 'Type': data(element).find('.gen').text().trim(),
-                'Type_Link': "https://nnmclub.to/forum/"+data(element).find('.gen').attr('href'),
                 'Seed': data(element).find('.seedmed').text().trim(),
                 'Peer': data(element).find('.leechmed').text().trim(),
                 // Забираем и преобразуем timestamp
