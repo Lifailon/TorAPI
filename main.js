@@ -279,7 +279,7 @@ async function RuTrackerID(query) {
             waitUntil: 'domcontentloaded'
         })
         // Ожидаем загрузку кнопки на странице
-        await page.waitForSelector('.lite');
+        await page.waitForSelector('.lite')
         // Метод выполнения JavaScript в контексте страницы браузера
         await page.evaluate(() => {
             // Находим кнопку по пути JavaScript (по id) и нажимаем на нее
@@ -452,7 +452,31 @@ async function KinozalID(query) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
         return {'Result': `The ${error.hostname} server is not available`}
     }
-    data2 = cheerio.load(html2)
+    dataFiles = cheerio.load(html2)
+    // Files
+    const torrentFiles = []
+    dataFiles('div.treeview ul li').each((index, element) => {
+        const fileName = dataFiles(element).text().trim()
+        // Получаем текст из дочернего элемента <i>
+        const fileSize = dataFiles(element).find('i').text().trim()
+        torrentFiles.push({
+            // Удаляем размер из названия (разбиваем на массив, удаляем последние 3 элемента и объединяем обратно)
+            name: fileName.split(' ').slice(0, -3).join(' '),
+            // Удаляем байты
+            size: fileSize.replace(/ \(.+/,'')
+        })
+    })
+    // Проверяем количество элементов в массиве
+    if (torrentFiles.length == 0) {
+        dataFiles('div.b.ing').each((index, element) => {
+            const fileName = dataFiles(element).text().trim()
+            const fileSize = dataFiles(element).find('i').text().trim()
+            torrentFiles.push({
+                name: fileName.split(' ').slice(0, -3).join(' '),
+                size: fileSize.replace(/ \(.+/,'')
+            })
+        })
+    }
     // IMDb
     let imdb
     data('a[href*="imdb.com"]').each((index, element) => {
@@ -500,7 +524,7 @@ async function KinozalID(query) {
                 return ''
             }
         })(),
-        'Hash': data2('li').eq(0).text().replace(/.+:/,'').trim(),
+        'Hash': dataFiles('li').eq(0).text().replace(/.+:/,'').trim(),
         'IMDb_link': imdb,
         'Kinopoisk_link': kp,
         'IMDB_id': imdb.replace(/[^0-9]/g, ''),
@@ -535,7 +559,8 @@ async function KinozalID(query) {
         'Votes': data('div.mn1_menu').find('span.floatright').eq(8).text().trim(),
         'Size': data('div.mn1_menu').find('span.floatright.green.n').eq(0).text().replace(/\(.+/,'').trim(),
         'Added': data('div.mn1_menu').find('span.floatright.green.n').eq(1).text().trim(),
-        'Update': data('div.mn1_menu').find('span.floatright.green.n').eq(2).text().trim()
+        'Update': data('div.mn1_menu').find('span.floatright.green.n').eq(2).text().trim(),
+        'Files': torrentFiles
     }
     torrents.push(torrent)
     if (torrents.length === 0) {

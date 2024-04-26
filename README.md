@@ -211,62 +211,62 @@ Only `GET`
 [
   {
     "Name": "Новичок (Новобранец) (6 сезон: 1-6 серии из 13)",
+    "Id": "2023066",
     "OriginalName": "The Rookie",
     "Year": "2024",
     "Language": "3 x ПМ, СТ",
     "Format": "WEB-DL (1080p)",
-    "Id": "2023066",
     "Url": "https://kinozal.tv/details.php?id=2023066",
     "Torrent": "https://dl.kinozal.tv/download.php?id=2023066",
     "Size": "19.63 ГБ",
-    "Comments": "22",
-    "Seeds": "40",
-    "Peers": "23",
+    "Comments": "23",
+    "Seeds": "32",
+    "Peers": "18",
     "Date": "12.04.2024 23:43"
   },
   {
     "Name": "Новичок (Новобранец) (6 сезон: 1-6 серии из 10)",
+    "Id": "2022944",
     "OriginalName": "The Rookie",
     "Year": "2024",
     "Language": "ПМ (LostFilm)",
     "Format": "WEB-DLRip",
-    "Id": "2022944",
     "Url": "https://kinozal.tv/details.php?id=2022944",
     "Torrent": "https://dl.kinozal.tv/download.php?id=2022944",
     "Size": "3.57 ГБ",
     "Comments": "12",
-    "Seeds": "32",
-    "Peers": "33",
+    "Seeds": "41",
+    "Peers": "28",
     "Date": "12.04.2024 08:31"
   },
   {
     "Name": "Новичок (Новобранец) (1-6 сезоны: 1-104 серии из 120)",
+    "Id": "1656552",
     "OriginalName": "The Rookie",
     "Year": "2018-2024",
     "Language": "ПМ (LostFilm)",
     "Format": "WEB-DLRip (1080p)",
-    "Id": "1656552",
     "Url": "https://kinozal.tv/details.php?id=1656552",
     "Torrent": "https://dl.kinozal.tv/download.php?id=1656552",
     "Size": "240.24 ГБ",
     "Comments": "133",
     "Seeds": "6",
-    "Peers": "15",
+    "Peers": "16",
     "Date": "12.04.2024 01:09"
   },
   {
     "Name": "Новичок (Новобранец) (6 сезон: 1-4 серии из 13)",
+    "Id": "2026484",
     "OriginalName": "The Rookie",
     "Year": "2024",
     "Language": "3 x ПМ, СТ",
     "Format": "WEB-DL (720p)",
-    "Id": "2026484",
     "Url": "https://kinozal.tv/details.php?id=2026484",
     "Torrent": "https://dl.kinozal.tv/download.php?id=2026484",
     "Size": "7.65 ГБ",
     "Comments": "1",
-    "Seeds": "4",
-    "Peers": "3",
+    "Seeds": "0",
+    "Peers": "1",
     "Date": "30.03.2024 15:27"
   }
 ]
@@ -336,41 +336,66 @@ Date         : 30.03.2024 15:27
 
 - Search by id:
 
-▶️ `curl -s http://192.168.3.100:8443/api/kinozal/1656552 | jq .`
+▶️ `curl -s http://192.168.3.100:8443/api/kinozal/2022944 | jq .`
 
 ```json
 [
   {
     "Original": "The Rookie",
     "Title": "Новичок (Новобранец)",
-    "Hash": "91FD5276F3429F253F952394DE6D3949581853D6",
+    "Hash": "E5B7183C1E987471F31186D3ADDA6E77176804D1",
     "IMDb_link": "https://www.imdb.com/title/tt7587890/",
     "Kinopoisk_link": "https://www.kinopoisk.ru/film/1142153",
     "IMDB_id": "7587890",
     "Kinopoisk_id": "1142153",
-    "Year": "2018-2024",
-    "Type": "Драма, криминал",
-    "Release": "США, eOne Television, ABC Studios",
-    "Directer": "Грег Биман, Адам Дэвидсон, Тоа Фрейзер",
-    "Actors": "Натан Филлион, Сара Шахи, Алисса Диас, Эли Лартер, Энни Вершинг, Хэролд Перрино, Ричард Т. Джонс, Титус Макин мл., Мелисса О`Нил, Эрик Винтер, Эфтон Уильямсон, Мекиа Кокс, Мерседес Масон, Шон Эшмор, Сет Грин",
+    "Year": "2024",
+    "Type": "Боевик, драма, криминал",
+    "Release": "США, eOne Television, Perfectmon Pictures, ABC Studios",
+    "Directer": "Тори Гаррет, Дэвид МакУиртер, Роберт Белла, Чери Ноулан, Джон Уэртас",
+    "Actors": "Натан Филлион, Шон Эшмор, Эрик Винтер, Мелисса О`Нил, Алисса Диас, Ричард Т. Джонс, Мекиа Кокс, Тру Валентино, Эрджей Смит, Каноа Гу, Майкл Трукко, Пейтон Лист (I), Брент Хафф",
     "Description": "Начинать с чистого листа всегда нелегко, особенно для уроженца маленького городка Джона Нолана, который после инцидента, перевернувшего его жизнь, решил воплотить в жизнь давнюю мечту и присоединиться к полиции Лос-Анджелеса. Возрастного новичка встречают с понятным скептицизмом, однако жизненный опыт, упорство и чувство юмора дают Джону преимущество.",
-    "Quality": "WEB-DLRip (1080p)",
-    "Video": "MPEG-4 AVC, ~ 6800 Кбит/с, 1920x1080",
-    "Audio": "Русский, английский (AC3, 2 ch, 384 Кбит/с)",
-    "Size": "240.24 ГБ",
-    "Duration": "104 х ~ 00:44:00",
+    "Quality": "WEB-DLRip",
+    "Video": "XviD, ~ 1600 Кбит/с, 720x400",
+    "Audio": "Русский, английский (АС3, 2 ch, 192 Кбит/с)",
+    "Size": "3.57 ГБ",
+    "Duration": "6 x ~ 00:44:00",
     "Transcript": "Профессиональный многоголосый",
-    "Seeds": "6",
-    "Peers": "15",
-    "Downloaded": "2721",
-    "Files": "104",
-    "Comments": "133",
+    "Seeds": "41",
+    "Peers": "28",
+    "Downloaded": "1001",
+    "Files": [
+      {
+        "name": "The.Rookie.S06E01.WEB-DLRip.RGzsRutracker.avi",
+        "size": "614 МБ"
+      },
+      {
+        "name": "The.Rookie.S06E02.WEB-DLRip.RGzsRutracker.avi",
+        "size": "616 МБ"
+      },
+      {
+        "name": "The.Rookie.S06E03.WEB-DLRip.RGzsRutracker.avi",
+        "size": "597 МБ"
+      },
+      {
+        "name": "The.Rookie.S06E04.WEB-DLRip.RGzsRutracker.avi",
+        "size": "615 МБ"
+      },
+      {
+        "name": "The.Rookie.S06E05.WEB-DLRip.RGzsRutracker.avi",
+        "size": "597 МБ"
+      },
+      {
+        "name": "The.Rookie.S06E06.WEB-DLRip.RGzsRutracker.avi",
+        "size": "615 МБ"
+      }
+    ],
+    "Comments": "12",
     "IMDb": "8.0",
     "Kinopoisk": "8.4",
-    "Kinozal": "8.3",
-    "Votes": "127",
-    "Added": "26 октября 2018 в 00:00",
-    "Update": "12 апреля 2024 в 01:09"
+    "Kinozal": "9.3",
+    "Votes": "18",
+    "Added": "23 февраля 2024 в 00:46",
+    "Update": "12 апреля 2024 в 08:31"
   }
 ]
 ```
