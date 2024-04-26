@@ -9,7 +9,7 @@ const listen_port = 8443
 
 // Использовать Puppeteer для получения списка файлов
 // Требуется стабильное VPN подключение (не работает в режиме split tunneling через Hotspot Shield)
-const RuTrackerFiles = false
+const RuTrackerFiles = true
 
 // Имя агента в заголовке запросов (вместо 'axios/0.21.4')
 const headers = {
@@ -604,8 +604,10 @@ async function Kinozal(query, page, year) {
                 'Torrent': "https://dl.kinozal.tv" + data(element).find('.nam a').attr('href').replace(/details/, 'download'),
                 'Size': s.eq(1).text().trim(),
                 'Comments': s.eq(0).text().trim(),
-                'Seeds': data(element).find('.sl_s').text().trim(), // раздает
-                'Peers': data(element).find('.sl_p').text().trim(), // качает
+                // Раздает (Seeds)
+                'Seeds': data(element).find('.sl_s').text().trim(),
+                // Качает (Peers)
+                'Peers': data(element).find('.sl_p').text().trim(),
                 'Date': `${date[0]} ${date[2]}`
             }
             torrents.push(torrent)
