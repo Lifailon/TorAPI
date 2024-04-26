@@ -1,5 +1,10 @@
+<p align="center">
+  <img src="https://github.com/Lifailon/TorAPI/blob/main/logo.png" alt="Image alt">
+</p>
 
-<h2 align='center'>🎞️ TorAPI 🎞️</h2>
+---
+
+<!--<h2 align='center'>🎞️ TorAPI 🎞️</h2>-->
 
 <p align="center">
 <a href="https://github.com/nodejs/node"><img title="Node" src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white"></a>
