@@ -7,6 +7,10 @@ const puppeteer = require('puppeteer')
 // Configuration
 const listen_port = 8443
 
+// Использовать Puppeteer для получения списка файлов
+// Требуется стабильное VPN подключение (не работает в режиме split tunneling через Hotspot Shield)
+const RuTrackerFiles = false
+
 // Имя агента в заголовке запросов (вместо 'axios/0.21.4')
 const headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 Win64 x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
@@ -98,6 +102,7 @@ function unixTimestamp(timestamp) {
 // RuTracker ID
 async function RuTrackerID(query) {
     const url = `https://rutracker.org/forum/viewtopic.php?t=${query}`
+    const torrents = []
     let html
     try {
         const response = await axios.get(url, {
@@ -242,79 +247,89 @@ async function RuTrackerID(query) {
             return ''
         }
     })()
-    //  // Puppeteer
-    //  const torrents = []
-    //  // Запускаем браузер
-    //  const browser = await puppeteer.launch({
-    //      // Скрыть отображение браузера (по умолчанию)
-    //      headless: false
-    //  })
-    //  // Открываем новую пустую страницу 
-    //  const page = await browser.newPage()
-    //  // Устанавливаем Cookie
-    //  const cookies = [
-    //      { name: '_ym_d', value: '1713608104', domain: '.rutracker.org', path: '/' },
-    //      { name: '_ym_isad', value: '1', domain: '.rutracker.org', path: '/' },
-    //      { name: '_ym_uid', value: '1675005035139917782', domain: '.rutracker.org', path: '/' },
-    //      { name: 'bb_guid', value: 'OX8UGBHMi1DW', domain: '.rutracker.org', path: '/' },
-    //      { name: 'bb_session', value: '0-44590272-Sp8wQfjonpx37QjDuZUD', domain: '.rutracker.org', path: '/' },
-    //      { name: 'bb_ssl', value: '1', domain: '.rutracker.org', path: '/' },
-    //      { name: 'bb_t', value: 'a%3A6%3A%7Bi%3A6487040%3Bi%3A1711832640%3Bi%3A6489937%3Bi%3A1712340699%3Bi%3A6496948%3Bi%3A1709891767%3Bi%3A6387499%3Bi%3A1690356948%3Bi%3A6387500%3Bi%3A1689726770%3Bi%3A6358163%3Bi%3A1684231793%3B%7D', domain: '.rutracker.org', path: '/' },
-    //      { name: 'cf_clearance', value: 'Nru732Vi6LTb.p_fm1orml.24cTnJtFB6eQ2Qn1dw6g-1714060753-1.0.1.1-nWAl13hHBBGeHcJNVjYB5VcI65OaR26C46BKP6Wyrkj6n2k4Eu2SQ.17JdRXKcM.lnsEFGPHGxDaktfSzmFVZw', domain: '.rutracker.org', path: '/' }
-    //  ];
-    //  for (const cookie of cookies) {
-    //      await page.setCookie(cookie)
-    //  }
-    //  // Открываем страницу
-    //  // await page.goto(`https://rutracker.org/forum/viewtopic.php?t=6489937`, {timeout: 60000, waitUntil: 'domcontentloaded'})
-    //  await page.goto(url,{
-    //      // Ожиданием загрузку страницы 60 секунд
-    //      timeout: 60000,
-    //      // Ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
-    //      waitUntil: 'domcontentloaded'
-    //  })
-    //  await page.evaluate(() => {
-    //      // Находим кнопку по пути JavaScript (по id) и нажимаем на нее
-    //      // document.querySelector("#tor-filelist-btn").click()
-    //      // Находим все кпноки (по классу)
-    //      const buttons = document.querySelectorAll('.lite')
-    //      // Проходимся по найденным кнопкам
-    //      buttons.forEach(button => {
-    //          // Проверяем, содержит ли кнопка текст "Список файлов" и нажимаем на нее
-    //          if (button.textContent.includes('Список файлов')) {
-    //              button.click()
-    //          }
-    //      })
-    //  })
-    //  // Дожидаемся загрузки нового элемента
-    //  // const elementHandle = await page.waitForSelector('#tor-filelist')
-    //  // Находим элемент с идентификатором #tor-filelist или по классу .med.ftree-windowed
-    //  await page.waitForFunction(() => {
-    //      const element = document.querySelector('#tor-filelist')
-    //      // Проверяем, что элемент существует и его содержимое не содержит текст загрузки
-    //      return element && !element.textContent.includes("Загружается...")
-    //  }, {
-    //      // Ожидать результат 30 секунд
-    //      timeout: 30000,
-    //      // Проверка каждые 50мс (по умолчанию 100мс)
-    //      polling: 50
-    //  })
-    //  // Забираем результат после успешной проверки
-    //  const elementTable = await page.evaluate(() => {
-    //      const element = document.querySelector('#tor-filelist')
-    //      return element ? element : null
-    //  })
-    //  // Закрываем браузер
-    //  await browser.close()
-    //  const $ = cheerio.load(elementTable)
-    //  $('li.file').each((index, element) => {
-    //      const fileName = $(element).find('b').text().trim()
-    //      const fileSize = $(element).find('s').text().trim()
-    //      torrents.push({
-    //          name: fileName,
-    //          size: fileSize
-    //      })
-    //  })
+    // Puppeteer
+    if (RuTrackerFiles == true) {
+        // Запускаем браузер
+        const browser = await puppeteer.launch({
+            // Скрыть отображение браузера (по умолчанию)
+            headless: true
+        })
+        // Открываем новую пустую страницу 
+        const page = await browser.newPage()
+        // Устанавливаем Cookie
+        const cookies = [
+            { name: '_ym_d', value: '1713608104', domain: '.rutracker.org', path: '/' },
+            { name: '_ym_isad', value: '1', domain: '.rutracker.org', path: '/' },
+            { name: '_ym_uid', value: '1675005035139917782', domain: '.rutracker.org', path: '/' },
+            { name: 'bb_guid', value: 'OX8UGBHMi1DW', domain: '.rutracker.org', path: '/' },
+            { name: 'bb_session', value: '0-44590272-Sp8wQfjonpx37QjDuZUD', domain: '.rutracker.org', path: '/' },
+            { name: 'bb_ssl', value: '1', domain: '.rutracker.org', path: '/' },
+            { name: 'bb_t', value: 'a%3A6%3A%7Bi%3A6487040%3Bi%3A1711832640%3Bi%3A6489937%3Bi%3A1712340699%3Bi%3A6496948%3Bi%3A1709891767%3Bi%3A6387499%3Bi%3A1690356948%3Bi%3A6387500%3Bi%3A1689726770%3Bi%3A6358163%3Bi%3A1684231793%3B%7D', domain: '.rutracker.org', path: '/' },
+            { name: 'cf_clearance', value: 'Nru732Vi6LTb.p_fm1orml.24cTnJtFB6eQ2Qn1dw6g-1714060753-1.0.1.1-nWAl13hHBBGeHcJNVjYB5VcI65OaR26C46BKP6Wyrkj6n2k4Eu2SQ.17JdRXKcM.lnsEFGPHGxDaktfSzmFVZw', domain: '.rutracker.org', path: '/' }
+        ]
+        for (const cookie of cookies) {
+            await page.setCookie(cookie)
+        }
+        // Открываем страницу
+        // await page.goto(`https://rutracker.org/forum/viewtopic.php?t=6489937`, {timeout: 60000, waitUntil: 'domcontentloaded'})
+        await page.goto(url,{
+            // Ожиданием загрузку страницы 60 секунд
+            timeout: 60000,
+            // Ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
+            waitUntil: 'domcontentloaded'
+        })
+        // Ожидаем загрузку кнопки на странице
+        await page.waitForSelector('.lite');
+        // Метод выполнения JavaScript в контексте страницы браузера
+        await page.evaluate(() => {
+            // Находим кнопку по пути JavaScript (по id) и нажимаем на нее
+            document.querySelector("#tor-filelist-btn").click()
+            // Находим все кпноки (по классу или id)
+            // const buttons = document.querySelectorAll('.lite')
+            // const buttons = document.querySelectorAll('#tor-filelist-btn')
+            // Проходимся по найденным кнопкам
+            // buttons.forEach(button => {
+            //     // Проверяем, содержит ли кнопка текст "Список файлов" и нажимаем на нее
+            //     if (button.textContent.includes('Список файлов')) {
+            //         button.click()
+            //     }
+            // })
+        })
+
+        // Дожидаемся загрузки нового элемента
+        // const elementHandle = await page.waitForSelector('#tor-filelist')
+        // Находим элемент с идентификатором #tor-filelist или по классу .med.ftree-windowed
+        await page.waitForFunction(() => {
+            // Первый аргумент функция с условием, которая должна вернуть true
+            const element = document.querySelector('#tor-filelist')
+            // Проверяем, что элемент существует и его содержимое не содержит текст загрузки
+            return element && !element.textContent.includes("загружается...")
+        }, 
+        // Опции
+        {
+            // Ожидать результат 30 секунд (по умолчанию)
+            timeout: 30000,
+            // Проверка каждые 50мс (по умолчанию 100мс)
+            polling: 50
+        })
+        // После успешной проверки возвращаем результат, используя метод textContent, innerText (массив) или innerHTML (включая HTML-разметку внутри элемента) или null
+        const elementTable = await page.evaluate(() => {
+            const element = document.querySelector('#tor-filelist')
+            return element ? element.innerHTML : null
+        })
+        // Закрываем браузер
+        await browser.close()
+        // Заполняем массив
+        const dataFiles = cheerio.load(elementTable)
+        dataFiles('li.file').each((index, element) => {
+            const fileName = dataFiles(element).find('b').text().trim()
+            const fileSize = dataFiles(element).find('s').text().trim()
+            torrents.push({
+                name: fileName,
+                size: fileSize
+            })
+        })
+    }
     return {
         Name: Name,
         Hash: Hash,
@@ -333,7 +348,7 @@ async function RuTrackerID(query) {
         Description: Description.replace(/:\s/g,''),
         Video_Quality: videoQuality.replace(/:\s/g,''),
         Video: Video.replace(/:\s/g,''),
-        // Files: torrents
+        Files: torrents
     }
 }
 

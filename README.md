@@ -25,13 +25,13 @@ There are 2 types of queries:
 
 ### 🔗 Full list of available providers:
 
-| Provider name                            | Release | Mirrors | Registration | VPN | Search by ID | Torrent content |
-| -                                        | -       | -       | -            | -   | -            | -               |
-| [RuTracker](https://rutracker.org)       | 2004    | 3       | Yes*         | Yes | Yes          | No              |
-| [Kinozal](https://kinozal.tv)            | 2006    | 2       | Yes*         | Yes | Yes          | Yes             |
-| [RuTor](https://rutor.info)              | 2009    | 2       | No           | Yes | Yes          | Yes             |
-| [NoNameClub](https://nnmclub.to)         | 2006    | 1       | No           | Yes | Yes          | Yes             |
-| [FastsTorrent](http://fasts-torrent.net) | 2022    | 1       | No           | No  | No           | -               |
+| Provider name                            | Release | Mirrors | Registration | VPN | Search by ID |
+| -                                        | -       | -       | -            | -   | -            |
+| [RuTracker](https://rutracker.org)       | 2004    | 3       | Yes*         | Yes | Yes          |
+| [Kinozal](https://kinozal.tv)            | 2006    | 2       | Yes*         | Yes | Yes          |
+| [RuTor](https://rutor.info)              | 2009    | 2       | No           | Yes | Yes          |
+| [NoNameClub](https://nnmclub.to)         | 2006    | 1       | No           | Yes | Yes          |
+| [FastsTorrent](http://fasts-torrent.net) | 2022    | 1       | No           | No  | No           |
 
 \* Registration is required only when downloading a torrent file via a direct link. All distributions when searching by ID contain hashes (magnet-links), allowing you to download the content and form a torrent file using a torrent-client.
 
@@ -171,7 +171,33 @@ Only `GET`
   "Actors": "Нэйтан Филлион, Мелисса О’Нил, Эрик Винтер, Дженна Деван, Шон Эшмор, Лиззет Чавез, Мекиа Кокс, Алисса Диас, Тру Валентино, Ричард Т. Джонс ,Бриджет Риган, Трой Кастанеда, Мэллори Томпсон, Алекс Элин Гойко, Констанс Эджума",
   "Description": "Начинать с чистого листа всегда нелегко, особенно для уроженца маленького городка Джона Нолана, который после перевернувшего его жизнь случая решил воплотить в жизнь давнюю мечту и вступить в ряды полиции Лос-Анджелеса. Возрастного новичка встречают с понятным скептицизмом, однако жизненный опыт, упорство и чувство юмора дают Джону преимущество.",
   "Video_Quality": "WEB-DLRip",
-  "Video": "XviD, 720x400 (16:9), 23.976 fps, 1600 Kbps"
+  "Video": "XviD, 720x400 (16:9), 23.976 fps, 1600 Kbps",
+  "Files": [
+    {
+      "name": "The.Rookie.S06E01.WEB-DLRip.RGzsRutracker.avi",
+      "size": "614.25 MB"
+    },
+    {
+      "name": "The.Rookie.S06E02.WEB-DLRip.RGzsRutracker.avi",
+      "size": "615.56 MB"
+    },
+    {
+      "name": "The.Rookie.S06E03.WEB-DLRip.RGzsRutracker.avi",
+      "size": "596.67 MB"
+    },
+    {
+      "name": "The.Rookie.S06E04.WEB-DLRip.RGzsRutracker.avi",
+      "size": "614.88 MB"
+    },
+    {
+      "name": "The.Rookie.S06E05.WEB-DLRip.RGzsRutracker.avi",
+      "size": "596.57 MB"
+    },
+    {
+      "name": "The.Rookie.S06E06.WEB-DLRip.RGzsRutracker.avi",
+      "size": "614.89 MB"
+    }
+  ]
 }
 ```
 
