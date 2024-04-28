@@ -55,6 +55,15 @@ npm start
 
 The server will start on the port `8443` (default).
 
+### 🎉 Docker
+
+```shell
+git clone https://github.com/Lifailon/TorAPI
+cd TorAPI
+docker build -t torapi .
+docker run -p 8443:8443 torapi
+```
+
 ---
 
 ## 📚 Doc
@@ -91,7 +100,7 @@ Only `GET`
 
 #### RuTracker
 
-▶️ `curl -s http://192.168.3.100:8443/api/rutracker/the+rookie+2024/0 | jq .`
+▶️ `curl -s http://172.19.37.240:8443/api/rutracker/the+rookie+2024/0 | jq .`
 
 ```json
 [
@@ -156,7 +165,7 @@ Only `GET`
 
 - Search by id:
 
-`curl -s http://192.168.3.100:8443/api/rutracker/6489937 | jq .`
+`curl -s http://172.19.37.240:8443/api/rutracker/6489937 | jq .`
 
 ```json
 {
@@ -210,7 +219,7 @@ Only `GET`
 
 - Search by title:
 
-▶️ `curl -s http://192.168.3.100:8443/api/kinozal/the+rookie/0/2024 | jq .`
+▶️ `curl -s http://172.19.37.240:8443/api/kinozal/the+rookie/0/2024 | jq .`
 
 ```json
 [
@@ -279,7 +288,7 @@ Only `GET`
 
 - Example of using Cyrillic characters in a search query from PowerShell:
 
-`Invoke-RestMethod "http://192.168.3.100:8443/api/kinozal/Новичок (Новобранец)/0/2024"`
+`Invoke-RestMethod "http://172.19.37.240:8443/api/kinozal/Новичок (Новобранец)/0/2024"`
 
 ```PowerShell
 Name         : Новичок (Новобранец) (6 сезон: 1-6 серии из 13)
@@ -341,7 +350,7 @@ Date         : 30.03.2024 15:27
 
 - Search by id:
 
-▶️ `curl -s http://192.168.3.100:8443/api/kinozal/2022944 | jq .`
+▶️ `curl -s http://172.19.37.240:8443/api/kinozal/2022944 | jq .`
 
 ```json
 [
@@ -409,7 +418,7 @@ Date         : 30.03.2024 15:27
 
 - Search by title:
 
-▶️ `curl -s http://192.168.3.100:8443/api/rutor/the+rookie+2024/0 | jq .`
+▶️ `curl -s http://172.19.37.240:8443/api/rutor/the+rookie+2024/0 | jq .`
 
 ```json
 [
@@ -442,7 +451,7 @@ Date         : 30.03.2024 15:27
 
 - Search by id:
 
-▶️ `curl -s http://192.168.3.100:8443/api/rutor/970650 | jq .`
+▶️ `curl -s http://172.19.37.240:8443/api/rutor/970650 | jq .`
 
 ```json
 {
@@ -491,7 +500,7 @@ Date         : 30.03.2024 15:27
 
 #### NoNameClub
 
-▶️ `curl -s http://192.168.3.100:8443/api/nonameclub/the+rookie+2018/0 | jq .`
+▶️ `curl -s http://172.19.37.240:8443/api/nonameclub/the+rookie+2018/0 | jq .`
 
 ```json
 [
@@ -547,7 +556,7 @@ Date         : 30.03.2024 15:27
 
 - Search by id:
 
-`curl -s http://192.168.3.100:8443/api/nonameclub/1259608 | jq .`
+`curl -s http://172.19.37.240:8443/api/nonameclub/1259608 | jq .`
 
 ```json
 {
@@ -662,7 +671,7 @@ Date         : 30.03.2024 15:27
 
 #### FastsTorrent
 
-▶️ `Invoke-RestMethod "http://192.168.3.100:8443/api/faststorrent/новичок/0"`
+▶️ `Invoke-RestMethod "http://172.19.37.240:8443/api/faststorrent/новичок/0"`
 
 ```PowerShell
 Name                                                                Size      Torrent
@@ -679,7 +688,7 @@ Name                                                                Size      To
 Новичок (3 сезон: 1 серии из 20) (2021) WEBRip 720p | Ultradox      982.68 Mb http://fasts-torrent.net/download/389405/torrent/-3-1-20-2021-webrip-720p-ultradox/
 ```
 
-▶️ `Invoke-RestMethod "http://192.168.3.100:8443/api/faststorrent/засланец из космоса/0"`
+▶️ `Invoke-RestMethod "http://172.19.37.240:8443/api/faststorrent/засланец из космоса/0"`
 
 ```PowerShell
 Name                                                                           Size      Torrent
@@ -692,4 +701,24 @@ Name                                                                           S
 Засланец из космоса (1 сезон: 1-10 серия из 10) (2021) WEBRip | BaibaKo        5.48 Gb   http://fasts-torrent.net/download/396225/torrent/-1-1-10-10-2021-webrip-baibako/
 Засланец из космоса (1 сезон: 1 серии из 10) (2021) WEBRip 720p | Ultradox     1.01 Gb   http://fasts-torrent.net/download/391194/torrent/-1-1-10-2021-webrip-720p-ultradox/
 Засланец из космоса (1 сезон: 1 серии из 10) (2021) WEBRip | Ultradox          650.75 Mb http://fasts-torrent.net/download/391193/torrent/-1-1-10-2021-webrip-ultradox/
+```
+
+### ⏬ Save torrent file
+
+To save the torrent file on your computer, you can use one of the following constructs:
+
+- Linux:
+
+```bash
+id=970650
+url=$(curl -s "http://172.19.37.240:8443/api/rutor/$id" | jq -r .Torrent)
+curl -s $url --output ~/downloads/$id.torrent
+```
+
+- Windows:
+
+```PowerShell
+$id = 970650
+$url = $(Invoke-RestMethod "http://172.19.37.240:8443/api/rutor/$id").Torrent
+Invoke-RestMethod $url -OutFile "$home\Downloads\$id.torrent"
 ```
