@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  torapi:
+    image: lifailon/torapi:latest
+    container_name: TorAPI
+    volumes:
+      - torapi:/rotapi
+    ports:
+      - "8443:8443"
+    restart: unless-stopped
+volumes:
+  torapi:

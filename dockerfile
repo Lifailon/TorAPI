@@ -3,5 +3,6 @@ WORKDIR /torapi
 COPY package.json ./
 RUN npm install
 COPY . .
-EXPOSE 8443
+ENV PORT=8443
+EXPOSE $PORT
 CMD ["npm", "start"]

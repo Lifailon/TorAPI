@@ -12,9 +12,10 @@
 </p>
 
 <p align="center">
-<a href="https://github.com/Lifailon/TorAPI"><img title="Language"src="https://img.shields.io/github/languages/top/lifailon/TorAPI?logo=javascript&color=gold"></a>
-<a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=Git&label=version&color=blue"></a>
-<a href="https://github.com/Lifailon/TorAPI"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=GitHub&color=green"></a>
+<a href="https://github.com/Lifailon/TorAPI"><img title="Language"src="https://img.shields.io/github/languages/top/lifailon/TorAPI?logo=javascript&color=gold&label=JavaScript"></a>
+<a href="https://hub.docker.com/repository/docker/lifailon/torapi/general"><img title="Language"src="https://img.shields.io/docker/image-size/lifailon/torapi?label=Docker%20Image"></a>
+<a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=Git&color=blue&label=Version"></a>
+<a href="https://github.com/Lifailon/TorAPI/blob/main/LICENSE"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=GitHub&color=green&label=License"></a>
 </p>
 
 Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torrent files and other information by movie title, TV series or id. This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) ✨ (all code is completely rewritten) for Russian-speaking torrent providers.
@@ -42,7 +43,7 @@ There are 2 types of queries:
 
 ---
 
-## 🚀 Start
+## 🚀 Install
 
 Clone the repository, install dependencies and start the server:
 
@@ -55,13 +56,21 @@ npm start
 
 The server will start on the port `8443` (default).
 
-### 🎉 Docker
+## 🐳 Docker
+
+Upload the image and run the container from the [Docker Hub](https://hub.docker.com/repository/docker/lifailon/torapi/general):
+
+```shell
+docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
+```
+
+Or use project files to build from [dockerfile](https://github.com/Lifailon/TorAPI/blob/main/dockerfile):
 
 ```shell
 git clone https://github.com/Lifailon/TorAPI
 cd TorAPI
 docker build -t torapi .
-docker run -p 8443:8443 torapi
+docker run -d --name TorAPI -p 8443:8443 torapi
 ```
 
 ---
@@ -80,13 +89,13 @@ Only `GET`
 
 #### Parameters:
 
-| Name       | Mandatory | Type  | Description                                                                                          |
-| -          | -         | -     | -                                                                                                    |
-| *PROVIDER* | True      | *str* | Provider name (corresponds to the [list of providers](#-full-list-of-available-providers)) or *ALL*. | 
+| Name       | Mandatory | Type  | Description                                                                                                                                                                    |
+| -          | -         | -     | -                                                                                                                                                                              |
+| *PROVIDER* | True      | *str* | Provider name (corresponds to the [list of providers](#-full-list-of-available-providers)) or *ALL*.                                                                           | 
 | *TITLE*    | True*     | *str* | *Name* of the movie or TV series. Cyrillic characters are supported. You can use spaces if the query is enclosed in inverted commas, or use an addition character (+) instead. |
-| *ID*       | True*     | *str* | Get more information about a film or TV series by the ID of the specified provider.                  |
-| *PAGE*     | False     | *int* | Page number from which the response will be received (`0 to 20`).                                    |
-| *YEAR*     | False     | *int* | Year of release of the film or TV series for filtering (supported only by the provider *Kinozal*).      |
+| *ID*       | True*     | *str* | Get more information about a film or TV series by the ID of the specified provider.                                                                                            |
+| *PAGE*     | False     | *int* | Page number from which the response will be received (`0 to 20`).                                                                                                              |
+| *YEAR*     | False     | *int* | Year of release of the film or TV series for filtering (supported only by the provider *Kinozal*).                                                                             |
 
 \* You can use one of two parameters in the endpoint path: *TITLE* or *ID*.
 
