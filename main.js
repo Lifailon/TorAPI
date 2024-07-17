@@ -1,28 +1,115 @@
-const express   = require('express')
-const cheerio   = require('cheerio')
-const axios     = require('axios')
-const iconv     = require('iconv-lite')
-const puppeteer = require('puppeteer')
+const express           = require('express')
+const axios             = require('axios')
+const cheerio           = require('cheerio')
+const puppeteer         = require('puppeteer')
+const iconv             = require('iconv-lite')
+const yargs             = require('yargs')
 
-// Configuration
-const listen_port = 8443
+// Параметры запуска
+// npm start -- --port 2024
+// npm start -- --port 2024 --proxy --proxyAddress 192.168.3.100 --proxyPort 9090
+// npm start -- --port 2024 --proxy --proxyAddress 192.168.3.100 --proxyPort 9090 --username TorAPI --password TorAPI
+const { hideBin } = require('yargs/helpers')
+const argv = yargs(hideBin(process.argv))
+    .option('port', {
+        alias: 'p',
+        describe: 'Express server port',
+        type: 'number',
+        default: 8443
+    })
+    .option('proxy', {
+        type: 'boolean',
+        description: 'Use proxy server for Axios requests',
+        default: true // false
+    })
+    .option('proxyAddress', {
+        type: 'string',
+        description: 'Address proxy server',
+        default: "192.168.3.99"
+    })
+    .option('proxyPort', {
+        type: 'number',
+        description: 'Port proxy server',
+        default: 9090 // 8080
+    })
+    .option('username', {
+        type: 'string',
+        description: 'Username for proxy server',
+        default: "TorAPI"
+    })
+    .option('password', {
+        type: 'string',
+        description: 'Password for proxy server',
+        default: "TorAPI"
+    })
+    .argv
+
+// Создание экземпляра Axios с использованием Proxy
+const createAxiosInstance = (proxy, proxyConf, proxyAuth) => {
+    const config = {}
+    if (proxy && proxyConf) {
+        config.proxy = proxyConf
+        // Передать авторизационные данные через заголовок запроса
+        // if (proxyAuth) {
+        //     const encodedAuth = Buffer.from(`${proxyAuth.username}:${proxyAuth.password}`).toString('base64')
+        //     config.headers = {
+        //         'Proxy-Authorization': `Basic ${encodedAuth}`
+        //     }
+        // }
+    }
+    return axios.create(config)
+}
+
+// Конфигурация Proxy
+const proxy = argv.proxy
+const proxyConf = {
+    host: argv.proxyAddress,
+    port: argv.proxyPort,
+    protocol: argv.proxyProtocol
+}
+
+// Передать авторизационные данные в конфигурацию Proxy
+if (argv.username && argv.password) {
+    proxyConf.auth ={
+        username: argv.username,
+        password: argv.password
+    }
+}
+
+// Передать авторизационные данные через заголовок запроса
+const proxyAuth = {
+    username: argv.username,
+    password: argv.password
+}
+
+// Использовать параметры для создания экземпляра Axios
+const axiosInstance = createAxiosInstance(proxy, proxyConf, proxyAuth)
+
+// Example
+axiosInstance.get('https://kinozal.tv')
+    .then(response => {
+        console.log(response.data)
+    })
+    .catch(error => {
+        console.error(error)
+    })
 
 // Использовать Puppeteer для получения списка файлов
-// Требуется стабильное VPN подключение (не работает в режиме split tunneling через Hotspot Shield)
+// Требуется стабильное VPN подключение (не работает в режиме Split Tunneling через Hotspot Shield)
 const RuTrackerFiles = true
 
-// Имя агента в заголовке запросов (вместо 'axios/0.21.4')
+// Имя агента в заголовке запросов (вместо axios)
 const headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 Win64 x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 }
 
-// Cookie для автроризации на сайте RuTracker
+// Cookie для автроризации на сайте RuTracker (требуется для получения info hash списка файлов)
 const headers_RuTracker = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 Win64 x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Cookie': 'bb_guid=OX8UGBHMi1DW; bb_ssl=1; bb_session=0-44590272-Sp8wQfjonpx37QjDuZUD; bb_t=a%3A5%3A%7Bi%3A6489937%3Bi%3A1709887615%3Bi%3A6496948%3Bi%3A1709891767%3Bi%3A6387499%3Bi%3A1690356948%3Bi%3A6387500%3Bi%3A1689726770%3Bi%3A6358163%3Bi%3A1684231793%3B%7D; _ym_uid=1675005035139917782; _ym_d=1697464991; _ym_isad=1; cf_clearance=3BsUm3qZLnU1DbxOWHDKEYQiqF3txcKZtck9A3SZOcs-1711117293-1.0.1.1-MoRPAGq.5IDiUQJnZGAcp5fTSwniloZIDKnaG2UR4kTy.g4TY3cGcdSDQDuRRgSGGzju3rLynXLvc1Vbzurl8A'
 }
 
-// Cookie для автроризации на сайте Kinozal
+// Cookie для автроризации на сайте Kinozal (требуется для получения info hash списка файлов)
 const headers_Kinozal = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 Win64 x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Cookie': 'uid=20631917; pass=KOJ4DJf1VS; chash=4GPagC3lyL; _ma=bd5e8639-b468-45ee-b985-a37d236b69d9; _ym_uid=1676045081150190531; adrcid=AyOHe7Bo41EA-dljunU4d4g; adtech_uid=e2dc7224-a3e7-4668-bb1a-e66540433903%3Akinozal.tv; top100_id=t1.7627570.1643663093.1685299403536; last_visit=1685288911412%3A%3A1685299711412; t3_sid_7627570=s1.1160736113.1685299403538.1685299712381.1.18; _ac_oid=e8d96ae4a3e0ddf7f1dc00adeb090382%3A1685329226280; _buzz_fpc=JTdCJTIycGF0aCUyMiUzQSUyMiUyRiUyMiUyQyUyMmRvbWFpbiUyMiUzQSUyMi5raW5vemFsLnR2JTIyJTJDJTIyZXhwaXJlcyUyMiUzQSUyMlRodSUyQyUyMDEyJTIwU2VwJTIwMjAyNCUyMDIwJTNBMzAlM0ExMiUyMEdNVCUyMiUyQyUyMlNhbWVTaXRlJTIyJTNBJTIyTGF4JTIyJTJDJTIydmFsdWUlMjIlM0ElMjIlN0IlNUMlMjJ1ZnAlNUMlMjIlM0ElNUMlMjJmNTFiNzlkYzk1MDgxMGM0NTMwMzhmNWNmMWU5ZDQwYiU1QyUyMiUyQyU1QyUyMmJyb3dzZXJWZXJzaW9uJTVDJTIyJTNBJTVDJTIyMTE2LjAlNUMlMjIlN0QlMjIlN0Q=; _ym_d=1701461342; la_page_depth=%7B%22last%22%3A%22https%3A%2F%2Fkinozal.tv%2Fbrowse.php%3Fs%3Dcastle%26g%3D0%26c%3D0%26v%3D0%26d%3D2020%26w%3D0%26t%3D0%26f%3D0%22%2C%22depth%22%3A400%7D; page_load_uuid=c29f5be0-f58b-49c2-bb75-90ba88038c6d'
@@ -37,7 +124,7 @@ function getCurrentTime() {
     return `${hours}:${minutes}:${seconds}`
 }
 
-// Функция для преобразования номера страницы (для RuTracker и NoNameClub)
+// Функция преобразования номера страницы (для RuTracker и NoNameClub)
 function getPage(page) {
     const pages = {
         '0' : '0',
@@ -1344,12 +1431,12 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
             )
         }
     }
-    // Если провайдер не обнаружен, отвечаем
+    // Отвечаем, если провайдер не найден 
     else {
         return res.status(400).send(`Provider ${provider} not found`)
     }
 })
 
-const port = process.env.PORT || listen_port
+const port = argv.port
 web.listen(port)
 console.log(`Server is running on port: ${port}`)

@@ -14,7 +14,8 @@
         "express": "^4.17.1",
         "iconv-lite": "^0.6.3",
         "nodemon": "^2.0.4",
-        "puppeteer": "^22.6.0"
+        "puppeteer": "^22.6.0",
+        "yargs": "^17.7.2"
     },
     "description": "Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torrent files and other information by movie title, series or id",
     "repository": {
