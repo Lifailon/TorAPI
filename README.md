@@ -308,68 +308,6 @@ Only `GET`
 ]
 ```
 
-- Example of using Cyrillic characters in a search query from PowerShell:
-
-`Invoke-RestMethod "http://172.19.37.240:8443/api/kinozal/Новичок (Новобранец)/0/2024"`
-
-```PowerShell
-Name         : Новичок (Новобранец) (6 сезон: 1-6 серии из 13)
-Id           : 2023066
-OriginalName : The Rookie
-Year         : 2024
-Language     : 3 x ПМ, СТ
-Format       : WEB-DL (1080p)
-Url          : https://kinozal.tv/details.php?id=2023066
-Torrent      : https://dl.kinozal.tv/download.php?id=2023066
-Size         : 19.63 ГБ
-Comments     : 23
-Seeds        : 37
-Peers        : 17
-Date         : 12.04.2024 23:43
-
-Name         : Новичок (Новобранец) (6 сезон: 1-6 серии из 10)
-Id           : 2022944
-OriginalName : The Rookie
-Year         : 2024
-Language     : ПМ (LostFilm)
-Format       : WEB-DLRip
-Url          : https://kinozal.tv/details.php?id=2022944
-Torrent      : https://dl.kinozal.tv/download.php?id=2022944
-Size         : 3.57 ГБ
-Comments     : 12
-Seeds        : 42
-Peers        : 36
-Date         : 12.04.2024 08:31
-
-Name         : Новичок (Новобранец) (1-6 сезоны: 1-104 серии из 120)
-Id           : 1656552
-OriginalName : The Rookie
-Year         : 2018-2024
-Language     : ПМ (LostFilm)
-Format       : WEB-DLRip (1080p)
-Url          : https://kinozal.tv/details.php?id=1656552
-Torrent      : https://dl.kinozal.tv/download.php?id=1656552
-Size         : 240.24 ГБ
-Comments     : 133
-Seeds        : 6
-Peers        : 23
-Date         : 12.04.2024 01:09
-
-Name         : Новичок (Новобранец) (6 сезон: 1-4 серии из 13)
-Id           : 2026484
-OriginalName : The Rookie
-Year         : 2024
-Language     : 3 x ПМ, СТ
-Format       : WEB-DL (720p)
-Url          : https://kinozal.tv/details.php?id=2026484
-Torrent      : https://dl.kinozal.tv/download.php?id=2026484
-Size         : 7.65 ГБ
-Comments     : 1
-Seeds        : 4
-Peers        : 0
-Date         : 30.03.2024 15:27
-```
-
 - Search by id:
 
 ▶️ `curl -s http://172.19.37.240:8443/api/kinozal/2022944 | jq .`
@@ -578,7 +516,7 @@ Date         : 30.03.2024 15:27
 
 - Search by id:
 
-`curl -s http://172.19.37.240:8443/api/nonameclub/1259608 | jq .`
+▶️ `curl -s http://172.19.37.240:8443/api/nonameclub/1259608 | jq .`
 
 ```json
 {
@@ -710,26 +648,11 @@ Name                                                                Size      To
 Новичок (3 сезон: 1 серии из 20) (2021) WEBRip 720p | Ultradox      982.68 Mb http://fasts-torrent.net/download/389405/torrent/-3-1-20-2021-webrip-720p-ultradox/
 ```
 
-▶️ `Invoke-RestMethod "http://172.19.37.240:8443/api/faststorrent/засланец из космоса/0"`
-
-```PowerShell
-Name                                                                           Size      Torrent
-----                                                                           ----      -------
-Засланец из космоса (3 сезон: 1-8 серии из 12) (2024) WEBRip | RuDub           4,28 ГБ   http://fasts-torrent.net/download/451290/torrent/-3-1-8-12-2024-webrip-rudub/
-Засланец из космоса (3 сезон: 1-2 серия из 12)  (2024)  WEB-DLRip |  LostFilm  1,24 ГБ   http://fasts-torrent.net/download/448905/torrent/-3-1-2-12-2024-web-dlrip-lostfilm/
-Засланец из космоса (1 сезон: 1-10 серии из 10) (2021) WEBRip | WestFilm       5.45 Gb   http://fasts-torrent.net/download/396204/torrent/-1-1-10-10-2021-webrip-westfilm/
-Засланец из космоса (1 сезон: 1-10 серии из 10) (2021) WEBRip 720p | WestFilm  7.23 Gb   http://fasts-torrent.net/download/396205/torrent/-1-1-10-10-2021-webrip-720p-westfilm/
-Засланец из космоса (1 сезон: 1-10 серии из 10) (2021) WEBRip 1080p | WestFilm 29.54 Gb  http://fasts-torrent.net/download/396206/torrent/-1-1-10-10-2021-webrip-1080p-westfilm/
-Засланец из космоса (1 сезон: 1-10 серия из 10) (2021) WEBRip | BaibaKo        5.48 Gb   http://fasts-torrent.net/download/396225/torrent/-1-1-10-10-2021-webrip-baibako/
-Засланец из космоса (1 сезон: 1 серии из 10) (2021) WEBRip 720p | Ultradox     1.01 Gb   http://fasts-torrent.net/download/391194/torrent/-1-1-10-2021-webrip-720p-ultradox/
-Засланец из космоса (1 сезон: 1 серии из 10) (2021) WEBRip | Ultradox          650.75 Mb http://fasts-torrent.net/download/391193/torrent/-1-1-10-2021-webrip-ultradox/
-```
-
-### Save torrent file
+### 🧲 Save torrent file
 
 To save the torrent file on your computer, you can use one of the following constructs:
 
-- Linux:
+- **Linux** (*Bash*):
 
 ```bash
 id=970650
@@ -737,7 +660,7 @@ url=$(curl -s "http://172.19.37.240:8443/api/rutor/$id" | jq -r .Torrent)
 curl -s $url --output ~/downloads/$id.torrent
 ```
 
-- Windows:
+- **Windows** (*PowerShell*):
 
 ```PowerShell
 $id = 970650
