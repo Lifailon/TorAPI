@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/Lifailon/TorAPI/blob/main/logo.png" alt="Image alt">
+  <img src="logo.png" alt="Image alt">
 </p>
 
 ---
@@ -12,10 +12,9 @@
 </p>
 
 <p align="center">
-<a href="https://github.com/Lifailon/TorAPI"><img title="Language"src="https://img.shields.io/github/languages/top/lifailon/TorAPI?logo=javascript&color=gold&label=JavaScript"></a>
+<a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=Git&color=gold&label=Version"></a>
 <a href="https://hub.docker.com/repository/docker/lifailon/torapi/general"><img title="Language"src="https://img.shields.io/docker/image-size/lifailon/torapi?label=Docker%20Image"></a>
-<a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=Git&color=blue&label=Version"></a>
-<a href="https://github.com/Lifailon/TorAPI/blob/main/LICENSE"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=GitHub&color=green&label=License"></a>
+<a href="https://github.com/Lifailon/TorAPI/blob/main/LICENSE"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=GitHub&color=white&label=License"></a>
 </p>
 
 Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torrent files and other information by movie title, TV series or id. This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) ✨ (all code is completely rewritten) for Russian-speaking torrent providers.
@@ -54,7 +53,25 @@ npm install
 npm start
 ```
 
-The server will start on the port `8443` (default).
+By default, the server will be launched on port `8443`.
+
+You can specify a different port:
+
+```js
+npm start -- --port 2024
+```
+
+Use a proxy for all requests:
+
+```js
+npm start -- --port 2024 --proxyAddress 192.168.3.99 --proxyPort 9090
+```
+
+If authorization on a proxy server is required:
+
+```js
+npm start -- --port 2024 --proxyAddress 192.168.3.99 --proxyPort 9090 --username TorAPI --password TorAPI
+```
 
 ## 🐳 Docker
 
@@ -64,7 +81,7 @@ Upload the image and run the container from the [Docker Hub](https://hub.docker.
 docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
 ```
 
-Or use project files to build from [dockerfile](https://github.com/Lifailon/TorAPI/blob/main/dockerfile):
+You can use project files to build from [dockerfile](dockerfile):
 
 ```shell
 git clone https://github.com/Lifailon/TorAPI
@@ -72,6 +89,8 @@ cd TorAPI
 docker build -t torapi .
 docker run -d --name TorAPI -p 8443:8443 torapi
 ```
+
+Or use [docker-compose](docker-compose.yml).
 
 ---
 
@@ -100,12 +119,6 @@ Only `GET`
 \* You can use one of two parameters in the endpoint path: *TITLE* or *ID*.
 
 #### Requests and responses:
-
-- [RuTracker](#rutracker)
-- [Kinozal](#kinozal)
-- [RuTor](#rutor)
-- [NoNameClub](#nonameclub)
-- [FastsTorrent](#faststorrent)
 
 #### RuTracker
 
@@ -712,7 +725,7 @@ Name                                                                           S
 Засланец из космоса (1 сезон: 1 серии из 10) (2021) WEBRip | Ultradox          650.75 Mb http://fasts-torrent.net/download/391193/torrent/-1-1-10-2021-webrip-ultradox/
 ```
 
-### ⏬ Save torrent file
+### Save torrent file
 
 To save the torrent file on your computer, you can use one of the following constructs:
 

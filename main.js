@@ -1,14 +1,12 @@
-const express           = require('express')
-const axios             = require('axios')
-const cheerio           = require('cheerio')
-const puppeteer         = require('puppeteer')
-const iconv             = require('iconv-lite')
-const yargs             = require('yargs')
+const express   = require('express')
+const axios     = require('axios')
+const proxy     = require('https-proxy-agent')
+const cheerio   = require('cheerio')
+const puppeteer = require('puppeteer')
+const iconv     = require('iconv-lite')
+const yargs     = require('yargs')
 
 // Параметры запуска
-// npm start -- --port 2024
-// npm start -- --port 2024 --proxy --proxyAddress 192.168.3.100 --proxyPort 9090
-// npm start -- --port 2024 --proxy --proxyAddress 192.168.3.100 --proxyPort 9090 --username TorAPI --password TorAPI
 const { hideBin } = require('yargs/helpers')
 const argv = yargs(hideBin(process.argv))
     .option('port', {
@@ -17,82 +15,37 @@ const argv = yargs(hideBin(process.argv))
         type: 'number',
         default: 8443
     })
-    .option('proxy', {
-        type: 'boolean',
-        description: 'Use proxy server for Axios requests',
-        default: true // false
-    })
     .option('proxyAddress', {
         type: 'string',
-        description: 'Address proxy server',
-        default: "192.168.3.99"
+        description: 'Address proxy server'
     })
     .option('proxyPort', {
         type: 'number',
-        description: 'Port proxy server',
-        default: 9090 // 8080
+        description: 'Port proxy server'
     })
     .option('username', {
         type: 'string',
-        description: 'Username for proxy server',
-        default: "TorAPI"
+        description: 'Username for proxy server'
     })
     .option('password', {
         type: 'string',
-        description: 'Password for proxy server',
-        default: "TorAPI"
+        description: 'Password for proxy server'
     })
     .argv
 
-// Создание экземпляра Axios с использованием Proxy
-const createAxiosInstance = (proxy, proxyConf, proxyAuth) => {
+// Создание экземпляра Axios с использованием конфигурации Proxy
+const createAxiosProxy = () => {
     const config = {}
-    if (proxy && proxyConf) {
-        config.proxy = proxyConf
-        // Передать авторизационные данные через заголовок запроса
-        // if (proxyAuth) {
-        //     const encodedAuth = Buffer.from(`${proxyAuth.username}:${proxyAuth.password}`).toString('base64')
-        //     config.headers = {
-        //         'Proxy-Authorization': `Basic ${encodedAuth}`
-        //     }
-        // }
+    if (argv.proxyAddress && argv.proxyPort) {
+        if (argv.username && argv.password) {
+            config.httpsAgent = new proxy.HttpsProxyAgent(`http://${argv.username}:${argv.password}@${argv.proxyAddress}:${argv.proxyPort}`)
+        } else {
+            config.httpsAgent = new proxy.HttpsProxyAgent(`http://${argv.proxyAddress}:${argv.proxyPort}`)
+        }
     }
     return axios.create(config)
 }
-
-// Конфигурация Proxy
-const proxy = argv.proxy
-const proxyConf = {
-    host: argv.proxyAddress,
-    port: argv.proxyPort,
-    protocol: argv.proxyProtocol
-}
-
-// Передать авторизационные данные в конфигурацию Proxy
-if (argv.username && argv.password) {
-    proxyConf.auth ={
-        username: argv.username,
-        password: argv.password
-    }
-}
-
-// Передать авторизационные данные через заголовок запроса
-const proxyAuth = {
-    username: argv.username,
-    password: argv.password
-}
-
-// Использовать параметры для создания экземпляра Axios
-const axiosInstance = createAxiosInstance(proxy, proxyConf, proxyAuth)
-
-// Example
-axiosInstance.get('https://kinozal.tv')
-    .then(response => {
-        console.log(response.data)
-    })
-    .catch(error => {
-        console.error(error)
-    })
+const axiosProxy = createAxiosProxy()
 
 // Использовать Puppeteer для получения списка файлов
 // Требуется стабильное VPN подключение (не работает в режиме Split Tunneling через Hotspot Shield)
@@ -127,16 +80,16 @@ function getCurrentTime() {
 // Функция преобразования номера страницы (для RuTracker и NoNameClub)
 function getPage(page) {
     const pages = {
-        '0' : '0',
-        '1' : '50',
-        '2' : '100',
-        '3' : '150',
-        '4' : '200',
-        '5' : '250',
-        '6' : '300',
-        '7' : '350',
-        '8' : '400',
-        '9' : '450',
+        '0': '0',
+        '1': '50',
+        '2': '100',
+        '3': '150',
+        '4': '200',
+        '5': '250',
+        '6': '300',
+        '7': '350',
+        '8': '400',
+        '9': '450',
         '10': '500',
         '11': '550',
         '12': '600',
@@ -192,7 +145,7 @@ async function RuTrackerID(query) {
     const torrents = []
     let html
     try {
-        const response = await axios.get(url, {
+        const response = await axiosProxy.get(url, {
             responseType: 'arraybuffer',
             headers: headers_RuTracker
         })
@@ -200,12 +153,12 @@ async function RuTrackerID(query) {
         console.log(`${getCurrentTime()} [Request] ${url}`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return {'Result': `The ${error.hostname} server is not available`}
+        return { 'Result': `The ${error.hostname} server is not available` }
     }
     const data = cheerio.load(html)
-    let Name =  data('a#topic-title').text().trim()
+    let Name = data('a#topic-title').text().trim()
     // Hash
-    let Hash = data('a[href*="magnet:?xt=urn:btih:"]').attr('href').replace(/.+btih:|&.+/g,'')
+    let Hash = data('a[href*="magnet:?xt=urn:btih:"]').attr('href').replace(/.+btih:|&.+/g, '')
     // Получение ссылки на загрузку торрент файла (по поиску части содержимого атрибута и по классу необходимы Cookie)
     // let Torrent = data('a[href*="dl.php?t="]').attr('href')
     // let Torrent = data('a.dl-stub.dl-link.dl-topic').attr('href')
@@ -359,7 +312,7 @@ async function RuTrackerID(query) {
         }
         // Открываем страницу
         // await page.goto(`https://rutracker.org/forum/viewtopic.php?t=6489937`, {timeout: 60000, waitUntil: 'domcontentloaded'})
-        await page.goto(url,{
+        await page.goto(url, {
             // Ожиданием загрузку страницы 60 секунд
             timeout: 60000,
             // Ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
@@ -391,14 +344,14 @@ async function RuTrackerID(query) {
             const element = document.querySelector('#tor-filelist')
             // Проверяем, что элемент существует и его содержимое не содержит текст загрузки
             return element && !element.textContent.includes("загружается...")
-        }, 
-        // Опции
-        {
-            // Ожидать результат 30 секунд (по умолчанию)
-            timeout: 30000,
-            // Проверка каждые 50мс (по умолчанию 100мс)
-            polling: 50
-        })
+        },
+            // Опции
+            {
+                // Ожидать результат 30 секунд (по умолчанию)
+                timeout: 30000,
+                // Проверка каждые 50мс (по умолчанию 100мс)
+                polling: 50
+            })
         // После успешной проверки возвращаем результат, используя метод textContent, innerText (массив) или innerHTML (включая HTML-разметку внутри элемента) или null
         const elementTable = await page.evaluate(() => {
             const element = document.querySelector('#tor-filelist')
@@ -425,16 +378,16 @@ async function RuTrackerID(query) {
         Kinopoisk_link: kp,
         IMDb_id: imdb.replace(/[^0-9]/g, ''),
         Kinopoisk_id: kp.replace(/[^0-9]/g, ''),
-        Year: Year.replace(/:\s/g,''),
-        Release: Release.replace(/:\s/g,''),
-        Type: Type.replace(/:\s/g,''),
-        Duration: Duration.replace(/:\s/g,'').replace(/~ |~/g,''),
-        Audio: Audio.replace(/:\s/g,''),
-        Directer: Directer.replace(/:\s/g,''),
-        Actors: Actors.replace(/:\s/g,''),
-        Description: Description.replace(/:\s/g,''),
-        Video_Quality: videoQuality.replace(/:\s/g,''),
-        Video: Video.replace(/:\s/g,''),
+        Year: Year.replace(/:\s/g, ''),
+        Release: Release.replace(/:\s/g, ''),
+        Type: Type.replace(/:\s/g, ''),
+        Duration: Duration.replace(/:\s/g, '').replace(/~ |~/g, ''),
+        Audio: Audio.replace(/:\s/g, ''),
+        Directer: Directer.replace(/:\s/g, ''),
+        Actors: Actors.replace(/:\s/g, ''),
+        Description: Description.replace(/:\s/g, ''),
+        Video_Quality: videoQuality.replace(/:\s/g, ''),
+        Video: Video.replace(/:\s/g, ''),
         Files: torrents
     }
 }
@@ -456,7 +409,7 @@ async function RuTracker(query, page) {
     for (let i = 0; i < urls.length; i++) {
         const url = `${urls[i]}${query}&start=${p}`
         try {
-            const response = await axios.get(url, {
+            const response = await axiosProxy.get(url, {
                 responseType: 'arraybuffer',
                 headers: headers_RuTracker
             })
@@ -471,7 +424,7 @@ async function RuTracker(query, page) {
         }
     }
     if (!checkUrl) {
-        return {'Result': `Server is not available`}
+        return { 'Result': `Server is not available` }
     }
     const data = cheerio.load(html)
     data('table .forumline tbody tr').each((_, element) => {
@@ -479,12 +432,12 @@ async function RuTracker(query, page) {
         if (checkData.length > 0) {
             const torrent = {
                 'Name': data(element).find('.row4 .wbr .med').text().trim(),
-                'Id': data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g,''),
+                'Id': data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g, ''),
                 'Url': "https://rutracker.net/forum/" + data(element).find('.row4 .wbr .med').attr('href'),
-                'Torrent': "https://rutracker.net/forum/dl.php?t=" + data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g,''),
+                'Torrent': "https://rutracker.net/forum/dl.php?t=" + data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g, ''),
                 // Забираем первые два значения (размер и тип данных)
                 /// 'Size': data(element).find('.row4.small:eq(0)').text().trim().split(' ').slice(0,1).join(' '),
-                'Size': data(element).find('a.small.tr-dl.dl-stub').text().trim().split(' ').slice(0,1).join(' '),
+                'Size': data(element).find('a.small.tr-dl.dl-stub').text().trim().split(' ').slice(0, 1).join(' '),
                 'Downloads': data(element).find('td.row4.small.number-format').text().trim(),
                 // Проверяем проверенный ли торрент и изменяем формат вывода
                 'Checked': data(element).find('td.row1.t-ico').text().trim() === '√' ? 'True' : 'False',
@@ -502,7 +455,7 @@ async function RuTracker(query, page) {
         }
     })
     if (torrents.length === 0) {
-        return {'Result': 'No matches were found for your title'}
+        return { 'Result': 'No matches were found for your title' }
     } else {
         return torrents
     }
@@ -514,7 +467,7 @@ async function KinozalID(query) {
     const torrents = []
     let html
     try {
-        const response = await axios.get(url, {
+        const response = await axiosProxy.get(url, {
             responseType: 'arraybuffer',
             headers: headers
         })
@@ -522,14 +475,14 @@ async function KinozalID(query) {
         console.log(`${getCurrentTime()} [Request] ${url}`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return {'Result': `The ${error.hostname} server is not available`}
+        return { 'Result': `The ${error.hostname} server is not available` }
     }
     const data = cheerio.load(html)
     // Hash and files
     const url_get_srv_details = `https://kinozal.tv/get_srv_details.php?id=${query}&action=2`
     let html2
     try {
-        const response = await axios.get(url_get_srv_details, {
+        const response = await axiosProxy.get(url_get_srv_details, {
             responseType: 'arraybuffer',
             headers: headers_Kinozal
         })
@@ -537,7 +490,7 @@ async function KinozalID(query) {
         console.log(`${getCurrentTime()} [Request] ${url}`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return {'Result': `The ${error.hostname} server is not available`}
+        return { 'Result': `The ${error.hostname} server is not available` }
     }
     dataFiles = cheerio.load(html2)
     // Files
@@ -550,7 +503,7 @@ async function KinozalID(query) {
             // Удаляем размер из названия (разбиваем на массив, удаляем последние 3 элемента и объединяем обратно)
             name: fileName.split(' ').slice(0, -3).join(' '),
             // Удаляем байты
-            size: fileSize.replace(/ \(.+/,'')
+            size: fileSize.replace(/ \(.+/, '')
         })
     })
     // Проверяем количество элементов в массиве
@@ -560,7 +513,7 @@ async function KinozalID(query) {
             const fileSize = dataFiles(element).find('i').text().trim()
             torrentFiles.push({
                 name: fileName.split(' ').slice(0, -3).join(' '),
-                size: fileSize.replace(/ \(.+/,'')
+                size: fileSize.replace(/ \(.+/, '')
             })
         })
     }
@@ -611,7 +564,7 @@ async function KinozalID(query) {
                 return ''
             }
         })(),
-        'Hash': dataFiles('li').eq(0).text().replace(/.+:/,'').trim(),
+        'Hash': dataFiles('li').eq(0).text().replace(/.+:/, '').trim(),
         'IMDb_link': imdb,
         'Kinopoisk_link': kp,
         'IMDB_id': imdb.replace(/[^0-9]/g, ''),
@@ -624,11 +577,11 @@ async function KinozalID(query) {
         'Actors': data('div.mn1_content').find('.lnks_toprs').eq(1).text().trim(),
         // 'Description': data('div.mn1_content').find('.bx1.justify:eq(2) p b').eq(0)[0].nextSibling.nodeValue.trim(),
         'Description': data('div#main div.content div.mn_wrap div.mn1_content div.bx1.justify p')
-        .clone()       // Клонируем элемент, чтобы не модифицировать исходный
-        .children('b') // Выбираем все дочерние элементы 'b'
-        .remove()      // Удаляем их
-        .end()         // Возвращаемся к исходному элементу
-        .text().trim(),
+            .clone()       // Клонируем элемент, чтобы не модифицировать исходный
+            .children('b') // Выбираем все дочерние элементы 'b'
+            .remove()      // Удаляем их
+            .end()         // Возвращаемся к исходному элементу
+            .text().trim(),
         'Quality': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(0)[0].nextSibling.nodeValue.trim(),
         'Video': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(1)[0].nextSibling.nodeValue.trim(),
         'Audio': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(2)[0].nextSibling.nodeValue.trim(),
@@ -642,16 +595,16 @@ async function KinozalID(query) {
         'Comments': data('div.mn1_menu').find('span.floatright').eq(4).text().trim(),
         'IMDb': data('div.mn1_menu').find('span.floatright').eq(5).text().trim(),
         'Kinopoisk': data('div.mn1_menu').find('span.floatright').eq(6).text().trim(),
-        'Kinozal': data('div.mn1_menu').find('span.floatright').eq(7).text().trim().replace(/\s.+/,''),
+        'Kinozal': data('div.mn1_menu').find('span.floatright').eq(7).text().trim().replace(/\s.+/, ''),
         'Votes': data('div.mn1_menu').find('span.floatright').eq(8).text().trim(),
-        'Size': data('div.mn1_menu').find('span.floatright.green.n').eq(0).text().replace(/\(.+/,'').trim(),
+        'Size': data('div.mn1_menu').find('span.floatright.green.n').eq(0).text().replace(/\(.+/, '').trim(),
         'Added': data('div.mn1_menu').find('span.floatright.green.n').eq(1).text().trim(),
         'Update': data('div.mn1_menu').find('span.floatright.green.n').eq(2).text().trim(),
         'Files': torrentFiles
     }
     torrents.push(torrent)
     if (torrents.length === 0) {
-        return {'Result': 'No matches were found for your title'}
+        return { 'Result': 'No matches were found for your title' }
     } else {
         return torrents
     }
@@ -669,7 +622,7 @@ async function Kinozal(query, page, year) {
     for (const u of urls) {
         const url = `${u}${query}&page=${page}&d=${year}`
         try {
-            const response = await axios.get(url, {
+            const response = await axiosProxy.get(url, {
                 responseType: 'arraybuffer',
                 headers: headers
             })
@@ -682,7 +635,7 @@ async function Kinozal(query, page, year) {
         }
     }
     if (!checkUrl) {
-        return {'Result': `Server is not available`}
+        return { 'Result': `Server is not available` }
     }
     // Загружаем HTML-страницу с помощью Cheerio
     const data = cheerio.load(html)
@@ -707,12 +660,12 @@ async function Kinozal(query, page, year) {
             const torrent = {
                 // Заполняем параметры из заголовка
                 'Name': arrTitle[0].trim(),
-                'Id': torrentName.attr('href').replace(/.+id=/,''),
+                'Id': torrentName.attr('href').replace(/.+id=/, ''),
                 'OriginalName': arrTitle[1].trim(),
                 'Year': arrTitle[2].trim(),
                 'Language': arrTitle[3].trim(),
                 'Format': arrTitle[4],
-                'Url': "https://kinozal.tv"+torrentName.attr('href'),
+                'Url': "https://kinozal.tv" + torrentName.attr('href'),
                 'Torrent': "https://dl.kinozal.tv" + data(element).find('.nam a').attr('href').replace(/details/, 'download'),
                 'Size': s.eq(1).text().trim(),
                 'Comments': s.eq(0).text().trim(),
@@ -726,7 +679,7 @@ async function Kinozal(query, page, year) {
         }
     })
     if (torrents.length === 0) {
-        return {'Result': 'No matches were found for your title'}
+        return { 'Result': 'No matches were found for your title' }
     } else {
         return torrents
     }
@@ -741,7 +694,7 @@ async function RuTorFilesPuppeteer(query) {
     })
     const page = await browser.newPage()
     // Открываем страницу с ожиданием загрузки 60 сек
-    await page.goto(`https://rutor.info/torrent/${query}`,{
+    await page.goto(`https://rutor.info/torrent/${query}`, {
         timeout: 60000,
         waitUntil: 'domcontentloaded' // ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
     })
@@ -790,7 +743,7 @@ async function RuTorFilesPuppeteer(query) {
         torrents.push(torrent)
     }
     if (torrents.length === 0) {
-        return {'Result': 'No matches were found for your ID'}
+        return { 'Result': 'No matches were found for your ID' }
     } else {
         return torrents
     }
@@ -803,7 +756,7 @@ async function RuTorFiles(query) {
     let html
     const url = `https://rutor.info/torrent/${query}`
     try {
-        const response = await axios.get(url, {
+        const response = await axiosProxy.get(url, {
             responseType: 'arraybuffer',
             headers: headers
         })
@@ -811,13 +764,13 @@ async function RuTorFiles(query) {
         console.log(`${getCurrentTime()} [Request] ${url}`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return {'Result': `The ${error.hostname} server is not available`}
+        return { 'Result': `The ${error.hostname} server is not available` }
     }
     const data = cheerio.load(html)
     let name = data('#all h1').text().trim()
     let torrent_url = 'https:' + data('#download a:eq(1)').attr('href').trim()
     // Hash
-    let hash = data('#download a').attr('href').replace(/magnet:\?xt=urn:btih:|\&dn=.+/g,'').trim()
+    let hash = data('#download a').attr('href').replace(/magnet:\?xt=urn:btih:|\&dn=.+/g, '').trim()
     // IMDb
     let imdb
     // Ищем во всех элементах "a" атрибут "href" который содержит строку "imdb.com"
@@ -861,15 +814,15 @@ async function RuTorFiles(query) {
         test = false
     }
     let rating = data(`#details > tbody > tr:nth-child(${index}) > td:nth-child(2)`).text()
-    let category = data(`#details > tbody > tr:nth-child(${index+1}) > td:nth-child(2) > a`).text()
-    let seeds = data(`#details > tbody > tr:nth-child(${index+2}) > td:nth-child(2)`).text()
-    let peers = data(`#details > tbody > tr:nth-child(${index+3}) > td:nth-child(2)`).text()
-    let seed_date = data(`#details > tbody > tr:nth-child(${index+4}) > td:nth-child(2)`).text()
-    let add_date = data(`#details > tbody > tr:nth-child(${index+5}) > td:nth-child(2)`).text()
-    let size = data(`#details > tbody > tr:nth-child(${index+6}) > td:nth-child(2)`).text().replace(/\s+/g,' ')
+    let category = data(`#details > tbody > tr:nth-child(${index + 1}) > td:nth-child(2) > a`).text()
+    let seeds = data(`#details > tbody > tr:nth-child(${index + 2}) > td:nth-child(2)`).text()
+    let peers = data(`#details > tbody > tr:nth-child(${index + 3}) > td:nth-child(2)`).text()
+    let seed_date = data(`#details > tbody > tr:nth-child(${index + 4}) > td:nth-child(2)`).text()
+    let add_date = data(`#details > tbody > tr:nth-child(${index + 5}) > td:nth-child(2)`).text()
+    let size = data(`#details > tbody > tr:nth-child(${index + 6}) > td:nth-child(2)`).text().replace(/\s+/g, ' ')
     // Получаем список файлов
     try {
-        const response = await axios.get(url_files, {
+        const response = await axiosProxy.get(url_files, {
             responseType: 'arraybuffer',
             headers: headers
         })
@@ -878,19 +831,19 @@ async function RuTorFiles(query) {
         console.log(`${getCurrentTime()} [Request] ${url_files}`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return {'Result': `The ${error.hostname} server is not available`}
+        return { 'Result': `The ${error.hostname} server is not available` }
     }
     // Оборачиваем строки таблицы в тег <table> для правильного разбора с помощью Cheerio
     const data_files = cheerio.load(`<table>${html}</table>`)
     data_files('tr').each((_, element) => {
         const torrent = {
             'Name': data_files(element).find('td').eq(0).text().trim(),
-            'Size': data_files(element).find('td').eq(1).text().replace(/\(.+/g,'').trim().replace(/'\s| |┬а'/g,'')
+            'Size': data_files(element).find('td').eq(1).text().replace(/\(.+/g, '').trim().replace(/'\s| |┬а'/g, '')
         }
         torrents.push(torrent)
     })
     if (torrents.length === 0) {
-        return {'Result': 'No matches were found for your ID'}
+        return { 'Result': 'No matches were found for your ID' }
     } else {
         return {
             Name: name,
@@ -925,7 +878,7 @@ async function RuTor(query, page) {
     for (const u of urls) {
         const url = `${u}${page}/0/300/0/${query}`
         try {
-            const response = await axios.get(url, {
+            const response = await axiosProxy.get(url, {
                 responseType: 'arraybuffer',
                 headers: headers
             })
@@ -939,7 +892,7 @@ async function RuTor(query, page) {
         }
     }
     if (!checkUrl) {
-        return {'Result': `Server is not available`}
+        return { 'Result': `Server is not available` }
     }
     const data = cheerio.load(html)
     data('table:eq(2) tbody tr').each((_, element) => {
@@ -956,7 +909,7 @@ async function RuTor(query, page) {
                 'Id': data(element).find('a:eq(2)').attr('href').replace(/\/torrent\//g, "").replace(/\/.+/g, ""),
                 'Url': "https://rutor.info" + data(element).find('a:eq(2)').attr('href'),
                 'Torrent': "https:" + data(element).find('a:eq(0)').attr('href'),
-                'Hash': data(element).find('a:eq(1)').attr('href').replace(/.+btih:|&.+/g,''),
+                'Hash': data(element).find('a:eq(1)').attr('href').replace(/.+btih:|&.+/g, ''),
                 'Size': data(element).find(`td:eq(${sizeIndex})`).text().trim(),
                 'Comments': comments,
                 'Seed': data(element).find('.green').text().trim(),
@@ -972,7 +925,7 @@ async function RuTor(query, page) {
         }
     })
     if (torrents.length === 0) {
-        return {'Result': 'No matches were found for your title'}
+        return { 'Result': 'No matches were found for your title' }
     } else {
         return torrents
     }
@@ -983,7 +936,7 @@ async function NoNameClubID(query) {
     const url = `https://nnmclub.to/forum/viewtopic.php?t=${query}`
     let html
     try {
-        const response = await axios.get(url, {
+        const response = await axiosProxy.get(url, {
             responseType: 'arraybuffer',
             headers: headers
         })
@@ -991,7 +944,7 @@ async function NoNameClubID(query) {
         console.log(`${getCurrentTime()} [Request] ${url}`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return {'Result': `The ${error.hostname} server is not available`}
+        return { 'Result': `The ${error.hostname} server is not available` }
     }
     const data = cheerio.load(html)
     let Name = data('body > div.wrap > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td > table:nth-child(2) > tbody > tr > td:nth-child(1) > h1 > a').text().trim()
@@ -1019,7 +972,7 @@ async function NoNameClubID(query) {
         kp = ""
     }
     // Hash
-    let Hash = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td.gensmall > a').attr('href').replace(/.+:/,'')
+    let Hash = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td.gensmall > a').attr('href').replace(/.+:/, '')
     // let Magnet = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td.gensmall > a').attr('href')
     // Torrent
     let Torrent = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td.gensmall > span > b > a').attr('href')
@@ -1039,7 +992,7 @@ async function NoNameClubID(query) {
     // Забираем все элементы "a" содержащие массив, разбиваем их с помощью запятой и объеденям в строку удаляя последнюю запятую
     const Type = data('tbody > tr:nth-child(1) > td > div > a').map((index, element) => {
         return data(element).text().trim()
-    }).get().join(', ').replace(/, $/,"")
+    }).get().join(', ').replace(/, $/, "")
     // Режиссер
     const Directer = (() => {
         const element = data('tbody > tr:nth-child(1) > td > div > span:contains("Режиссер:")')[0]
@@ -1114,27 +1067,27 @@ async function NoNameClubID(query) {
     // Статические данные (регистрация торрента, рейтинг и размер)
     const Registration = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(3) > td:nth-child(2)').text().trim()
     let Rating = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(5) > td:nth-child(2) > span > span:nth-child(4)').text().trim()
-    let ratingNum = Rating.replace(/\s.+/g,'')
-    let votesCount = Rating.replace(/.+: /g,'')
+    let ratingNum = Rating.replace(/\s.+/g, '')
+    let votesCount = Rating.replace(/.+: /g, '')
     const Size = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(4) > td:nth-child(2) > span:nth-child(1)').text().trim()
     // Получаем список файлов
-    let torrentId = Torrent.replace(/.+id=/,'')
+    let torrentId = Torrent.replace(/.+id=/, '')
     let urlTorrentFiles = `https://nnmclub.to/forum/filelst.php?attach_id=${torrentId}`
     const torrents = []
     try {
-        const response = await axios.get(urlTorrentFiles, {
+        const response = await axiosProxy.get(urlTorrentFiles, {
             responseType: 'arraybuffer',
             headers: headers
         })
-        html =  iconv.decode(response.data, 'win1251')
+        html = iconv.decode(response.data, 'win1251')
         console.log(`${getCurrentTime()} [Request] ${urlTorrentFiles}`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return {'Result': `The ${error.hostname} server is not available`}
+        return { 'Result': `The ${error.hostname} server is not available` }
     }
     const data_files = cheerio.load(html)
     data_files('tr').each((_, element) => {
-        let sizeFile = data_files(element).find('td').eq(2).text().replace(/\(.+/g,'').trim()
+        let sizeFile = data_files(element).find('td').eq(2).text().replace(/\(.+/g, '').trim()
         // Проверяем, присутствует ли размер в значение столбца
         if (sizeFile === 'Размер') {
             sizeFile = 'Directory'
@@ -1158,7 +1111,7 @@ async function NoNameClubID(query) {
         Directer: Directer,
         Actors: Actors,
         Description: Description,
-        Duration: Duration.replace(/~/,''),
+        Duration: Duration.replace(/~/, ''),
         Video_Quality: videoQuality,
         Video: Video,
         Audio: Audio,
@@ -1177,7 +1130,7 @@ async function NoNameClub(query, page) {
     const torrents = []
     let html
     try {
-        const response = await axios.get(url, {
+        const response = await axiosProxy.get(url, {
             responseType: 'arraybuffer',
             headers: headers
         })
@@ -1186,7 +1139,7 @@ async function NoNameClub(query, page) {
         console.log(`${getCurrentTime()} [Request] ${url}`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return {'Result': `The ${error.hostname} server is not available`}
+        return { 'Result': `The ${error.hostname} server is not available` }
     }
     const data = cheerio.load(html)
     data('.forumline:eq(1) tbody tr').each((_, element) => {
@@ -1200,9 +1153,9 @@ async function NoNameClub(query, page) {
             const size = data(element).find(`.gensmall:eq(${sizeIndex})`).text().trim().split(' ', 3).slice(1).join(' ')
             const torrent = {
                 'Name': data(element).find('.genmed a b').text().trim(),
-                'Id': data(element).find('.genmed a').attr('href').replace(/.+t=/,''),
-                'Url': "https://nnmclub.to/forum/"+data(element).find('a:eq(1)').attr('href'),
-                'Torrent': "https://nnmclub.to/forum/"+data(element).find('a:eq(3)').attr('href'),
+                'Id': data(element).find('.genmed a').attr('href').replace(/.+t=/, ''),
+                'Url': "https://nnmclub.to/forum/" + data(element).find('a:eq(1)').attr('href'),
+                'Torrent': "https://nnmclub.to/forum/" + data(element).find('a:eq(3)').attr('href'),
                 'Size': size,
                 'Comments': data(element).find(`.gensmall:eq(${sizeIndex + 1})`).text().trim(),
                 'Type': data(element).find('.gen').text().trim(),
@@ -1217,7 +1170,7 @@ async function NoNameClub(query, page) {
         }
     })
     if (torrents.length === 0) {
-        return {'Result': 'No matches were found for your title'}
+        return { 'Result': 'No matches were found for your title' }
     } else {
         return torrents
     }
@@ -1229,26 +1182,26 @@ async function FastsTorrent(query) {
     const torrents = []
     let html
     try {
-        html = await axios.get(url, {
+        html = await axiosProxy.get(url, {
             responseType: 'arraybuffer',
             headers: headers
         })
         console.log(`${getCurrentTime()} [Request] ${url}`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return {'Result': `The ${error.hostname} server is not available`}
+        return { 'Result': `The ${error.hostname} server is not available` }
     }
     const data = cheerio.load(html.data)
     data('.restable tbody tr').each((_, element) => {
         const torrent = {
-            'Name': data(element).find('.torrent-title b').text().trim().replace(/\s+/,' '),
+            'Name': data(element).find('.torrent-title b').text().trim().replace(/\s+/, ' '),
             'Size': data(element).find('.torrent-sp').eq(0).text().trim(),
             'Torrent': "http://fasts-torrent.net" + data(element).find('.torrent-d-btn a').attr('href')
         }
         torrents.push(torrent)
     })
     if (torrents.length === 0) {
-        return {'Result': 'No matches were found for your title'}
+        return { 'Result': 'No matches were found for your title' }
     } else {
         return torrents
     }
@@ -1259,24 +1212,24 @@ const web = express()
 web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     // Проверяем методы (пропускаем только GET без учета регистра)
     if (req.method.toLowerCase() !== 'get') {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:','')} (${req.headers['user-agent']}) [405] Method not available. Endpoint: ${req.path}`)
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [405] Method not available. Endpoint: ${req.path}`)
         return res.status(405).send(`Method not available`)
     }
     // Обрабатываем параметры
     let endpoint = req.params.api
     // Проверяем конечную точку
     if (endpoint === undefined) {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:','')} (${req.headers['user-agent']}) [404] Endpoint not available. Endpoint: ${req.path}`)
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not available. Endpoint: ${req.path}`)
         return res.status(404).send(`Endpoint not available`)
     }
     if (endpoint !== 'api') {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:','')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send(`Endpoint not found`)
     }
     // Проверяем обязательные параметры
     let provider = req.params.provider
     if (provider === undefined) {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:','')} (${req.headers['user-agent']}) [400] Provider not specified. Endpoint: ${req.path}`)
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Provider not specified. Endpoint: ${req.path}`)
         return res.status(400).send('Provider not specified')
     }
     // Опускаем регистр
@@ -1284,7 +1237,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     // Проверяем, что запрос не пустой
     let query = req.params.query
     if (query === undefined) {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:','')} (${req.headers['user-agent']}) [400] Search request not specified. Endpoint: ${req.path}`)
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Search request not specified. Endpoint: ${req.path}`)
         return res.status(400).send('Search request not specified')
     }
     // Кодируем запрос в формат URL (заменяется последовательностью процентов и двумя шестнадцатеричными числами, представляющими ASCII-код символа в кодировке UTF-8)
@@ -1300,7 +1253,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         year = 0
     }
     // Логируем запросы
-    console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:','')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
+    console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
     // Проверяем конечные точки провайдеров
     // ALL
     if (provider === 'all') {
@@ -1330,7 +1283,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json(
-                {Result: 'No data'}
+                { Result: 'No data' }
             )
         }
     }
@@ -1342,7 +1295,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json(
-                {Result: 'No data'}
+                { Result: 'No data' }
             )
         }
     }
@@ -1354,7 +1307,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json(
-                {Result: 'No data'}
+                { Result: 'No data' }
             )
         }
     }
@@ -1366,7 +1319,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json(
-                {Result: 'No data'}
+                { Result: 'No data' }
             )
         }
     }
@@ -1379,7 +1332,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json(
-                {Result: 'No data'}
+                { Result: 'No data' }
             )
         }
     }
@@ -1391,7 +1344,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json(
-                {Result: 'No data'}
+                { Result: 'No data' }
             )
         }
     }
@@ -1403,7 +1356,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json(
-                {Result: 'No data'}
+                { Result: 'No data' }
             )
         }
     }
@@ -1415,7 +1368,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json(
-                {Result: 'No data'}
+                { Result: 'No data' }
             )
         }
     }
@@ -1427,7 +1380,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json(
-                {Result: 'No data'}
+                { Result: 'No data' }
             )
         }
     }
