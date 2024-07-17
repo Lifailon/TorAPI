@@ -122,7 +122,7 @@ Only `GET`
 
 #### RuTracker
 
-▶️ `curl -s http://172.19.37.240:8443/api/rutracker/the+rookie+2024/0 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/rutracker/the+rookie+2024/0 | jq .`
 
 ```json
 [
@@ -187,7 +187,7 @@ Only `GET`
 
 - Search by id:
 
-`curl -s http://172.19.37.240:8443/api/rutracker/6489937 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/rutracker/6489937 | jq .`
 
 ```json
 {
@@ -241,7 +241,7 @@ Only `GET`
 
 - Search by title:
 
-▶️ `curl -s http://172.19.37.240:8443/api/kinozal/the+rookie/0/2024 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/kinozal/the+rookie/0/2024 | jq .`
 
 ```json
 [
@@ -310,7 +310,7 @@ Only `GET`
 
 - Search by id:
 
-▶️ `curl -s http://172.19.37.240:8443/api/kinozal/2022944 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/kinozal/2022944 | jq .`
 
 ```json
 [
@@ -378,7 +378,7 @@ Only `GET`
 
 - Search by title:
 
-▶️ `curl -s http://172.19.37.240:8443/api/rutor/the+rookie+2024/0 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/rutor/the+rookie+2024/0 | jq .`
 
 ```json
 [
@@ -411,7 +411,7 @@ Only `GET`
 
 - Search by id:
 
-▶️ `curl -s http://172.19.37.240:8443/api/rutor/970650 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/rutor/970650 | jq .`
 
 ```json
 {
@@ -460,7 +460,7 @@ Only `GET`
 
 #### NoNameClub
 
-▶️ `curl -s http://172.19.37.240:8443/api/nonameclub/the+rookie+2018/0 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/nonameclub/the+rookie+2018/0 | jq .`
 
 ```json
 [
@@ -516,7 +516,7 @@ Only `GET`
 
 - Search by id:
 
-▶️ `curl -s http://172.19.37.240:8443/api/nonameclub/1259608 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/nonameclub/1259608 | jq .`
 
 ```json
 {
@@ -631,7 +631,7 @@ Only `GET`
 
 #### FastsTorrent
 
-▶️ `Invoke-RestMethod "http://172.19.37.240:8443/api/faststorrent/новичок/0"`
+▶️ `Invoke-RestMethod "http://127.0.0.1:8443/api/faststorrent/новичок/0"`
 
 ```PowerShell
 Name                                                                Size      Torrent
@@ -652,18 +652,42 @@ Name                                                                Size      To
 
 To save the torrent file on your computer, you can use one of the following constructs:
 
-- **Linux** (*Bash*):
+- **Linux** via `Bash`:
 
 ```bash
 id=970650
-url=$(curl -s "http://172.19.37.240:8443/api/rutor/$id" | jq -r .Torrent)
+url=$(curl -s "http://127.0.0.1:8443/api/rutor/$id" | jq -r .Torrent)
 curl -s $url --output ~/downloads/$id.torrent
 ```
 
-- **Windows** (*PowerShell*):
+- **Windows** via `PowerShell`:
 
 ```PowerShell
 $id = 970650
-$url = $(Invoke-RestMethod "http://172.19.37.240:8443/api/rutor/$id").Torrent
+$url = $(Invoke-RestMethod "http://127.0.0.1:8443/api/rutor/$id").Torrent
 Invoke-RestMethod $url -OutFile "$home\Downloads\$id.torrent"
+```
+
+- **JavaScript** via `Node.js` and `Axios`:
+
+```js
+const axios = require('axios')
+const os = require('os')
+const fs = require('fs')
+const path = require('path')
+const id = 970650
+const url = `http://127.0.0.1:8443/api/rutor/${id}`
+const homeDir = os.homedir()
+axios.get(url).then(response => {
+    const torrentUrl = response.data.Torrent
+    return axios({
+        url: torrentUrl,
+        method: 'GET',
+        responseType: 'stream'
+    })
+    }).then(response => {
+        const filePath = path.join(homeDir, 'downloads', `${id}.torrent`)
+        const writer = fs.createWriteStream(filePath)
+        response.data.pipe(writer)
+    })
 ```
