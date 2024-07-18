@@ -4,8 +4,6 @@
 
 ---
 
-<!--<h2 align='center'>🎞️ TorAPI 🎞️</h2>-->
-
 <p align="center">
 <a href="https://github.com/nodejs/node"><img title="Node" src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white"></a>
 <a href="https://github.com/expressjs/express"><img title="Express" src="https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB"></a>
@@ -17,9 +15,11 @@
 <a href="https://github.com/Lifailon/TorAPI/blob/main/LICENSE"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=GitHub&color=white&label=License"></a>
 </p>
 
-Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torrent files and other information by movie title, TV series or id. This project is an idea fork of [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) ✨ (all code is completely rewritten) for Russian-speaking torrent providers.
+Unofficial API for RuTracker, Kinozal, RuTor, NoNameClub and other torrent trackers to get torrent files and information by movie title, TV series or id.
 
-There are 2 types of queries: 
+This project is inspired by ✨ [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) for Russian-speaking torrent providers.
+
+Two types of queries are supported:
 
 - **Search by title**, in which we will get all available distributions from the specified torrent tracker (its ID and brief information with a link to download the torrent file).
 - **Search by ID** of the specified provider, where we will get additional information: hash for direct download through torrent-client, links to Kinopoisk and IMDb databases, detailed description of the movie or TV series, as well as the content of the torrent-file (list and size of files). 
@@ -30,15 +30,16 @@ There are 2 types of queries:
 
 ### 🔗 Full list of available providers:
 
-| Provider name                            | Release | Mirrors | Registration | VPN | Search by ID |
-| -                                        | -       | -       | -            | -   | -            |
-| [RuTracker](https://rutracker.org)       | 2004    | 3       | Yes*         | Yes | Yes          |
-| [Kinozal](https://kinozal.tv)            | 2006    | 2       | Yes*         | Yes | Yes          |
-| [RuTor](https://rutor.info)              | 2009    | 2       | No           | Yes | Yes          |
-| [NoNameClub](https://nnmclub.to)         | 2006    | 1       | No           | Yes | Yes          |
-| [FastsTorrent](http://fasts-torrent.net) | 2022    | 1       | No           | No  | No           |
+| Provider name                       | Mirrors | Registration | Search by ID |
+| -                                   | -       | -            | -            |
+| [RuTracker](https://rutracker.org)  | 3       | Yes          | Yes          |
+| [Kinozal](https://kinozal.tv)       | 2       | Yes          | Yes          |
+| [RuTor](https://rutor.info)         | 2       | No           | Yes          |
+| [NoNameClub](https://nnmclub.to)    | 1       | No           | Yes          |
 
-\* Registration is required only when downloading a torrent file via a direct link. All distributions when searching by ID contain hashes (magnet-links), allowing you to download the content and form a torrent file using a torrent-client.
+💡 Registration is required only when downloading a torrent file via a direct link.
+
+All distributions when searching by ID contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to download content and generate a torrent file using any torrent client.
 
 ---
 
@@ -96,33 +97,81 @@ Or use [docker-compose](docker-compose.yml).
 
 ## 📚 Doc
 
-#### Endpoint format:
+- [Endpoint format](#endpoint-format)
+- [Methods](#methods)
+- [Parameters](#parameters)
+- [Requests and responses](#requests-and-responses)
+  - [All](#all)
+  - [RuTracker](#rutracker)
+  - [Kinozal](#kinozal)
+  - [RuTor](#rutor)
+  - [NoNameClub](#nonameclub)
+- [Save torrent file](#-save-torrent-file)
+
+
+### Endpoint format
 
 ```js
 /api/<PROVIDER/ALL>/<TITLE/ID>/<PAGE>/<YEAR>
 ```
 
-#### Methods:
+### Methods
 
-Only `GET`
+```js
+GET
+```
 
-#### Parameters:
+### Parameters
 
 | Name       | Mandatory | Type  | Description                                                                                                                                                                    |
 | -          | -         | -     | -                                                                                                                                                                              |
-| *PROVIDER* | True      | *str* | Provider name (corresponds to the [list of providers](#-full-list-of-available-providers)) or *ALL*.                                                                           | 
-| *TITLE*    | True*     | *str* | *Name* of the movie or TV series. Cyrillic characters are supported. You can use spaces if the query is enclosed in inverted commas, or use an addition character (+) instead. |
-| *ID*       | True*     | *str* | Get more information about a film or TV series by the ID of the specified provider.                                                                                            |
-| *PAGE*     | False     | *int* | Page number from which the response will be received (`0 to 20`).                                                                                                              |
-| *YEAR*     | False     | *int* | Year of release of the film or TV series for filtering (supported only by the provider *Kinozal*).                                                                             |
+| `PROVIDER` | True      | *str* | Provider name (corresponds to the [list of providers](#-full-list-of-available-providers)) or *ALL*.                                                                           | 
+| `TITLE`    | True*     | *str* | *Name* of the movie or TV series. Cyrillic characters are supported. You can use spaces if the query is enclosed in inverted commas, or use an addition character (+) instead. |
+| `ID`       | True*     | *str* | Get more information about a film or TV series by the ID of the specified provider.                                                                                            |
+| `PAGE`     | False     | *int* | Page number from which the response will be received (`0 to 20`).                                                                                                              |
+| `YEAR`     | False     | *int* | Year of release of the film or TV series for filtering (supported only by the provider **Kinozal**).                                                                             |
 
-\* You can use one of two parameters in the endpoint path: *TITLE* or *ID*.
+\* You can use one of two parameters in the endpoint path: `TITLE` or `ID`.
 
-#### Requests and responses:
+### Requests and responses
+
+#### All
+
+▶️ `curl -s http://192.168.3.100:8443/api/all/Bo+Path+of+the+Teal+Lotus`
+
+```json
+{
+  "RuTracker": [
+    {
+      "Name": "[Nintendo Switch] Bo: Path of the Teal Lotus [NSZ][ENG]",
+      "Id": "6552174",
+      "Url": "https://rutracker.net/forum/viewtopic.php?t=6552174",
+      "Torrent": "https://rutracker.net/forum/dl.php?t=6552174",
+      "Size": "800.8 MB",
+      "Download_Count": "220",
+      "Checked": "True",
+      "Type": "Switch",
+      "Type_Link": "https://rutracker.net/forum/tracker.php?f=1605",
+      "Seeds": "61",
+      "Peers": "11",
+      "Date": "17.07.2024"
+    }
+  ],
+  "Kinozal": {
+    "Result": "No matches were found for your title"
+  },
+  "RuTor": {
+    "Result": "No matches were found for your title"
+  },
+  "NoNameClub": {
+    "Result": "No matches were found for your title"
+  }
+}
+```
 
 #### RuTracker
 
-▶️ `curl -s http://127.0.0.1:8443/api/rutracker/the+rookie+2024/0 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/rutracker/the+rookie+2024`
 
 ```json
 [
@@ -187,7 +236,7 @@ Only `GET`
 
 - Search by id:
 
-▶️ `curl -s http://127.0.0.1:8443/api/rutracker/6489937 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/rutracker/6489937`
 
 ```json
 {
@@ -241,7 +290,7 @@ Only `GET`
 
 - Search by title:
 
-▶️ `curl -s http://127.0.0.1:8443/api/kinozal/the+rookie/0/2024 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/kinozal/the+rookie/0/2024`
 
 ```json
 [
@@ -310,7 +359,7 @@ Only `GET`
 
 - Search by id:
 
-▶️ `curl -s http://127.0.0.1:8443/api/kinozal/2022944 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/kinozal/2022944`
 
 ```json
 [
@@ -378,7 +427,7 @@ Only `GET`
 
 - Search by title:
 
-▶️ `curl -s http://127.0.0.1:8443/api/rutor/the+rookie+2024/0 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/rutor/the+rookie+2024`
 
 ```json
 [
@@ -411,7 +460,7 @@ Only `GET`
 
 - Search by id:
 
-▶️ `curl -s http://127.0.0.1:8443/api/rutor/970650 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/rutor/970650`
 
 ```json
 {
@@ -460,7 +509,7 @@ Only `GET`
 
 #### NoNameClub
 
-▶️ `curl -s http://127.0.0.1:8443/api/nonameclub/the+rookie+2018/0 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/nonameclub/the+rookie+2018`
 
 ```json
 [
@@ -516,7 +565,7 @@ Only `GET`
 
 - Search by id:
 
-▶️ `curl -s http://127.0.0.1:8443/api/nonameclub/1259608 | jq .`
+▶️ `curl -s http://127.0.0.1:8443/api/nonameclub/1259608`
 
 ```json
 {
@@ -629,6 +678,7 @@ Only `GET`
 }
 ```
 
+<!--
 #### FastsTorrent
 
 ▶️ `Invoke-RestMethod "http://127.0.0.1:8443/api/faststorrent/новичок/0"`
@@ -647,8 +697,9 @@ Name                                                                Size      To
 Новичок (3 сезон: 1 серии из 20) (2021) WEBRip 1080p | Ultradox     1.53 Gb   http://fasts-torrent.net/download/389406/torrent/-3-1-20-2021-webrip-1080p-ultradox/
 Новичок (3 сезон: 1 серии из 20) (2021) WEBRip 720p | Ultradox      982.68 Mb http://fasts-torrent.net/download/389405/torrent/-3-1-20-2021-webrip-720p-ultradox/
 ```
+-->
 
-### 🧲 Save torrent file
+### Save torrent file
 
 To save the torrent file on your computer, you can use one of the following constructs:
 
@@ -668,16 +719,18 @@ $url = $(Invoke-RestMethod "http://127.0.0.1:8443/api/rutor/$id").Torrent
 Invoke-RestMethod $url -OutFile "$home\Downloads\$id.torrent"
 ```
 
-- **JavaScript** via `Node.js` and `Axios`:
+- **Node.js** via `Axios`:
 
 ```js
 const axios = require('axios')
 const os = require('os')
 const fs = require('fs')
 const path = require('path')
+
 const id = 970650
 const url = `http://127.0.0.1:8443/api/rutor/${id}`
 const homeDir = os.homedir()
+
 axios.get(url).then(response => {
     const torrentUrl = response.data.Torrent
     return axios({

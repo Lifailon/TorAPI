@@ -139,6 +139,73 @@ function unixTimestamp(timestamp) {
     return `${day}.${month}.${year} ${hours}:${minutes}`
 }
 
+// Функция для добавления списка торрент трекеров в магнитную ссылку
+function addTrackerList(infoHash, tracker) {
+    let magnetLink = `magnet:?xt=urn:btih:${infoHash}`
+    let trackers = []
+    if (tracker === "RuTracker") {
+        trackers = [
+            "http://retracker.local/announce",
+            "http://bt.t-ru.org/ann",
+            "http://bt2.t-ru.org/ann",
+            "http://bt3.t-ru.org/ann",
+            "http://bt4.t-ru.org/ann"
+        ]
+    }
+    else if (tracker === "Kinozal") {
+        trackers = [
+            "http://retracker.local/announce",
+            "http://tr0.torrent4me.com/ann?uk=kCm7WcIM00",
+            "http://tr1.torrent4me.com/ann?uk=kCm7WcIM00",
+            "http://tr2.torrent4me.com/ann?uk=kCm7WcIM00",
+            "http://tr3.torrent4me.com/ann?uk=kCm7WcIM00",
+            "http://tr4.torrent4me.com/ann?uk=kCm7WcIM00",
+            "http://tr5.torrent4me.com/ann?uk=kCm7WcIM00",
+            "http://tr0.tor4me.info/ann?uk=kCm7WcIM00",
+            "http://tr1.tor4me.info/ann?uk=kCm7WcIM00",
+            "http://tr2.tor4me.info/ann?uk=kCm7WcIM00",
+            "http://tr3.tor4me.info/ann?uk=kCm7WcIM00",
+            "http://tr4.tor4me.info/ann?uk=kCm7WcIM00",
+            "http://tr5.tor4me.info/ann?uk=kCm7WcIM00",
+            "http://tr0.tor2me.info/ann?uk=kCm7WcIM00",
+            "http://tr1.tor2me.info/ann?uk=kCm7WcIM00",
+            "http://tr2.tor2me.info/ann?uk=kCm7WcIM00",
+            "http://tr3.tor2me.info/ann?uk=kCm7WcIM00",
+            "http://tr4.tor2me.info/ann?uk=kCm7WcIM00",
+            "http://tr5.tor2me.info/ann?uk=kCm7WcIM00"
+        ]
+    }
+    else if (tracker === "RuTor") {
+        trackers = [
+            "http://retracker.local/announce",
+            "udp://opentor.net:6969",
+            "udp://open.stealth.si:80/announce",
+            "udp://exodus.desync.com:6969/announce",
+            "http://tracker.grepler.com:6969/announce",
+            "udp://tracker.dler.com:6969/announce",
+            "udp://tracker.bitsearch.to:1337/announce",
+            "http://h1.trakx.nibba.trade:80/announce",
+            "http://h2.trakx.nibba.trade:80/announce",
+            "http://h3.trakx.nibba.trade:80/announce",
+            "http://h4.trakx.nibba.trade:80/announce",
+            "http://h5.trakx.nibba.trade:80/announce"
+        ]
+    }
+    else if (tracker === "NoNameClub") {
+        trackers = [
+            "http://retracker.local/announce",
+            "http://bt01.nnm-club.info:2710/announce",
+            "http://bt02.nnm-club.info:2710/announce",
+            "http://bt01.nnm-club.cc:2710/announce",
+            "http://bt02.nnm-club.cc:2710/announce"
+        ]
+    }
+    for (var i = 0; i < trackers.length; i++) {
+        magnetLink += "&tr=" + encodeURIComponent(trackers[i])
+    }
+    return magnetLink
+}
+
 // RuTracker ID
 async function RuTrackerID(query) {
     const url = `https://rutracker.org/forum/viewtopic.php?t=${query}`
@@ -372,7 +439,9 @@ async function RuTrackerID(query) {
     }
     return {
         Name: Name,
+        Url: url,
         Hash: Hash,
+        Magnet: addTrackerList(Hash,"RuTracker"),
         Torrent: Torrent,
         IMDb_link: imdb,
         Kinopoisk_link: kp,
@@ -438,13 +507,13 @@ async function RuTracker(query, page) {
                 // Забираем первые два значения (размер и тип данных)
                 /// 'Size': data(element).find('.row4.small:eq(0)').text().trim().split(' ').slice(0,1).join(' '),
                 'Size': data(element).find('a.small.tr-dl.dl-stub').text().trim().split(' ').slice(0, 1).join(' '),
-                'Downloads': data(element).find('td.row4.small.number-format').text().trim(),
+                'Download_Count': data(element).find('td.row4.small.number-format').text().trim(),
                 // Проверяем проверенный ли торрент и изменяем формат вывода
                 'Checked': data(element).find('td.row1.t-ico').text().trim() === '√' ? 'True' : 'False',
                 'Type': data(element).find('.row1 .f-name .gen').text().trim(),
                 'Type_Link': "https://rutracker.net/forum/" + data(element).find('.row1 .f-name .gen').attr('href'),
-                'Seed': data(element).find('b.seedmed').text().trim(),
-                'Peer': data(element).find('td.row4.leechmed.bold').text().trim(),
+                'Seeds': data(element).find('b.seedmed').text().trim(),
+                'Peers': data(element).find('td.row4.leechmed.bold').text().trim(),
                 // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
                 'Date': formatDate(
                     data(element).find('td.row4 p').text().trim(),
@@ -541,6 +610,7 @@ async function KinozalID(query) {
     if (!kp) {
         kp = ""
     }
+    let Hash = dataFiles('li').eq(0).text().replace(/.+:/, '').trim()
     const torrent = {
         'Original': (() => {
             // Обращаемся к элементу b по наименованию контейнера
@@ -564,9 +634,11 @@ async function KinozalID(query) {
                 return ''
             }
         })(),
-        'Hash': dataFiles('li').eq(0).text().replace(/.+:/, '').trim(),
-        'IMDb_link': imdb,
-        'Kinopoisk_link': kp,
+        'Url': url,
+        'Hash': Hash,
+        'Magnet': addTrackerList(Hash,"Kinozal"),
+        'IMDb': imdb,
+        'Kinopoisk': kp,
         'IMDB_id': imdb.replace(/[^0-9]/g, ''),
         'Kinopoisk_id': kp.replace(/[^0-9]/g, ''),
         // Находим нужный контейнер который содержит год выпуска и забираем текстовое значение следующего узла
@@ -586,20 +658,20 @@ async function KinozalID(query) {
         'Video': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(1)[0].nextSibling.nodeValue.trim(),
         'Audio': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(2)[0].nextSibling.nodeValue.trim(),
         'Size': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(3)[0].nextSibling.nodeValue.trim(),
+        // 'Size': data('div.mn1_menu').find('span.floatright.green.n').eq(0).text().replace(/\(.+/, '').trim(),
         'Duration': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(4)[0].nextSibling.nodeValue.trim(),
         'Transcript': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(5)[0].nextSibling.nodeValue.trim(),
         'Seeds': data('div.mn1_menu').find('span.floatright').eq(0).text().trim(),
         'Peers': data('div.mn1_menu').find('span.floatright').eq(1).text().trim(),
-        'Downloaded': data('div.mn1_menu').find('span.floatright').eq(2).text().trim(),
-        'Files': data('div.mn1_menu').find('span.floatright').eq(3).text().trim(),
+        'Download_Count': data('div.mn1_menu').find('span.floatright').eq(2).text().trim(),
+        'Files_Count': data('div.mn1_menu').find('span.floatright').eq(3).text().trim(),
         'Comments': data('div.mn1_menu').find('span.floatright').eq(4).text().trim(),
-        'IMDb': data('div.mn1_menu').find('span.floatright').eq(5).text().trim(),
-        'Kinopoisk': data('div.mn1_menu').find('span.floatright').eq(6).text().trim(),
-        'Kinozal': data('div.mn1_menu').find('span.floatright').eq(7).text().trim().replace(/\s.+/, ''),
+        'IMDb_Rating': data('div.mn1_menu').find('span.floatright').eq(5).text().trim(),
+        'Kinopoisk_Rating': data('div.mn1_menu').find('span.floatright').eq(6).text().trim(),
+        'Kinozal_Rating': data('div.mn1_menu').find('span.floatright').eq(7).text().trim().replace(/\s.+/, ''),
         'Votes': data('div.mn1_menu').find('span.floatright').eq(8).text().trim(),
-        'Size': data('div.mn1_menu').find('span.floatright.green.n').eq(0).text().replace(/\(.+/, '').trim(),
-        'Added': data('div.mn1_menu').find('span.floatright.green.n').eq(1).text().trim(),
-        'Update': data('div.mn1_menu').find('span.floatright.green.n').eq(2).text().trim(),
+        'Added_Date': data('div.mn1_menu').find('span.floatright.green.n').eq(1).text().trim(),
+        'Update_Date': data('div.mn1_menu').find('span.floatright.green.n').eq(2).text().trim(),
         'Files': torrentFiles
     }
     torrents.push(torrent)
@@ -770,7 +842,7 @@ async function RuTorFiles(query) {
     let name = data('#all h1').text().trim()
     let torrent_url = 'https:' + data('#download a:eq(1)').attr('href').trim()
     // Hash
-    let hash = data('#download a').attr('href').replace(/magnet:\?xt=urn:btih:|\&dn=.+/g, '').trim()
+    let Hash = data('#download a').attr('href').replace(/magnet:\?xt=urn:btih:|\&dn=.+/g, '').trim()
     // IMDb
     let imdb
     // Ищем во всех элементах "a" атрибут "href" который содержит строку "imdb.com"
@@ -847,7 +919,9 @@ async function RuTorFiles(query) {
     } else {
         return {
             Name: name,
-            Hash: hash,
+            Url: url,
+            Hash: Hash,
+            Magnet: addTrackerList(Hash,"RuTor"),
             Torrent: torrent_url,
             IMDb_link: imdb,
             Kinopoisk_link: kp,
@@ -912,8 +986,8 @@ async function RuTor(query, page) {
                 'Hash': data(element).find('a:eq(1)').attr('href').replace(/.+btih:|&.+/g, ''),
                 'Size': data(element).find(`td:eq(${sizeIndex})`).text().trim(),
                 'Comments': comments,
-                'Seed': data(element).find('.green').text().trim(),
-                'Peer': data(element).find('.red').text().trim(),
+                'Seeds': data(element).find('.green').text().trim(),
+                'Peers': data(element).find('.red').text().trim(),
                 // 'Date': data(element).find('td:eq(0)').text().trim(),
                 // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
                 'Date': formatDate(
@@ -1100,7 +1174,9 @@ async function NoNameClubID(query) {
     })
     return {
         Name: Name,
+        Url: url,
         Hash: Hash,
+        Magnet: addTrackerList(Hash,"NoNameClub"),
         Torrent: Torrent,
         IMDb_link: imdb,
         Kinopoisk_link: kp,
@@ -1159,8 +1235,8 @@ async function NoNameClub(query, page) {
                 'Size': size,
                 'Comments': data(element).find(`.gensmall:eq(${sizeIndex + 1})`).text().trim(),
                 'Type': data(element).find('.gen').text().trim(),
-                'Seed': data(element).find('.seedmed').text().trim(),
-                'Peer': data(element).find('.leechmed').text().trim(),
+                'Seeds': data(element).find('.seedmed').text().trim(),
+                'Peers': data(element).find('.leechmed').text().trim(),
                 // Забираем и преобразуем timestamp
                 'Date': unixTimestamp(
                     data(element).find(`.gensmall:eq(${sizeIndex + 2})`).text().trim().split(' ')[0]
@@ -1207,7 +1283,7 @@ async function FastsTorrent(query) {
     }
 }
 
-// Express
+// Express Server
 const web = express()
 web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     // Проверяем методы (пропускаем только GET без учета регистра)
@@ -1234,6 +1310,20 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     }
     // Опускаем регистр
     provider = provider.toLowerCase()
+    // Конечная точка, которая возвращает список провайдеров
+    if (provider === "providers") {
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
+        return res.json(
+            {
+                "Provider_List": [
+                    "RuTracker",
+                    "Kinozal",
+                    "RuTor",
+                    "NoNameClub"
+                ]
+            }
+        )
+    }
     // Проверяем, что запрос не пустой
     let query = req.params.query
     if (query === undefined) {
@@ -1258,10 +1348,17 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     // ALL
     if (provider === 'all') {
         try {
-            const RuTrackerResult = await RuTracker(query, page)
-            const KinozalResult = await Kinozal(query, page)
-            const RuTorResult = await RuTor(query, page)
-            const NoNameClubResult = await NoNameClub(query, page)
+            // const RuTrackerResult = await RuTracker(query, page)
+            // const KinozalResult = await Kinozal(query, page)
+            // const RuTorResult = await RuTor(query, page)
+            // const NoNameClubResult = await NoNameClub(query, page)
+            // Параллельное выполнение:
+            const [RuTrackerResult, KinozalResult, RuTorResult, NoNameClubResult] = await Promise.all([
+                RuTracker(query, page),
+                Kinozal(query, page),
+                RuTor(query, page),
+                NoNameClub(query, page)
+            ])
             // Объединяем результаты в один массив
             const Results = {
                 RuTracker: RuTrackerResult,
@@ -1390,6 +1487,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     }
 })
 
+// Express Start
 const port = argv.port
 web.listen(port)
 console.log(`Server is running on port: ${port}`)
