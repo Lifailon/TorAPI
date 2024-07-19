@@ -71,13 +71,13 @@ npm start -- --port 2024
 Use a proxy for all requests:
 
 ```js
-npm start -- --port 2024 --proxyAddress 192.168.3.99 --proxyPort 9090
+npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090
 ```
 
 If authorization on a proxy server is required:
 
 ```js
-npm start -- --port 2024 --proxyAddress 192.168.3.99 --proxyPort 9090 --username TorAPI --password TorAPI
+npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090 --username TorAPI --password TorAPI
 ```
 
 ## 🐳 Docker
