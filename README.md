@@ -11,9 +11,13 @@
 
 <p align="center">
     <a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=Git&color=gold&label=Version"></a>
-    <a href="https://hub.docker.com/repository/docker/lifailon/torapi/general"><img title="Language"src="https://img.shields.io/docker/image-size/lifailon/torapi?label=Docker%20Image"></a>
+    <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Language"src="https://img.shields.io/docker/image-size/lifailon/torapi?&color=blue&label=Docker%20Image"></a>
     <a href="https://github.com/Lifailon/TorAPI/blob/main/LICENSE"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=GitHub&color=white&label=License"></a>
 </p>
+
+<!--
+![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
+-->
 
 Unofficial API (backend) for RuTracker, Kinozal, RuTor, NoNameClub and other torrent trackers to get torrent files and information by movie title, TV series or id.
 
@@ -24,7 +28,7 @@ Two types of queries are supported:
 - **Search by title**, in which we will get all available distributions from the specified torrent tracker (its ID and brief information with a link to download the torrent file).
 - **Search by ID** of the specified provider, where we will get additional information: hash for direct download through torrent-client, links to Kinopoisk and IMDb databases, detailed description of the movie or TV series, as well as the content of the torrent-file (list and size of files). 
 
-📚 API documentation on [Wiki page](https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Documentation)
+[![Wikipedia](https://img.shields.io/badge/Wiki_API_Doc-009CAB.svg?style=for-the-badge&logo=wikipedia&logoColor=white)](https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Documentation)
 
 📄 Released under the [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
 
