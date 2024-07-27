@@ -1,10 +1,12 @@
-const express   = require('express')
-const axios     = require('axios')
-const proxy     = require('https-proxy-agent')
-const cheerio   = require('cheerio')
-const puppeteer = require('puppeteer')
-const iconv     = require('iconv-lite')
-const yargs     = require('yargs')
+const axios         = require('axios')
+const proxy         = require('https-proxy-agent')
+const cheerio       = require('cheerio')
+const puppeteer     = require('puppeteer')
+const iconv         = require('iconv-lite')
+const yargs         = require('yargs')
+const express       = require('express')
+const swaggerJsdoc  = require('swagger-jsdoc')
+const swaggerUi     = require('swagger-ui-express')
 
 // Параметры запуска
 const { hideBin } = require('yargs/helpers')
@@ -204,6 +206,75 @@ function addTrackerList(infoHash, tracker) {
         magnetLink += "&tr=" + encodeURIComponent(trackers[i])
     }
     return magnetLink
+}
+
+// RuTracker
+async function RuTracker(query, page) {
+    // Получаем кастомный номер страницы через функцию (кратный 50)
+    const p = getPage(page)
+    // Список все зеркальных URL провайдера для перебора в цикле в случае недоступности одного
+    const urls = [
+        'https://rutracker.org/forum/tracker.php?nm=',
+        'https://rutracker.net/forum/tracker.php?nm=',
+        'https://rutracker.nl/forum/tracker.php?nm='
+    ]
+    // Переменная для отслеживания успешного выполнения запроса
+    let checkUrl = false
+    const torrents = []
+    let html
+    for (let i = 0; i < urls.length; i++) {
+        const url = `${urls[i]}${query}&start=${p}`
+        try {
+            const response = await axiosProxy.get(url, {
+                responseType: 'arraybuffer',
+                headers: headers_RuTracker
+            })
+            // Декодируем HTML-страницу в кодировку win-1251
+            html = iconv.decode(response.data, 'win1251')
+            // Если удалось получить данные, выходим из цикла
+            checkUrl = true
+            console.log(`${getCurrentTime()} [Request] ${url}`)
+            break
+        } catch (error) {
+            console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        }
+    }
+    if (!checkUrl) {
+        return { 'Result': `Server is not available` }
+    }
+    const data = cheerio.load(html)
+    data('table .forumline tbody tr').each((_, element) => {
+        const checkData = data(element).find('.row4 .wbr .med').text().trim()
+        if (checkData.length > 0) {
+            const torrent = {
+                'Name': data(element).find('.row4 .wbr .med').text().trim(),
+                'Id': data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g, ''),
+                'Url': "https://rutracker.net/forum/" + data(element).find('.row4 .wbr .med').attr('href'),
+                'Torrent': "https://rutracker.net/forum/dl.php?t=" + data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g, ''),
+                // Забираем первые два значения (размер и тип данных)
+                /// 'Size': data(element).find('.row4.small:eq(0)').text().trim().split(' ').slice(0,1).join(' '),
+                'Size': data(element).find('a.small.tr-dl.dl-stub').text().trim().split(' ').slice(0, 1).join(' '),
+                'Download_Count': data(element).find('td.row4.small.number-format').text().trim(),
+                // Проверяем проверенный ли торрент и изменяем формат вывода
+                'Checked': data(element).find('td.row1.t-ico').text().trim() === '√' ? 'True' : 'False',
+                'Type': data(element).find('.row1 .f-name .gen').text().trim(),
+                'Type_Link': "https://rutracker.net/forum/" + data(element).find('.row1 .f-name .gen').attr('href'),
+                'Seeds': data(element).find('b.seedmed').text().trim(),
+                'Peers': data(element).find('td.row4.leechmed.bold').text().trim(),
+                // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
+                'Date': formatDate(
+                    data(element).find('td.row4 p').text().trim(),
+                    "-"
+                )
+            }
+            torrents.push(torrent)
+        }
+    })
+    if (torrents.length === 0) {
+        return { 'Result': 'No matches were found for your title' }
+    } else {
+        return torrents
+    }
 }
 
 // RuTracker ID
@@ -437,54 +508,49 @@ async function RuTrackerID(query) {
             })
         })
     }
-    return {
-        Name: Name,
-        Url: url,
-        Hash: Hash,
-        Magnet: addTrackerList(Hash,"RuTracker"),
-        Torrent: Torrent,
-        IMDb_link: imdb,
-        Kinopoisk_link: kp,
-        IMDb_id: imdb.replace(/[^0-9]/g, ''),
-        Kinopoisk_id: kp.replace(/[^0-9]/g, ''),
-        Year: Year.replace(/:\s/g, ''),
-        Release: Release.replace(/:\s/g, ''),
-        Type: Type.replace(/:\s/g, ''),
-        Duration: Duration.replace(/:\s/g, '').replace(/~ |~/g, ''),
-        Audio: Audio.replace(/:\s/g, ''),
-        Directer: Directer.replace(/:\s/g, ''),
-        Actors: Actors.replace(/:\s/g, ''),
-        Description: Description.replace(/:\s/g, ''),
-        Video_Quality: videoQuality.replace(/:\s/g, ''),
-        Video: Video.replace(/:\s/g, ''),
-        Files: torrents
-    }
+    return [
+        {
+            Name: Name,
+            Url: url,
+            Hash: Hash,
+            Magnet: addTrackerList(Hash,"RuTracker"),
+            Torrent: Torrent,
+            IMDb_link: imdb,
+            Kinopoisk_link: kp,
+            IMDb_id: imdb.replace(/[^0-9]/g, ''),
+            Kinopoisk_id: kp.replace(/[^0-9]/g, ''),
+            Year: Year.replace(/:\s/g, ''),
+            Release: Release.replace(/:\s/g, ''),
+            Type: Type.replace(/:\s/g, ''),
+            Duration: Duration.replace(/:\s/g, '').replace(/~ |~/g, ''),
+            Audio: Audio.replace(/:\s/g, ''),
+            Directer: Directer.replace(/:\s/g, ''),
+            Actors: Actors.replace(/:\s/g, ''),
+            Description: Description.replace(/:\s/g, ''),
+            Video_Quality: videoQuality.replace(/:\s/g, ''),
+            Video: Video.replace(/:\s/g, ''),
+            Files: torrents
+        }
+    ]
 }
 
-// RuTracker
-async function RuTracker(query, page) {
-    // Получаем кастомный номер страницы через функцию (кратный 50)
-    const p = getPage(page)
-    // Список все зеркальных URL провайдера для перебора в цикле в случае недоступности одного
+// Kinozal
+async function Kinozal(query, page, year) {
     const urls = [
-        'https://rutracker.org/forum/tracker.php?nm=',
-        'https://rutracker.net/forum/tracker.php?nm=',
-        'https://rutracker.nl/forum/tracker.php?nm='
+        'https://kinozal.tv/browse.php?s=',
+        'https://kinozal.me/browse.php?s='
     ]
-    // Переменная для отслеживания успешного выполнения запроса
     let checkUrl = false
     const torrents = []
     let html
-    for (let i = 0; i < urls.length; i++) {
-        const url = `${urls[i]}${query}&start=${p}`
+    for (const u of urls) {
+        const url = `${u}${query}&page=${page}&d=${year}`
         try {
             const response = await axiosProxy.get(url, {
                 responseType: 'arraybuffer',
-                headers: headers_RuTracker
+                headers: headers
             })
-            // Декодируем HTML-страницу в кодировку win-1251
             html = iconv.decode(response.data, 'win1251')
-            // Если удалось получить данные, выходим из цикла
             checkUrl = true
             console.log(`${getCurrentTime()} [Request] ${url}`)
             break
@@ -495,30 +561,43 @@ async function RuTracker(query, page) {
     if (!checkUrl) {
         return { 'Result': `Server is not available` }
     }
+    // Загружаем HTML-страницу с помощью Cheerio
     const data = cheerio.load(html)
-    data('table .forumline tbody tr').each((_, element) => {
-        const checkData = data(element).find('.row4 .wbr .med').text().trim()
+    // Поиск таблицы с классом (.) t_peer, его дочернего элемента tbody и вложенных tr для перебора строк таблицы и извлечения данных из каждой строки
+    data('.t_peer tbody tr').each((_, element) => {
+        // Проверяем, что элемент с названием не пустой (пропустить первый элемент наименование столбцов)
+        const checkData = data(element).find('.nam a')
         if (checkData.length > 0) {
+            // Ищем дочерний элемент с классом 'nam' и его вложенным элементом 'a'
+            torrentName = data(element).find('.nam a')
+            // Забираем текст заголовка и разбиваем его на массив
+            const Title = torrentName.text().trim()
+            const arrTitle = Title.split(" / ")
+            // Получаем количество элементов в заголовке
+            // const count = arrTitle.length
+            // +++ Анализ заголовка
+            // Забираем все элементы 's'
+            const s = data(element).find('.s')
+            // Разбиваем дату из 3-его элемента массива 's'
+            const date = s.eq(2).text().trim().split(" ")
+            // Заполняем новый временный массив
             const torrent = {
-                'Name': data(element).find('.row4 .wbr .med').text().trim(),
-                'Id': data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g, ''),
-                'Url': "https://rutracker.net/forum/" + data(element).find('.row4 .wbr .med').attr('href'),
-                'Torrent': "https://rutracker.net/forum/dl.php?t=" + data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g, ''),
-                // Забираем первые два значения (размер и тип данных)
-                /// 'Size': data(element).find('.row4.small:eq(0)').text().trim().split(' ').slice(0,1).join(' '),
-                'Size': data(element).find('a.small.tr-dl.dl-stub').text().trim().split(' ').slice(0, 1).join(' '),
-                'Download_Count': data(element).find('td.row4.small.number-format').text().trim(),
-                // Проверяем проверенный ли торрент и изменяем формат вывода
-                'Checked': data(element).find('td.row1.t-ico').text().trim() === '√' ? 'True' : 'False',
-                'Type': data(element).find('.row1 .f-name .gen').text().trim(),
-                'Type_Link': "https://rutracker.net/forum/" + data(element).find('.row1 .f-name .gen').attr('href'),
-                'Seeds': data(element).find('b.seedmed').text().trim(),
-                'Peers': data(element).find('td.row4.leechmed.bold').text().trim(),
-                // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
-                'Date': formatDate(
-                    data(element).find('td.row4 p').text().trim(),
-                    "-"
-                )
+                // Заполняем параметры из заголовка
+                'Name': arrTitle[0].trim(),
+                'Id': torrentName.attr('href').replace(/.+id=/, ''),
+                'OriginalName': arrTitle[1].trim(),
+                'Year': arrTitle[2].trim(),
+                'Language': arrTitle[3].trim(),
+                'Format': arrTitle[4],
+                'Url': "https://kinozal.tv" + torrentName.attr('href'),
+                'Torrent': "https://dl.kinozal.tv" + data(element).find('.nam a').attr('href').replace(/details/, 'download'),
+                'Size': s.eq(1).text().trim(),
+                'Comments': s.eq(0).text().trim(),
+                // Раздает (Seeds)
+                'Seeds': data(element).find('.sl_s').text().trim(),
+                // Качает (Peers)
+                'Peers': data(element).find('.sl_p').text().trim(),
+                'Date': `${date[0]} ${date[2]}`
             }
             torrents.push(torrent)
         }
@@ -682,23 +761,25 @@ async function KinozalID(query) {
     }
 }
 
-// Kinozal
-async function Kinozal(query, page, year) {
+// RuTor
+async function RuTor(query, page) {
     const urls = [
-        'https://kinozal.tv/browse.php?s=',
-        'https://kinozal.me/browse.php?s='
+        'https://rutor.info/search/',
+        'https://rutor.is/search/',
+        // 'https://rutor.org/search/'
     ]
     let checkUrl = false
     const torrents = []
     let html
     for (const u of urls) {
-        const url = `${u}${query}&page=${page}&d=${year}`
+        const url = `${u}${page}/0/300/0/${query}`
         try {
             const response = await axiosProxy.get(url, {
                 responseType: 'arraybuffer',
                 headers: headers
             })
-            html = iconv.decode(response.data, 'win1251')
+            // Декодируем HTML-страницу в кодировку UTF-8
+            html = iconv.decode(response.data, 'utf8')
             checkUrl = true
             console.log(`${getCurrentTime()} [Request] ${url}`)
             break
@@ -709,113 +790,38 @@ async function Kinozal(query, page, year) {
     if (!checkUrl) {
         return { 'Result': `Server is not available` }
     }
-    // Загружаем HTML-страницу с помощью Cheerio
     const data = cheerio.load(html)
-    // Поиск таблицы с классом (.) t_peer, его дочернего элемента tbody и вложенных tr для перебора строк таблицы и извлечения данных из каждой строки
-    data('.t_peer tbody tr').each((_, element) => {
-        // Проверяем, что элемент с названием не пустой (пропустить первый элемент наименование столбцов)
-        const checkData = data(element).find('.nam a')
+    data('table:eq(2) tbody tr').each((_, element) => {
+        const checkData = data(element).find('a:eq(2)')
         if (checkData.length > 0) {
-            // Ищем дочерний элемент с классом 'nam' и его вложенным элементом 'a'
-            torrentName = data(element).find('.nam a')
-            // Забираем текст заголовка и разбиваем его на массив
-            const Title = torrentName.text().trim()
-            const arrTitle = Title.split(" / ")
-            // Получаем количество элементов в заголовке
-            // const count = arrTitle.length
-            // +++ Анализ заголовка
-            // Забираем все элементы 's'
-            const s = data(element).find('.s')
-            // Разбиваем дату из 3-его элемента массива 's'
-            const date = s.eq(2).text().trim().split(" ")
-            // Заполняем новый временный массив
+            // Проверяем количетсов элементов 'td'
+            const count = data(element).find('td').length
+            // Если 5 элементов, то 3-й индекс содержит размер, если 4, то 2-й индекс
+            const sizeIndex = count === 5 ? 3 : count === 4 ? 2 : 1
+            // Если 5 элементов, то есть комментарии и забираем их количество из 2 индекса
+            const comments = count === 5 ? data(element).find('td:eq(2)').text().trim() : count === 5 ? 0 : "0"
             const torrent = {
-                // Заполняем параметры из заголовка
-                'Name': arrTitle[0].trim(),
-                'Id': torrentName.attr('href').replace(/.+id=/, ''),
-                'OriginalName': arrTitle[1].trim(),
-                'Year': arrTitle[2].trim(),
-                'Language': arrTitle[3].trim(),
-                'Format': arrTitle[4],
-                'Url': "https://kinozal.tv" + torrentName.attr('href'),
-                'Torrent': "https://dl.kinozal.tv" + data(element).find('.nam a').attr('href').replace(/details/, 'download'),
-                'Size': s.eq(1).text().trim(),
-                'Comments': s.eq(0).text().trim(),
-                // Раздает (Seeds)
-                'Seeds': data(element).find('.sl_s').text().trim(),
-                // Качает (Peers)
-                'Peers': data(element).find('.sl_p').text().trim(),
-                'Date': `${date[0]} ${date[2]}`
+                'Name': data(element).find('a:eq(2)').text().trim(),
+                'Id': data(element).find('a:eq(2)').attr('href').replace(/\/torrent\//g, "").replace(/\/.+/g, ""),
+                'Url': "https://rutor.info" + data(element).find('a:eq(2)').attr('href'),
+                'Torrent': "https:" + data(element).find('a:eq(0)').attr('href'),
+                'Hash': data(element).find('a:eq(1)').attr('href').replace(/.+btih:|&.+/g, ''),
+                'Size': data(element).find(`td:eq(${sizeIndex})`).text().trim(),
+                'Comments': comments,
+                'Seeds': data(element).find('.green').text().trim(),
+                'Peers': data(element).find('.red').text().trim(),
+                // 'Date': data(element).find('td:eq(0)').text().trim(),
+                // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
+                'Date': formatDate(
+                    data(element).find('td:eq(0)').text().trim().replace(/\s+/g, ' '),
+                    " "
+                )
             }
             torrents.push(torrent)
         }
     })
     if (torrents.length === 0) {
         return { 'Result': 'No matches were found for your title' }
-    } else {
-        return torrents
-    }
-}
-
-// RuTor Puppeteer
-async function RuTorFilesPuppeteer(query) {
-    const torrents = []
-    // Запускаем браузер и открываем новую пустую страницу 
-    const browser = await puppeteer.launch({
-        headless: true // Скрыть отображение браузера (по умолчанию)
-    })
-    const page = await browser.newPage()
-    // Открываем страницу с ожиданием загрузки 60 сек
-    await page.goto(`https://rutor.info/torrent/${query}`, {
-        timeout: 60000,
-        waitUntil: 'domcontentloaded' // ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
-    })
-    // await page.goto(`https://rutor.info/torrent/970650`, {timeout: 60000})
-    await page.evaluate(() => {
-        // Находим кнопку по JavaScript пути и нажимаем на нее
-        // document.querySelector("#details > tbody > tr:nth-child(11) > td.header > span").click()
-        // document.querySelector("#details > tbody > tr:nth-child(12) > td.header > span").click()
-        // Находим все кпноки
-        const buttons = document.querySelectorAll('span.button')
-        // Проходимся по найденным кнопкам
-        buttons.forEach(button => {
-            // Проверяем, содержит ли кнопка текст "Файлы" и нажимаем на нее
-            if (button.textContent.includes('Файлы')) {
-                button.click()
-            }
-        })
-    })
-    // Дождаться загрузки результатов
-    // const elementHandle = await page.waitForSelector('#files')
-    // Ищем элемент с идентификатором #files и проверяем, что элемент существует его содержимое не содержит текст загрузки
-    await page.waitForFunction(() => {
-        const element = document.querySelector('#files')
-        return element && !element.textContent.includes("Происходит загрузка списка файлов...")
-    }, {
-        timeout: 30000, // Ожидать результат 30 секунд
-        polling: 50   // Проверка каждые 50мс (по умолчанию 100мс)
-    })
-    // Забираем результат после успешной проверки
-    const elementContent = await page.evaluate(() => {
-        const element = document.querySelector('#files')
-        return element ? element.textContent : null
-    })
-    // Закрываем браузер
-    await browser.close()
-    // Разбиваем на массив из строк исключая первую строку
-    const lines = elementContent.trim().split('\n').slice(1)
-    // Регулярное выражение для разбиения строки на название и размер
-    const regex = /^(.+?)([\d.]+\s*\S+)\s+\((\d+)\)$/
-    for (const line of lines) {
-        const match = line.match(regex)
-        const torrent = {
-            'Name': match[1],
-            'Size': match[2]
-        }
-        torrents.push(torrent)
-    }
-    if (torrents.length === 0) {
-        return { 'Result': 'No matches were found for your ID' }
     } else {
         return torrents
     }
@@ -917,82 +923,135 @@ async function RuTorFiles(query) {
     if (torrents.length === 0) {
         return { 'Result': 'No matches were found for your ID' }
     } else {
-        return {
-            Name: name,
-            Url: url,
-            Hash: Hash,
-            Magnet: addTrackerList(Hash,"RuTor"),
-            Torrent: torrent_url,
-            IMDb_link: imdb,
-            Kinopoisk_link: kp,
-            IMDb_id: imdb.replace(/[^0-9]/g, ''),
-            Kinopoisk_id: kp.replace(/[^0-9]/g, ''),
-            Rating: rating,
-            Category: category,
-            Seeds: seeds,
-            Peers: peers,
-            Seed_Date: seed_date,
-            Add_Date: add_date,
-            Size: size,
-            Files: torrents
-        }
+        return [
+            {
+                Name: name,
+                Url: url,
+                Hash: Hash,
+                Magnet: addTrackerList(Hash,"RuTor"),
+                Torrent: torrent_url,
+                IMDb_link: imdb,
+                Kinopoisk_link: kp,
+                IMDb_id: imdb.replace(/[^0-9]/g, ''),
+                Kinopoisk_id: kp.replace(/[^0-9]/g, ''),
+                Rating: rating,
+                Category: category,
+                Seeds: seeds,
+                Peers: peers,
+                Seed_Date: seed_date,
+                Add_Date: add_date,
+                Size: size,
+                Files: torrents
+            }
+        ]
     }
 }
 
-// RuTor
-async function RuTor(query, page) {
-    const urls = [
-        'https://rutor.info/search/',
-        'https://rutor.is/search/',
-        // 'https://rutor.org/search/'
-    ]
-    let checkUrl = false
+// RuTor Puppeteer
+async function RuTorFilesPuppeteer(query) {
+    const torrents = []
+    // Запускаем браузер и открываем новую пустую страницу 
+    const browser = await puppeteer.launch({
+        headless: true // Скрыть отображение браузера (по умолчанию)
+    })
+    const page = await browser.newPage()
+    // Открываем страницу с ожиданием загрузки 60 сек
+    await page.goto(`https://rutor.info/torrent/${query}`, {
+        timeout: 60000,
+        waitUntil: 'domcontentloaded' // ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
+    })
+    // await page.goto(`https://rutor.info/torrent/970650`, {timeout: 60000})
+    await page.evaluate(() => {
+        // Находим кнопку по JavaScript пути и нажимаем на нее
+        // document.querySelector("#details > tbody > tr:nth-child(11) > td.header > span").click()
+        // document.querySelector("#details > tbody > tr:nth-child(12) > td.header > span").click()
+        // Находим все кпноки
+        const buttons = document.querySelectorAll('span.button')
+        // Проходимся по найденным кнопкам
+        buttons.forEach(button => {
+            // Проверяем, содержит ли кнопка текст "Файлы" и нажимаем на нее
+            if (button.textContent.includes('Файлы')) {
+                button.click()
+            }
+        })
+    })
+    // Дождаться загрузки результатов
+    // const elementHandle = await page.waitForSelector('#files')
+    // Ищем элемент с идентификатором #files и проверяем, что элемент существует его содержимое не содержит текст загрузки
+    await page.waitForFunction(() => {
+        const element = document.querySelector('#files')
+        return element && !element.textContent.includes("Происходит загрузка списка файлов...")
+    }, {
+        timeout: 30000, // Ожидать результат 30 секунд
+        polling: 50   // Проверка каждые 50мс (по умолчанию 100мс)
+    })
+    // Забираем результат после успешной проверки
+    const elementContent = await page.evaluate(() => {
+        const element = document.querySelector('#files')
+        return element ? element.textContent : null
+    })
+    // Закрываем браузер
+    await browser.close()
+    // Разбиваем на массив из строк исключая первую строку
+    const lines = elementContent.trim().split('\n').slice(1)
+    // Регулярное выражение для разбиения строки на название и размер
+    const regex = /^(.+?)([\d.]+\s*\S+)\s+\((\d+)\)$/
+    for (const line of lines) {
+        const match = line.match(regex)
+        const torrent = {
+            'Name': match[1],
+            'Size': match[2]
+        }
+        torrents.push(torrent)
+    }
+    if (torrents.length === 0) {
+        return { 'Result': 'No matches were found for your ID' }
+    } else {
+        return torrents
+    }
+}
+
+// NoNameClub
+async function NoNameClub(query, page) {
+    const p = getPage(page)
+    const url = `https://nnmclub.to/forum/tracker.php?nm=${query}&start=${p}`
     const torrents = []
     let html
-    for (const u of urls) {
-        const url = `${u}${page}/0/300/0/${query}`
-        try {
-            const response = await axiosProxy.get(url, {
-                responseType: 'arraybuffer',
-                headers: headers
-            })
-            // Декодируем HTML-страницу в кодировку UTF-8
-            html = iconv.decode(response.data, 'utf8')
-            checkUrl = true
-            console.log(`${getCurrentTime()} [Request] ${url}`)
-            break
-        } catch (error) {
-            console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        }
-    }
-    if (!checkUrl) {
-        return { 'Result': `Server is not available` }
+    try {
+        const response = await axiosProxy.get(url, {
+            responseType: 'arraybuffer',
+            headers: headers
+        })
+        // Декодируем HTML-страницу в кодировку win-1251
+        html = iconv.decode(response.data, 'win1251')
+        console.log(`${getCurrentTime()} [Request] ${url}`)
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return { 'Result': `The ${error.hostname} server is not available` }
     }
     const data = cheerio.load(html)
-    data('table:eq(2) tbody tr').each((_, element) => {
-        const checkData = data(element).find('a:eq(2)')
+    data('.forumline:eq(1) tbody tr').each((_, element) => {
+        const checkData = data(element).find('.genmed a b').text().trim()
         if (checkData.length > 0) {
-            // Проверяем количетсов элементов 'td'
-            const count = data(element).find('td').length
-            // Если 5 элементов, то 3-й индекс содержит размер, если 4, то 2-й индекс
-            const sizeIndex = count === 5 ? 3 : count === 4 ? 2 : 1
-            // Если 5 элементов, то есть комментарии и забираем их количество из 2 индекса
-            const comments = count === 5 ? data(element).find('td:eq(2)').text().trim() : count === 5 ? 0 : "0"
+            // Получаем количество элементов с классом 'gensmall'
+            const count = data(element).find('.gensmall').length
+            // Определяем индекс для выбора размера
+            const sizeIndex = count === 4 ? 1 : count === 5 ? 2 : 1
+            // Исключаем первый элемент байт из массива (slice(1))
+            const size = data(element).find(`.gensmall:eq(${sizeIndex})`).text().trim().split(' ', 3).slice(1).join(' ')
             const torrent = {
-                'Name': data(element).find('a:eq(2)').text().trim(),
-                'Id': data(element).find('a:eq(2)').attr('href').replace(/\/torrent\//g, "").replace(/\/.+/g, ""),
-                'Url': "https://rutor.info" + data(element).find('a:eq(2)').attr('href'),
-                'Torrent': "https:" + data(element).find('a:eq(0)').attr('href'),
-                'Hash': data(element).find('a:eq(1)').attr('href').replace(/.+btih:|&.+/g, ''),
-                'Size': data(element).find(`td:eq(${sizeIndex})`).text().trim(),
-                'Comments': comments,
-                'Seeds': data(element).find('.green').text().trim(),
-                'Peers': data(element).find('.red').text().trim(),
-                // 'Date': data(element).find('td:eq(0)').text().trim(),
-                // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
-                'Date': formatDate(
-                    data(element).find('td:eq(0)').text().trim().replace(/\s+/g, ' '),
-                    " "
+                'Name': data(element).find('.genmed a b').text().trim(),
+                'Id': data(element).find('.genmed a').attr('href').replace(/.+t=/, ''),
+                'Url': "https://nnmclub.to/forum/" + data(element).find('a:eq(1)').attr('href'),
+                'Torrent': "https://nnmclub.to/forum/" + data(element).find('a:eq(3)').attr('href'),
+                'Size': size,
+                'Comments': data(element).find(`.gensmall:eq(${sizeIndex + 1})`).text().trim(),
+                'Type': data(element).find('.gen').text().trim(),
+                'Seeds': data(element).find('.seedmed').text().trim(),
+                'Peers': data(element).find('.leechmed').text().trim(),
+                // Забираем и преобразуем timestamp
+                'Date': unixTimestamp(
+                    data(element).find(`.gensmall:eq(${sizeIndex + 2})`).text().trim().split(' ')[0]
                 )
             }
             torrents.push(torrent)
@@ -1172,84 +1231,33 @@ async function NoNameClubID(query) {
         }
         torrents.push(torrent)
     })
-    return {
-        Name: Name,
-        Url: url,
-        Hash: Hash,
-        Magnet: addTrackerList(Hash,"NoNameClub"),
-        Torrent: Torrent,
-        IMDb_link: imdb,
-        Kinopoisk_link: kp,
-        IMDb_id: imdb.replace(/[^0-9]/g, ''),
-        Kinopoisk_id: kp.replace(/[^0-9]/g, ''),
-        Release: Release,
-        Type: Type,
-        Directer: Directer,
-        Actors: Actors,
-        Description: Description,
-        Duration: Duration.replace(/~/, ''),
-        Video_Quality: videoQuality,
-        Video: Video,
-        Audio: Audio,
-        Registration: Registration,
-        Rating: ratingNum,
-        Votes: votesCount,
-        Size: Size,
-        Files: torrents
-    }
-}
-
-// NoNameClub
-async function NoNameClub(query, page) {
-    const p = getPage(page)
-    const url = `https://nnmclub.to/forum/tracker.php?nm=${query}&start=${p}`
-    const torrents = []
-    let html
-    try {
-        const response = await axiosProxy.get(url, {
-            responseType: 'arraybuffer',
-            headers: headers
-        })
-        // Декодируем HTML-страницу в кодировку win-1251
-        html = iconv.decode(response.data, 'win1251')
-        console.log(`${getCurrentTime()} [Request] ${url}`)
-    } catch (error) {
-        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return { 'Result': `The ${error.hostname} server is not available` }
-    }
-    const data = cheerio.load(html)
-    data('.forumline:eq(1) tbody tr').each((_, element) => {
-        const checkData = data(element).find('.genmed a b').text().trim()
-        if (checkData.length > 0) {
-            // Получаем количество элементов с классом 'gensmall'
-            const count = data(element).find('.gensmall').length
-            // Определяем индекс для выбора размера
-            const sizeIndex = count === 4 ? 1 : count === 5 ? 2 : 1
-            // Исключаем первый элемент байт из массива (slice(1))
-            const size = data(element).find(`.gensmall:eq(${sizeIndex})`).text().trim().split(' ', 3).slice(1).join(' ')
-            const torrent = {
-                'Name': data(element).find('.genmed a b').text().trim(),
-                'Id': data(element).find('.genmed a').attr('href').replace(/.+t=/, ''),
-                'Url': "https://nnmclub.to/forum/" + data(element).find('a:eq(1)').attr('href'),
-                'Torrent': "https://nnmclub.to/forum/" + data(element).find('a:eq(3)').attr('href'),
-                'Size': size,
-                'Comments': data(element).find(`.gensmall:eq(${sizeIndex + 1})`).text().trim(),
-                'Type': data(element).find('.gen').text().trim(),
-                'Seeds': data(element).find('.seedmed').text().trim(),
-                'Peers': data(element).find('.leechmed').text().trim(),
-                // Забираем и преобразуем timestamp
-                'Date': unixTimestamp(
-                    data(element).find(`.gensmall:eq(${sizeIndex + 2})`).text().trim().split(' ')[0]
-                )
-            }
-            torrents.push(torrent)
+    return [
+        {
+            Name: Name,
+            Url: url,
+            Hash: Hash,
+            Magnet: addTrackerList(Hash,"NoNameClub"),
+            Torrent: Torrent,
+            IMDb_link: imdb,
+            Kinopoisk_link: kp,
+            IMDb_id: imdb.replace(/[^0-9]/g, ''),
+            Kinopoisk_id: kp.replace(/[^0-9]/g, ''),
+            Release: Release,
+            Type: Type,
+            Directer: Directer,
+            Actors: Actors,
+            Description: Description,
+            Duration: Duration.replace(/~/, ''),
+            Video_Quality: videoQuality,
+            Video: Video,
+            Audio: Audio,
+            Registration: Registration,
+            Rating: ratingNum,
+            Votes: votesCount,
+            Size: Size,
+            Files: torrents
         }
-    })
-    if (torrents.length === 0) {
-        return { 'Result': 'No matches were found for your title' }
-    } else {
-        return torrents
-    }
+    ]
 }
 
 // FastsTorrent
@@ -1283,59 +1291,111 @@ async function FastsTorrent(query) {
     }
 }
 
-// Express Server
+// Список провайдеров для конечной точки provider/list
+const providerList = {
+    "Provider_List": [
+        {
+            "Provider": "RuTracker",
+            "Url": "https://rutracker.org"
+        },
+        {
+            "Provider": "Kinozal",
+            "Url": "https://kinozal.tv"
+        },
+        {
+            "Provider": "RuTor",
+            "Url": "https://rutor.info"
+        },
+        {
+            "Provider": "NoNameClub",
+            "Url": "https://nnmclub.to"
+        }
+    ]
+}
+
+// Создание экземпляра Express
 const web = express()
-web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
+
+// Опции для Swagger
+const options = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'TorAPI',
+            version: '0.3.0',
+            description: 'API documentation for TorAPI. Unofficial API (backend) for RuTracker, Kinozal, RuTor, NoNameClub and other torrent trackers.',
+            contact: {
+                name: "Alex Kup (Lifailon)",
+                url: "https://github.com/Lifailon/TorAPI"
+            },
+        },
+    },
+    apis: ['./swagger.js']
+}
+
+// Генерация спецификации Swagger
+const specs = swaggerJsdoc(options)
+
+// Middleware для логирования подключений к Swagger
+web.use((req, res, next) => {
+    console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [Request] Endpoint: ${req.path}`)
+    return next()
+})
+
+// Конечная точка для Swagger UI
+web.use('/docs', swaggerUi.serve, swaggerUi.setup(specs))
+
+// Обработка конечных точек
+//web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
+web.all('/:api?/:category?/:type?/:provider', async (req, res) => {
     // Проверяем методы (пропускаем только GET без учета регистра)
     if (req.method.toLowerCase() !== 'get') {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [405] Method not available. Endpoint: ${req.path}`)
         return res.status(405).send(`Method not available`)
     }
-    // Обрабатываем параметры
+    // Обработка path-параметров
     let endpoint = req.params.api
-    // Проверяем конечную точку
-    if (endpoint === undefined) {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not available. Endpoint: ${req.path}`)
-        return res.status(404).send(`Endpoint not available`)
-    }
+    // Проверяем стартовую конечную точку
     if (endpoint !== 'api') {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send(`Endpoint not found`)
     }
-    // Проверяем обязательные параметры
-    let provider = req.params.provider
-    if (provider === undefined) {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Provider not specified. Endpoint: ${req.path}`)
-        return res.status(400).send('Provider not specified')
+    // Второй обязательный path-параметр: search/provider
+    let category = req.params.category
+    if (category === undefined) {
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Endpoint not found. Endpoint: ${req.path}`)
+        return res.status(404).send('Endpoint not found')
     }
     // Опускаем регистр
-    provider = provider.toLowerCase()
-    // Конечная точка, которая возвращает список провайдеров
-    if (provider === "providers") {
+    category = category.toLowerCase()
+    let type = req.params.type
+    // Проверяем третий параметр (title/id)
+    if (type === undefined) {
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Endpoint not found. Endpoint: ${req.path}`)
+        return res.status(404).send('Endpoint not found')
+    }
+    // Конечная точка, возвращающая список провайдеров
+    if (category === "provider" && type === "list") {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
-        return res.json(
-            {
-                "Provider_List": [
-                    "RuTracker",
-                    "Kinozal",
-                    "RuTor",
-                    "NoNameClub"
-                ]
-            }
-        )
+        return res.json(providerList)
     }
-    // Проверяем, что запрос не пустой
-    let query = req.params.query
-    if (query === undefined) {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Search request not specified. Endpoint: ${req.path}`)
-        return res.status(400).send('Search request not specified')
+    if (type !== "title" && type !== "id") {
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Endpoint not found. Endpoint: ${req.path}`)
+        return res.status(404).send('Endpoint not found')
     }
+    // Проверяем последний обязательный параметр имени провайдера
+    let provider = req.params.provider
+    if (provider === undefined) {
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Endpoint not found. Endpoint: ${req.path}`)
+        return res.status(404).send('Endpoint not found')
+    }
+    // Обработка параметров из заголовка запроса:
+    let query = req.query.query
+    let page = req.query.page
+    let year = req.query.year
     // Кодируем запрос в формат URL (заменяется последовательностью процентов и двумя шестнадцатеричными числами, представляющими ASCII-код символа в кодировке UTF-8)
     query = encodeURIComponent(query)
-    // Обрабатываем остальные параметры
-    let page = req.params.page
-    let year = req.params.year
-    // Если параметр не был передан, присваиваем им значения по умолчанию
+    // Если необязательные параметры не были передан, присваиваем им значения по умолчанию
     if (page === undefined) {
         page = 0
     }
@@ -1346,12 +1406,8 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
     // Проверяем конечные точки провайдеров
     // ALL
-    if (provider === 'all') {
+    if (type === 'title' && provider === 'all') {
         try {
-            // const RuTrackerResult = await RuTracker(query, page)
-            // const KinozalResult = await Kinozal(query, page)
-            // const RuTorResult = await RuTor(query, page)
-            // const NoNameClubResult = await NoNameClub(query, page)
             // Параллельное выполнение:
             const [RuTrackerResult, KinozalResult, RuTorResult, NoNameClubResult] = await Promise.all([
                 RuTracker(query, page),
@@ -1372,20 +1428,8 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
             return res.status(400).json({ Result: 'No data' })
         }
     }
-    // RuTracker ID
-    else if (provider === 'rutracker' && /^\d{5,}$/.test(query)) {
-        try {
-            const result = await RuTrackerID(query)
-            return res.json(result)
-        } catch (error) {
-            console.error("Error:", error)
-            return res.status(400).json(
-                { Result: 'No data' }
-            )
-        }
-    }
-    // RuTracker
-    else if (provider === 'rutracker') {
+    // RuTracker Title
+    else if (type === 'title' && provider === 'rutracker') {
         try {
             const result = await RuTracker(query, page)
             return res.json(result)
@@ -1396,10 +1440,10 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
             )
         }
     }
-    // Kinozal ID
-    else if (provider === 'kinozal' && /^\d{5,}$/.test(query)) {
+    // RuTracker ID
+    else if (type === 'id' && provider === 'rutracker') {
         try {
-            const result = await KinozalID(query)
+            const result = await RuTrackerID(query)
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)
@@ -1408,8 +1452,8 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
             )
         }
     }
-    // Kinozal
-    else if (provider === 'kinozal') {
+    // Kinozal Title
+    else if (type === 'title' && provider === 'kinozal') {
         try {
             const result = await Kinozal(query, page, year)
             return res.json(result)
@@ -1420,8 +1464,32 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
             )
         }
     }
+    // Kinozal ID
+    else if (type === 'id' && provider === 'kinozal') {
+        try {
+            const result = await KinozalID(query)
+            return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                { Result: 'No data' }
+            )
+        }
+    }
+    // RuTor Title
+    else if (type === 'title' && provider === 'rutor') {
+        try {
+            const result = await RuTor(query, page)
+            return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                { Result: 'No data' }
+            )
+        }
+    }
     // RuTor ID
-    else if (provider === 'rutor' && /^\d{5,}$/.test(query)) {
+    else if (type === 'id' && provider === 'rutor') {
         try {
             // const result = await RuTorFilesPuppeteer(query)
             const result = await RuTorFiles(query)
@@ -1433,32 +1501,8 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
             )
         }
     }
-    // RuTor
-    else if (provider === 'rutor') {
-        try {
-            const result = await RuTor(query, page)
-            return res.json(result)
-        } catch (error) {
-            console.error("Error:", error)
-            return res.status(400).json(
-                { Result: 'No data' }
-            )
-        }
-    }
-    // NoNameClub ID
-    else if (provider === 'nonameclub' && /^\d{5,}$/.test(query)) {
-        try {
-            const result = await NoNameClubID(query)
-            return res.json(result)
-        } catch (error) {
-            console.error("Error:", error)
-            return res.status(400).json(
-                { Result: 'No data' }
-            )
-        }
-    }
-    // NoNameClub
-    else if (provider === 'nonameclub') {
+    // NoNameClub Title
+    else if (type === 'title' && provider === 'nonameclub') {
         try {
             const result = await NoNameClub(query, page)
             return res.json(result)
@@ -1469,8 +1513,20 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
             )
         }
     }
+    // NoNameClub ID
+    else if (type === 'id' && provider === 'nonameclub') {
+        try {
+            const result = await NoNameClubID(query)
+            return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                { Result: 'No data' }
+            )
+        }
+    }
     // FastsTorrent
-    else if (provider === 'faststorrent') {
+    else if (type === 'title' && provider === 'faststorrent') {
         try {
             const result = await FastsTorrent(query)
             return res.json(result)
@@ -1487,7 +1543,7 @@ web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
     }
 })
 
-// Express Start
+// Запуск Express
 const port = argv.port
 web.listen(port)
 console.log(`Server is running on port: ${port}`)

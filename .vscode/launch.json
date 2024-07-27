@@ -4,10 +4,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch TorAPI",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
+            "name": "On port 2024 without proxy",
             "program": "${workspaceFolder}\\main.js",
             "args": [
                 "--port",
