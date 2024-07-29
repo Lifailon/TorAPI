@@ -25,10 +25,10 @@ Unofficial API (backend) for RuTracker, Kinozal, RuTor, NoNameClub and other tor
 
 This project is inspired by ✨ [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) for Russian-speaking torrent providers.
 
-Two types of queries are supported:
+Implemented:
 
-- **Search by title**, in which we will get all available distributions from the specified torrent tracker (its ID and brief information with a link to download the torrent file).
-- **Search by ID** of the specified provider, where we will get additional information: hash for direct download through torrent-client, links to Kinopoisk and IMDb databases, detailed description of the movie or TV series, as well as the content of the torrent-file (list and size of files). 
+- **Search by title** to get all available distributions from a specified torrent tracker (its ID and brief information with a link to download the torrent file) or from all trackers at once.
+- **Search by ID** of the specified provider to get additional information (hash for direct download via torrent-client, links to Kinopoisk and IMDb databases, detailed description of the movie or series, as well as the content of the torrent-distribution).
 
 📄 Released under the [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
 
@@ -43,7 +43,7 @@ Two types of queries are supported:
 | [RuTor](https://rutor.info)         | 2       | No           | Yes          |
 | [NoNameClub](https://nnmclub.to)    | 1       | No           | Yes          |
 
-💡 Registration is required only when downloading a torrent file via a direct link.
+Registration is required only when downloading a torrent file via a direct link.
 
 All distributions when searching by ID contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to download content and generate a torrent file using any torrent client.
 
