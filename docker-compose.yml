@@ -3,10 +3,16 @@ services:
   torapi:
     image: lifailon/torapi:latest
     container_name: TorAPI
+    environment:
+      - PORT=${PORT}
+      - PROXY_ADDRESS=${PROXY_ADDRESS}
+      - PROXY_PORT=${PROXY_PORT}
+      - USERNAME=${USERNAME}
+      - PASSWORD=${PASSWORD}
+    ports:
+      - "${PORT}:${PORT}"
     volumes:
       - torapi:/rotapi
-    ports:
-      - "8443:8443"
     restart: unless-stopped
 volumes:
   torapi:
