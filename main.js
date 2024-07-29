@@ -527,7 +527,7 @@ async function RuTrackerID(query) {
             Directer: Directer.replace(/:\s/g, ''),
             Actors: Actors.replace(/:\s/g, ''),
             Description: Description.replace(/:\s/g, ''),
-            Video_Quality: videoQuality.replace(/:\s/g, ''),
+            Quality: videoQuality.replace(/:\s/g, ''),
             Video: Video.replace(/:\s/g, ''),
             Files: torrents
         }
@@ -585,7 +585,7 @@ async function Kinozal(query, page, year) {
                 // Заполняем параметры из заголовка
                 'Name': arrTitle[0].trim(),
                 'Id': torrentName.attr('href').replace(/.+id=/, ''),
-                'OriginalName': arrTitle[1].trim(),
+                'Original_Name': arrTitle[1].trim(),
                 'Year': arrTitle[2].trim(),
                 'Language': arrTitle[3].trim(),
                 'Format': arrTitle[4],
@@ -691,7 +691,16 @@ async function KinozalID(query) {
     }
     let Hash = dataFiles('li').eq(0).text().replace(/.+:/, '').trim()
     const torrent = {
-        'Original': (() => {
+        'Name': (() => {
+            const element = data('div.mn1_content .bx1 b:contains("Название:")')[0]
+            if (element) {
+                const nextNode = element.nextSibling
+                return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
+            } else {
+                return ''
+            }
+        })(),
+        'Original_Name': (() => {
             // Обращаемся к элементу b по наименованию контейнера
             const element = data('div.mn1_content .bx1 b:contains("Оригинальное название:")')[0]
             // Проверяем наличие контейнера (что оно не является null или undefined)
@@ -704,20 +713,11 @@ async function KinozalID(query) {
                 return ''
             }
         })(),
-        'Title': (() => {
-            const element = data('div.mn1_content .bx1 b:contains("Название:")')[0]
-            if (element) {
-                const nextNode = element.nextSibling
-                return nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue.trim() : ''
-            } else {
-                return ''
-            }
-        })(),
         'Url': url,
         'Hash': Hash,
         'Magnet': addTrackerList(Hash,"Kinozal"),
-        'IMDb': imdb,
-        'Kinopoisk': kp,
+        'IMDb_link': imdb,
+        'Kinopoisk_link': kp,
         'IMDB_id': imdb.replace(/[^0-9]/g, ''),
         'Kinopoisk_id': kp.replace(/[^0-9]/g, ''),
         // Находим нужный контейнер который содержит год выпуска и забираем текстовое значение следующего узла
@@ -1248,7 +1248,7 @@ async function NoNameClubID(query) {
             Actors: Actors,
             Description: Description,
             Duration: Duration.replace(/~/, ''),
-            Video_Quality: videoQuality,
+            Quality: videoQuality,
             Video: Video,
             Audio: Audio,
             Registration: Registration,

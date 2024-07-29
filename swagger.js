@@ -117,7 +117,7 @@
  *                     type: string
  *                   Id:
  *                     type: string
- *                   OriginalName:
+ *                   Original_Name:
  *                     type: string
  *                   Year:
  *                     type: string
@@ -338,7 +338,7 @@
  *                         type: string
  *                       Id:
  *                         type: string
- *                       OriginalName:
+ *                       Original_Name:
  *                         type: string
  *                       Year:
  *                         type: string
@@ -470,7 +470,7 @@
  *                     type: string
  *                   Description:
  *                     type: string
- *                   Video_Quality:
+ *                   Quality:
  *                     type: string
  *                   Video:
  *                     type: string
@@ -509,9 +509,9 @@
  *               items:
  *                 type: object
  *                 properties:
- *                   Original:
+ *                   Name:
  *                     type: string
- *                   Title:
+ *                   Original_Name:
  *                     type: string
  *                   Url:
  *                     type: string
@@ -519,9 +519,9 @@
  *                     type: string
  *                   Magnet:
  *                     type: string
- *                   IMDb:
+ *                   IMDb_link:
  *                     type: string
- *                   Kinopoisk:
+ *                   Kinopoisk_link:
  *                     type: string
  *                   IMDb_id:
  *                     type: string
@@ -705,7 +705,7 @@
  *                     type: string
  *                   Duration:
  *                     type: string
- *                   Video_Quality:
+ *                   Quality:
  *                     type: string
  *                   Video:
  *                     type: string
