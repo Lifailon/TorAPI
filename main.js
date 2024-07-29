@@ -1345,9 +1345,8 @@ web.use((req, res, next) => {
 // Конечная точка для Swagger UI
 web.use('/docs', swaggerUi.serve, swaggerUi.setup(specs))
 
-// Обработка конечных точек
-//web.all('/:api?/:provider?/:query?/:page?/:year?', async (req, res) => {
-web.all('/:api?/:category?/:type?/:provider', async (req, res) => {
+// Обработка всех остальных конечных точек
+web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     // Проверяем методы (пропускаем только GET без учета регистра)
     if (req.method.toLowerCase() !== 'get') {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [405] Method not available. Endpoint: ${req.path}`)
@@ -1369,7 +1368,7 @@ web.all('/:api?/:category?/:type?/:provider', async (req, res) => {
     // Опускаем регистр
     category = category.toLowerCase()
     let type = req.params.type
-    // Проверяем третий параметр (title/id)
+    // Проверяем третий path-параметр (title/id for search or list for provider)
     if (type === undefined) {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
