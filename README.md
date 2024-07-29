@@ -82,6 +82,8 @@ npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090 --usernam
 
 ## 🐳 Docker
 
+### Docker Hub
+
 Upload the image and run the container from the [Docker Hub](https://hub.docker.com/repository/docker/lifailon/torapi/general):
 
 ```shell
@@ -98,6 +100,20 @@ docker run -d --name TorAPI -p 8443:8443 \
   -e PASSWORD="TorAPI" \
   lifailon/torapi:latest
 ```
+
+You can download and use the [docker-compose](docker-compose.yml) file to build the container from Docker Hub:
+
+```shell
+curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/docker-compose.yml
+```
+
+Create an environment variables file [.env](.env) and build the container:
+
+```shell
+docker-compose up -d
+```
+
+### Dockerfile
 
 You can use project files to build from [dockerfile](dockerfile):
 
@@ -120,10 +136,4 @@ Build the image and run the container:
 ```shell
 docker build -t torapi .
 docker run -d --name TorAPI -p 8443:8443 torapi
-```
-
-Or use [docker-compose](docker-compose.yml). Edit the environment variables file (`.env`) and create a container:
-
-```shell
-docker-compose up -d
 ```
