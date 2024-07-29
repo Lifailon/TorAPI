@@ -88,13 +88,42 @@ Upload the image and run the container from the [Docker Hub](https://hub.docker.
 docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
 ```
 
+If you are using a proxy server:
+
+```shell
+docker run -d --name TorAPI -p 8443:8443 \
+  -e PROXY_ADDRESS="192.168.3.100" \
+  -e PROXY_PORT="9090" \
+  -e USERNAME="TorAPI" \
+  -e PASSWORD="TorAPI" \
+  lifailon/torapi:latest
+```
+
 You can use project files to build from [dockerfile](dockerfile):
 
 ```shell
 git clone https://github.com/Lifailon/TorAPI
 cd TorAPI
+```
+
+When using a proxy, edit the variables in dockerfile:
+
+```shell
+ENV PROXY_ADDRESS="192.168.3.100"
+ENV PROXY_PORT="9090"
+ENV USERNAME="TorAPI"
+ENV PASSWORD="TorAPI"
+```
+
+Build the image and run the container:
+
+```shell
 docker build -t torapi .
 docker run -d --name TorAPI -p 8443:8443 torapi
 ```
 
-Or use [docker-compose](docker-compose.yml).
+Or use [docker-compose](docker-compose.yml). Edit the environment variables file (`.env`) and create a container:
+
+```shell
+docker-compose up -d
+```
