@@ -390,6 +390,71 @@ Get a list of available providers:
 🔹 `curl -s http://localhost:8443/api/search/id/rutracker?query=6489937`
 
 ```json
+[
+  {
+    "Name": "Новичок / Новобранец / The Rookie / Сезон: 6 / Серии: 1-10 из 10 (Билл Роу, Майкл Гои) [2024, США, боевик, драма, криминал, WEB-DLRip] MVO (LostFilm) + Original",
+    "Url": "https://rutracker.org/forum/viewtopic.php?t=6489937",
+    "Hash": "3348D0A58DD8F5B251C7A361C9D235549260BA60",
+    "Magnet": "magnet:?xt=urn:btih:3348D0A58DD8F5B251C7A361C9D235549260BA60&tr=http%3A%2F%2Fretracker.local%2Fannounce&tr=http%3A%2F%2Fbt.t-ru.org%2Fann&tr=http%3A%2F%2Fbt2.t-ru.org%2Fann&tr=http%3A%2F%2Fbt3.t-ru.org%2Fann&tr=http%3A%2F%2Fbt4.t-ru.org%2Fann",
+    "Torrent": "https://rutracker.org/forum/dl.php?t=6489937",
+    "IMDb_link": "https://www.imdb.com/title/tt7587890/",
+    "Kinopoisk_link": "https://www.kinopoisk.ru/series/1142153/",
+    "IMDb_id": "7587890",
+    "Kinopoisk_id": "1142153",
+    "Year": "2024",
+    "Release": "США",
+    "Type": "боевик, драма, криминал",
+    "Duration": "00:43:00",
+    "Audio": "Профессиональный (многоголосый закадровый) -",
+    "Directer": "Билл Роу, Майкл Гои",
+    "Actors": "Нэйтан Филлион, Мелисса О’Нил, Эрик Винтер, Дженна Деван, Шон Эшмор, Лиззет Чавез, Мекиа Кокс, Алисса Диас, Тру Валентино, Ричард Т. Джонс ,Бриджет Риган, Трой Кастанеда, Мэллори Томпсон, Алекс Элин Гойко, Констанс Эджума",
+    "Description": "Начинать с чистого листа всегда нелегко, особенно для уроженца маленького городка Джона Нолана, который после перевернувшего его жизнь случая решил воплотить в жизнь давнюю мечту и вступить в ряды полиции Лос-Анджелеса. Возрастного новичка встречают с понятным скептицизмом, однако жизненный опыт, упорство и чувство юмора дают Джону преимущество.",
+    "Quality": "WEB-DLRip",
+    "Video": "XviD, 720x400 (16:9), 23.976 fps, 1600 Kbps",
+    "Files": [
+      {
+        "Name": "The.Rookie.S06E01.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "614.25 MB"
+      },
+      {
+        "Name": "The.Rookie.S06E02.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "615.56 MB"
+      },
+      {
+        "Name": "The.Rookie.S06E03.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "596.67 MB"
+      },
+      {
+        "Name": "The.Rookie.S06E04.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "614.88 MB"
+      },
+      {
+        "Name": "The.Rookie.S06E05.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "596.57 MB"
+      },
+      {
+        "Name": "The.Rookie.S06E06.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "614.89 MB"
+      },
+      {
+        "Name": "The.Rookie.S06E07.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "607.10 MB"
+      },
+      {
+        "Name": "The.Rookie.S06E08.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "610.67 MB"
+      },
+      {
+        "Name": "The.Rookie.S06E09.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "614.24 MB"
+      },
+      {
+        "Name": "The.Rookie.S06E10.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "611.32 MB"
+      }
+    ]
+  }
+]
 ```
 
 #### Kinozal
@@ -433,44 +498,44 @@ Get a list of available providers:
     "Update_Date": "24 мая 2024 в 14:31",
     "Files": [
       {
-        "name": "The.Rookie.S06E01.WEB-DLRip.RGzsRutracker.avi",
-        "size": "614 МБ"
+        "Name": "The.Rookie.S06E01.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "614 МБ"
       },
       {
-        "name": "The.Rookie.S06E02.WEB-DLRip.RGzsRutracker.avi",
-        "size": "616 МБ"
+        "Name": "The.Rookie.S06E02.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "616 МБ"
       },
       {
-        "name": "The.Rookie.S06E03.WEB-DLRip.RGzsRutracker.avi",
-        "size": "597 МБ"
+        "Name": "The.Rookie.S06E03.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "597 МБ"
       },
       {
-        "name": "The.Rookie.S06E04.WEB-DLRip.RGzsRutracker.avi",
-        "size": "615 МБ"
+        "Name": "The.Rookie.S06E04.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "615 МБ"
       },
       {
-        "name": "The.Rookie.S06E05.WEB-DLRip.RGzsRutracker.avi",
-        "size": "597 МБ"
+        "Name": "The.Rookie.S06E05.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "597 МБ"
       },
       {
-        "name": "The.Rookie.S06E06.WEB-DLRip.RGzsRutracker.avi",
-        "size": "615 МБ"
+        "Name": "The.Rookie.S06E06.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "615 МБ"
       },
       {
-        "name": "The.Rookie.S06E07.WEB-DLRip.RGzsRutracker.avi",
-        "size": "607 МБ"
+        "Name": "The.Rookie.S06E07.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "607 МБ"
       },
       {
-        "name": "The.Rookie.S06E08.WEB-DLRip.RGzsRutracker.avi",
-        "size": "611 МБ"
+        "Name": "The.Rookie.S06E08.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "611 МБ"
       },
       {
-        "name": "The.Rookie.S06E09.WEB-DLRip.RGzsRutracker.avi",
-        "size": "614 МБ"
+        "Name": "The.Rookie.S06E09.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "614 МБ"
       },
       {
-        "name": "The.Rookie.S06E10.WEB-DLRip.RGzsRutracker.avi",
-        "size": "611 МБ"
+        "Name": "The.Rookie.S06E10.WEB-DLRip.RGzsRutracker.avi",
+        "Size": "611 МБ"
       }
     ]
   }

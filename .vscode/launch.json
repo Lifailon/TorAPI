@@ -4,11 +4,27 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "On port 2024 without proxy",
+            "name": "Running on port 2024",
             "program": "${workspaceFolder}\\main.js",
             "args": [
                 "--port",
                 "2024"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Running using Proxy",
+            "program": "${workspaceFolder}\\main.js",
+            "args": [
+                "--proxyAddress",
+                "192.168.3.100",
+                "--proxyPort",
+                "9090",
+                "--username",
+                "TorAPI",
+                "--password",
+                "TorAPI"
             ]
         }
     ]

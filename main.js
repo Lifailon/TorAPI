@@ -427,13 +427,31 @@ async function RuTrackerID(query) {
     })()
     // Puppeteer
     if (RuTrackerFiles == true) {
-        // Запускаем браузер
-        const browser = await puppeteer.launch({
+        const launchOptions = {
             // Скрыть отображение браузера (по умолчанию)
-            headless: true
-        })
-        // Открываем новую пустую страницу 
+            headless: true,
+            // Опции запуска браузера без песочницы, которая изолирует процессы от операционной системы (для работы через Docker)
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-quic'
+            ]
+        }
+        // Добавляем Proxy в конфигурацию запуска браузера
+        if (argv.proxyAddress && argv.proxyPort) {
+            launchOptions.args.push(`--proxy-server=http://${argv.proxyAddress}:${argv.proxyPort}`)
+        }
+        // Запускаем браузер
+        const browser = await puppeteer.launch(launchOptions);
+        // Открываем новую пустую страницу
         const page = await browser.newPage()
+        // Авторизация в Proxy
+        if (argv.username && argv.password) {
+            await page.authenticate({
+                username: argv.username,
+                password: argv.password
+            })
+        }
         // Устанавливаем Cookie
         const cookies = [
             { name: '_ym_d', value: '1713608104', domain: '.rutracker.org', path: '/' },
@@ -503,8 +521,8 @@ async function RuTrackerID(query) {
             const fileName = dataFiles(element).find('b').text().trim()
             const fileSize = dataFiles(element).find('s').text().trim()
             torrents.push({
-                name: fileName,
-                size: fileSize
+                Name: fileName,
+                Size: fileSize
             })
         })
     }
@@ -660,8 +678,8 @@ async function KinozalID(query) {
             const fileName = dataFiles(element).text().trim()
             const fileSize = dataFiles(element).find('i').text().trim()
             torrentFiles.push({
-                name: fileName.split(' ').slice(0, -3).join(' '),
-                size: fileSize.replace(/ \(.+/, '')
+                Name: fileName.split(' ').slice(0, -3).join(' '),
+                Size: fileSize.replace(/ \(.+/, '')
             })
         })
     }

@@ -479,9 +479,9 @@
  *                     items:
  *                       type: object
  *                       properties:
- *                         name:
+ *                         Name:
  *                           type: string
- *                         size:
+ *                         Size:
  *                           type: string
  *       400:
  *         description: Bad request
@@ -578,9 +578,9 @@
  *                     items:
  *                       type: object
  *                       properties:
- *                         name:
+ *                         Name:
  *                           type: string
- *                         size:
+ *                         Size:
  *                           type: string
  *       400:
  *         description: Bad request
@@ -645,9 +645,9 @@
  *                     items:
  *                       type: object
  *                       properties:
- *                         name:
+ *                         Name:
  *                           type: string
- *                         size:
+ *                         Size:
  *                           type: string
  *       400:
  *         description: Bad request
@@ -724,9 +724,9 @@
  *                     items:
  *                       type: object
  *                       properties:
- *                         name:
+ *                         Name:
  *                           type: string
- *                         size:
+ *                         Size:
  *                           type: string
  *       400:
  *         description: Bad request
