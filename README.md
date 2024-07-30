@@ -62,6 +62,8 @@ npm start
 
 By default, the server will be launched on port `8443`.
 
+📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs`
+
 You can specify a different port:
 
 ```js
