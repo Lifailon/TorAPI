@@ -59,56 +59,74 @@ jobs:
 
         echo -e "Check jq version: $(jq --version) \n"
 
-        data=$(curl -s https://rutracker.org/forum/index.php | grep "https")
+        if ping -c 1 rutracker.org &> /dev/null; then
+          echo "RuTracker icmp test: true"
+        else
+          echo "RuTracker icmp test: false"
+        fi
+
+        data=$(curl -s --head https://rutracker.org | head -n 1)
+        echo "RuTracker status code: $data"
+
+        data=$(curl -s https://rutracker.org/forum/index.php | iconv -f Windows-1251 -t UTF-8 | grep "Правила")
         if [ -n "$data" ]; then
           echo "RuTracker data avaliable: true"
         else
           echo "RuTracker data avaliable: false"
         fi
 
-        if ping -c 1 rutracker.org &> /dev/null; then
-          echo -e "RuTracker icmp test: true \n"
+        echo
+
+        if ping -c 1 kinozal.tv &> /dev/null; then
+          echo "Kinozal icmp test: true"
         else
-          echo -e "RuTracker icmp test: false \n"
+          echo "Kinozal icmp test: false"
         fi
 
-        data=$(curl -s https://kinozal.tv | grep "https")
+        data=$(curl -s --head https://kinozal.tv | head -n 1)
+        echo "Kinozal status code: $data"
+
+        data=$(curl -s https://kinozal.tv | iconv -f Windows-1251 -t UTF-8 | grep "Правила")
         if [ -n "$data" ]; then
           echo "Kinozal data avaliable: true"
         else
           echo "Kinozal data avaliable: false"
         fi
 
-        if ping -c 1 kinozal.tv &> /dev/null; then
-          echo -e "Kinozal icmp test: true \n"
+        echo
+
+        if ping -c 1 rutor.info &> /dev/null; then
+          echo "RuTor icmp test: true"
         else
-          echo -e "Kinozal icmp test: false \n"
+          echo "RuTor icmp test: false"
         fi
 
-        data=$(curl -s https://rutor.info | grep "https")
+        data=$(curl -s --head https://rutor.info | head -n 1)
+        echo "RuTor status code: $data"
+
+        data=$(curl -s https://rutor.info | grep "Правила")
         if [ -n "$data" ]; then
           echo "RuTor data avaliable: true"
         else
           echo "RuTor data avaliable: false"
         fi
 
-        if ping -c 1 rutor.info &> /dev/null; then
-          echo -e "RuTor icmp test: true \n"
+        echo
+
+        if ping -c 1 nnmclub.to &> /dev/null; then
+          echo "NoNameClub icmp test: true"
         else
-          echo -e "RuTor icmp test: false \n"
+          echo "NoNameClub icmp test: false"
         fi
 
-        data=$(curl -s https://nnmclub.to | grep "https")
+        data=$(curl -s --head https://nnmclub.to | head -n 1)
+        echo "NoNameClub status code: $data"
+
+        data=$(curl -s https://nnmclub.to | iconv -f Windows-1251 -t UTF-8 | grep "Правила")
         if [ -n "$data" ]; then
           echo "NoNameClub data avaliable: true"
         else
           echo "NoNameClub data avaliable: false"
-        fi
-
-        if ping -c 1 nnmclub.to &> /dev/null; then
-          echo -e "NoNameClub icmp test: true \n"
-        else
-          echo -e "NoNameClub icmp test: false \n"
         fi
 
         successful=0
