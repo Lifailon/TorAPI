@@ -30,14 +30,16 @@ jobs:
 
     - name: Run API tests
       run: |
-        echo "Check jq version: $(jq --version)"
+        set +e
+
+        echo -e "Check jq version: $(jq --version) \n"
 
         successful=0
         failed=0
 
         echo -e "Search by Title \n"
 
-        echo -e "Rutracker:"
+        echo "RuTracker:"
 
         ### Check Response Time
         startTime=$(date +%s%3N)
@@ -65,7 +67,7 @@ jobs:
           failed=$((failed+1))
         fi
 
-        echo -e "Kinozal:"
+        echo "Kinozal:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/kinozal?query=the+rookie 2>/dev/null)
@@ -90,7 +92,7 @@ jobs:
           failed=$((failed+1))
         fi
 
-        echo -e "RuTor:"
+        echo "RuTor:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/rutor?query=the+rookie 2>/dev/null)
@@ -115,7 +117,7 @@ jobs:
           failed=$((failed+1))
         fi
 
-        echo -e "NoNameClub:"
+        echo "NoNameClub:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/nonameclub?query=the+rookie 2>/dev/null)
@@ -140,7 +142,9 @@ jobs:
           failed=$((failed+1))
         fi
 
-        echo -e "Rutracker:"
+        echo -e "Search by ID \n"
+
+        echo "RuTracker:"
          
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/rutracker?query=6489937 2>/dev/null)
@@ -242,6 +246,8 @@ jobs:
 
         echo "Number successful tests: $successful"
         echo "Number failed tests: $failed"
+
+        set -e
 
     - name: Stop server
       run: kill $(jobs -p)
