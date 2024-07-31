@@ -44,7 +44,7 @@ jobs:
           libxdamage1 \
           libxrandr2 \
           xdg-utils \
-          --no-install-recommends \
+          --no-install-recommends
         sudo apt-get clean
 
     - name: Start server
