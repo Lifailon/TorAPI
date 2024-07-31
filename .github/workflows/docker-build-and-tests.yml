@@ -20,7 +20,7 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build docker image and run docker container 
+    - name: Build docker image and run container 
       run: |
         docker build -t lifailon/torapi:latest .
         docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
