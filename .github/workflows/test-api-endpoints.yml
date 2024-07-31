@@ -22,12 +22,38 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Install dependencies for Puppeteer
+      run: |
+        apt-get update
+        apt-get install -y \
+          wget \
+          ca-certificates \
+          fonts-liberation \
+          libappindicator3-1 \
+          libasound2 \
+          libatk-bridge2.0-0 \
+          libatk1.0-0 \
+          libcups2 \
+          libdbus-1-3 \
+          libdrm2 \
+          libgbm1 \
+          libgtk-3-0 \
+          libnspr4 \
+          libnss3 \
+          libxcomposite1 \
+          libxdamage1 \
+          libxrandr2 \
+          xdg-utils \
+          --no-install-recommends \
+        apt-get clean
+        rm -rf /var/lib/apt/lists/*
+
     - name: Start server
       run: npm start &
 
     - name: Install jq
-      run: sudo apt-get update && sudo apt-get install -y jq
-
+      run: sudo apt-get install -y jq
+    
     - name: Run API tests
       run: |
         set +e
@@ -247,6 +273,6 @@ jobs:
         echo "Number successful tests: $successful"
         echo "Number failed tests: $failed"
 
-        set -e
-
-        kill $(jobs -p)
+        # if [ $failed -ne 0 ]; then
+        #   exit 1
+        # fi
