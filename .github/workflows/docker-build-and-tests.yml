@@ -1,4 +1,4 @@
-name: Docker Build and Test the API
+name: Docker Build and Tests the API endpoints
 
 on:
   workflow_dispatch:
@@ -248,8 +248,9 @@ jobs:
         echo "Number failed tests: $failed"
 
         # Exit with error or push image in Docker Hub
-        # if [ $failed -ne 0 ]; then
-        #   exit 1
+        if [ $failed -ne 0 ]; then
+          sudo docker logs TorAPI
+        # exit 1
         # else
         #   docker push lifailon/torapi:latest
-        # fi
+        fi
