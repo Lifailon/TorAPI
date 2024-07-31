@@ -1,4 +1,4 @@
-name: Local Test API Endpoints
+name: Node Tests API Endpoints
 
 on:
   workflow_dispatch:
@@ -136,7 +136,7 @@ jobs:
         else
           echo "Check data: false"
           if [ $rutracker == false ]; then
-            echo "Skip counter, data is not available on the server"
+            echo "! Skip counter, data is not available on the server"
           else
             failed=$((failed+1))
           fi
@@ -168,7 +168,7 @@ jobs:
         else
           echo "Check data: false"
           if [ $kinozal == false ]; then
-            echo "Skip counter, data is not available on the server"
+            echo "! Skip counter, data is not available on the server"
           else
             failed=$((failed+1))
           fi
@@ -200,7 +200,7 @@ jobs:
         else
           echo "Check data: false"
           if [ $rutor == false ]; then
-            echo "Skip counter, data is not available on the server"
+            echo "! Skip counter, data is not available on the server"
           else
             failed=$((failed+1))
           fi
@@ -232,7 +232,7 @@ jobs:
         else
           echo "Check data: false"
           if [ $nonameclub == false ]; then
-            echo "Skip counter, data is not available on the server"
+            echo "! Skip counter, data is not available on the server"
           else
             failed=$((failed+1))
           fi
@@ -267,7 +267,7 @@ jobs:
         else
           echo "Check data: false"
           if [ $rutracker == false ]; then
-            echo "Skip counter, data is not available on the server"
+            echo "! Skip counter, data is not available on the server"
           else
             failed=$((failed+1))
           fi
@@ -299,7 +299,7 @@ jobs:
         else
           echo "Check data: false"
           if [ $kinozal == false ]; then
-            echo "Skip counter, data is not available on the server"
+            echo "! Skip counter, data is not available on the server"
           else
             failed=$((failed+1))
           fi
@@ -331,7 +331,7 @@ jobs:
         else
           echo "Check data: false"
           if [ $rutor == false ]; then
-            echo "Skip counter, data is not available on the server"
+            echo "! Skip counter, data is not available on the server"
           else
             failed=$((failed+1))
           fi
@@ -363,7 +363,7 @@ jobs:
         else
           echo "Check data: false"
           if [ $nonameclub == false ]; then
-            echo "Skip counter, data is not available on the server"
+            echo "! Skip counter, data is not available on the server"
           else
             failed=$((failed+1))
           fi
@@ -376,7 +376,8 @@ jobs:
         echo "Number successful tests: $successful"
         echo "Number failed tests: $failed"
 
+        cat torapi.log
+
         if [ $failed -ne 0 ]; then
-          cat torapi.log
-          # exit 1
+          exit 1
         fi

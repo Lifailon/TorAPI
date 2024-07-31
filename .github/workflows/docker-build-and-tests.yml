@@ -32,12 +32,58 @@ jobs:
       run: |
         set +e
 
-        echo -e "Check jq version: $(jq --version) \n"
+        echo "Check jq version: $(jq --version)"
 
+        echo
+        echo "- Checking the availability of data on the server:"
+        echo
+
+        rutracker=true
+        kinozal=true
+        rutor=true
+        nonameclub=true
+
+        data=$(curl -s https://rutracker.org/forum/index.php | iconv -f Windows-1251 -t UTF-8 | grep "Правила")
+        if [ -n "$data" ]; then
+          echo "RuTracker data avaliable: true"
+        else
+          echo "RuTracker data avaliable: false"
+          rutracker=false
+        fi
+
+        data=$(curl -s https://kinozal.tv | iconv -f Windows-1251 -t UTF-8 | grep "Правила")
+        if [ -n "$data" ]; then
+          echo "Kinozal data avaliable: true"
+        else
+          echo "Kinozal data avaliable: false"
+          kinozal=false
+        fi
+
+
+        data=$(curl -s https://rutor.info | grep "Правила")
+        if [ -n "$data" ]; then
+          echo "RuTor data avaliable: true"
+        else
+          echo "RuTor data avaliable: false"
+          rutor=false
+        fi
+
+        data=$(curl -s https://nnmclub.to | iconv -f Windows-1251 -t UTF-8 | grep "Правила")
+        if [ -n "$data" ]; then
+          echo "NoNameClub data avaliable: true"
+        else
+          echo "NoNameClub data avaliable: false"
+          nonameclub=false
+        fi
+
+        echo
+
+        all=16
         successful=0
         failed=0
 
-        echo -e "- Search by Title: \n"
+        echo "- Search by Title:"
+        echo
 
         echo "--- RuTracker:"
 
@@ -60,12 +106,19 @@ jobs:
         ### Check Data
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
-          echo -e "Check data: true \n"
+          echo "Check data: true"
           successful=$((successful+1))
         else
-          echo -e "Check data: false \n"
-          failed=$((failed+1))
+          echo "Check data: false"
+          if [ $rutracker == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
+        
+        echo "Data: $data"
+        echo
 
         echo "--- Kinozal:"
 
@@ -85,12 +138,19 @@ jobs:
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
-          echo -e "Check data: true \n"
+          echo "Check data: true"
           successful=$((successful+1))
         else
-          echo -e "Check data: false \n"
-          failed=$((failed+1))
+          echo "Check data: false"
+          if [ $kinozal == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
+
+        echo "Data: $data"
+        echo
 
         echo "--- RuTor:"
 
@@ -110,12 +170,19 @@ jobs:
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
-          echo -e "Check data: true \n"
+          echo "Check data: true"
           successful=$((successful+1))
         else
-          echo -e "Check data: false \n"
-          failed=$((failed+1))
+          echo "Check data: false"
+          if [ $rutor == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
+
+        echo "Data: $data"
+        echo
 
         echo "--- NoNameClub:"
 
@@ -135,15 +202,23 @@ jobs:
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
-          echo -e "Check data: true \n"
+          echo "Check data: true"
           successful=$((successful+1))
         else
-          echo -e "Check data: false \n"
-          failed=$((failed+1))
+          echo "Check data: false"
+          if [ $nonameclub == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
 
-        echo -e "- Search by ID: \n"
+        echo "Data: $data"
+        echo
 
+        echo "- Search by ID:"
+        echo
+        
         echo "--- RuTracker:"
          
         startTime=$(date +%s%3N)
@@ -162,12 +237,19 @@ jobs:
         
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
-          echo -e "Check data: true \n"
+          echo "Check data: true"
           successful=$((successful+1))
         else
-          echo -e "Check data: false \n"
-          failed=$((failed+1))
+          echo "Check data: false"
+          if [ $rutracker == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
+
+        echo "Data: $data"
+        echo
 
         echo "--- Kinozal:"
 
@@ -187,12 +269,19 @@ jobs:
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
-          echo -e "Check data: true \n"
+          echo "Check data: true"
           successful=$((successful+1))
         else
-          echo -e "Check data: false \n"
-          failed=$((failed+1))
+          echo "Check data: false"
+          if [ $kinozal == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
+
+        echo "Data: $data"
+        echo
 
         echo "--- RuTor:"
 
@@ -212,12 +301,19 @@ jobs:
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
-          echo -e "Check data: true \n"
+          echo "Check data: true"
           successful=$((successful+1))
         else
-          echo -e "Check data: false \n"
-          failed=$((failed+1))
+          echo "Check data: false"
+          if [ $rutor == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
+
+        echo "Data: $data"
+        echo
 
         echo "--- NoNameClub:"
 
@@ -237,20 +333,29 @@ jobs:
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
-          echo -e "Check data: true \n"
+          echo "Check data: true"
           successful=$((successful+1))
         else
-          echo -e "Check data: false \n"
-          failed=$((failed+1))
+          echo "Check data: false"
+          if [ $nonameclub == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
 
+        echo "Data: $data"
+        echo
+
+        echo "Number all tests: $all"
         echo "Number successful tests: $successful"
         echo "Number failed tests: $failed"
 
+        docker logs TorAPI
+
         # Exit with error or push image in Docker Hub
         if [ $failed -ne 0 ]; then
-          sudo docker logs TorAPI
-        # exit 1
+          exit 1
         # else
         #   docker push lifailon/torapi:latest
         fi
