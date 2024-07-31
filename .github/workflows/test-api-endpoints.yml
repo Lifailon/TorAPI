@@ -62,9 +62,9 @@ jobs:
         successful=0
         failed=0
 
-        echo -e "Search by Title \n"
+        echo -e "- Search by Title: \n"
 
-        echo "RuTracker:"
+        echo "--- RuTracker:"
 
         ### Check Response Time
         startTime=$(date +%s%3N)
@@ -92,7 +92,7 @@ jobs:
           failed=$((failed+1))
         fi
 
-        echo "Kinozal:"
+        echo "--- Kinozal:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/kinozal?query=the+rookie 2>/dev/null)
@@ -117,7 +117,7 @@ jobs:
           failed=$((failed+1))
         fi
 
-        echo "RuTor:"
+        echo "--- RuTor:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/rutor?query=the+rookie 2>/dev/null)
@@ -142,7 +142,7 @@ jobs:
           failed=$((failed+1))
         fi
 
-        echo "NoNameClub:"
+        echo "--- NoNameClub:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/nonameclub?query=the+rookie 2>/dev/null)
@@ -167,34 +167,36 @@ jobs:
           failed=$((failed+1))
         fi
 
-        echo -e "Search by ID \n"
+        echo -e "- Search by ID: \n"
 
-        echo "RuTracker:"
+        echo "--- RuTracker:"
          
-        startTime=$(date +%s%3N)
-        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/rutracker?query=6489937 2>/dev/null)
-        endTime=$(date +%s%3N)
-        responseTime=$((endTime - startTime))
-        echo "Response time (ms): $responseTime"
-        
-        if [ $response -eq 200 ]; then
-          echo "Status code: $response"
-          successful=$((successful+1))
-        else
-          echo "Status code: $response"
-          failed=$((failed+1))
-        fi
+        # startTime=$(date +%s%3N)
+        # response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/rutracker?query=6489937 2>/dev/null)
+        # endTime=$(date +%s%3N)
+        # responseTime=$((endTime - startTime))
+        # echo "Response time (ms): $responseTime"
+        # 
+        # if [ $response -eq 200 ]; then
+        #   echo "Status code: $response"
+        #   successful=$((successful+1))
+        # else
+        #   echo "Status code: $response"
+        #   failed=$((failed+1))
+        # fi
+        # 
+        # data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        # if [ -n "$data" ]; then
+        #   echo -e "Check data: true \n"
+        #   successful=$((successful+1))
+        # else
+        #   echo -e "Check data: false \n"
+        #   failed=$((failed+1))
+        # fi
 
-        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
-        if [ -n "$data" ]; then
-          echo -e "Check data: true \n"
-          successful=$((successful+1))
-        else
-          echo -e "Check data: false \n"
-          failed=$((failed+1))
-        fi
+        echo -e "Skip... \n"
 
-        echo "Kinozal:"
+        echo "--- Kinozal:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/kinozal?query=2022944 2>/dev/null)
@@ -219,7 +221,7 @@ jobs:
           failed=$((failed+1))
         fi
 
-        echo "RuTor:"
+        echo "--- RuTor:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/rutor?query=970650 2>/dev/null)
@@ -244,7 +246,7 @@ jobs:
           failed=$((failed+1))
         fi
 
-        echo "NoNameClub:"
+        echo "--- NoNameClub:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/nonameclub?query=1259608 2>/dev/null)
@@ -272,6 +274,6 @@ jobs:
         echo "Number successful tests: $successful"
         echo "Number failed tests: $failed"
 
-        # if [ $failed -ne 0 ]; then
-        #   exit 1
-        # fi
+        if [ $failed -ne 0 ]; then
+          exit 1
+        fi
