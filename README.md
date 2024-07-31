@@ -10,15 +10,18 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Documentation"><img title="Wiki" src="https://img.shields.io/badge/API_Static_Docs-009CAB.svg?style=for-the-badge&logo=wikipedia&logoColor=white"></a>
+    <a href="https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Static-Documentation"><img title="Wiki" src="https://img.shields.io/badge/API_Static_Docs-009CAB.svg?style=for-the-badge&logo=wikipedia&logoColor=white"></a>
     <a href="swagger.js"><img title="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"></a>
+    <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"></a>
+    <a href=".github/workflows"><img title="Actions" src="https://img.shields.io/badge/github%20actions-%230075A8.svg?style=for-the-badge&logo=githubactions&logoColor=white"></a>
 </p>
 
 <p align="center">
     <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker"src="https://img.shields.io/docker/image-size/lifailon/torapi?&color=blue&label=Docker%20Image"></a>
-    <a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=GitHub&color=green&label=Version"></a>
+    <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/docker-build-and-tests.yml?logo=GitHub-Actions&label=Build%20and%20Tests"></a>
+    <a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=GitHub&color=white&label=Version"></a>
     <a href="https://github.com/Lifailon/TorAPI"><img title="Language"src="https://img.shields.io/github/languages/top/lifailon/TorAPI?logo=javascript&color=gold"></a>
-    <a href="https://github.com/Lifailon/TorAPI/blob/main/LICENSE"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=Readme&color=white&label=License"></a>
+    <a href="https://github.com/Lifailon/TorAPI/blob/main/LICENSE"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=Readme&color=orange&label=License"></a>
 </p>
 
 Unofficial API (backend) for RuTracker, Kinozal, RuTor, NoNameClub and other torrent trackers to get torrent files and information by movie title, TV series or id.
@@ -81,6 +84,8 @@ If authorization on a proxy server is required:
 ```js
 npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090 --username TorAPI --password TorAPI
 ```
+
+[GitHub Actions workflows](https://github.com/Lifailon/TorAPI/tree/main/.github/workflows) are used to build the image and check that all endpoints are working, as well as get response times.
 
 ## 🐳 Docker
 

@@ -22,8 +22,8 @@ jobs:
 
     - name: Build docker image and run docker container 
       run: |
-        docker build -t torapi .
-        docker run -d --name TorAPI -p 8443:8443 torapi
+        docker build -t lifailon/torapi:latest .
+        docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
     
     - name: Install jq
       run: sudo apt-get install -y jq
@@ -247,6 +247,9 @@ jobs:
         echo "Number successful tests: $successful"
         echo "Number failed tests: $failed"
 
+        # Exit with error or push image in Docker Hub
         # if [ $failed -ne 0 ]; then
         #   exit 1
+        # else
+        #   docker push lifailon/torapi:latest
         # fi
