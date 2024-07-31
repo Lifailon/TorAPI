@@ -100,7 +100,11 @@ jobs:
           successful=$((successful+1))
         else
           echo "Status code: $response"
-          failed=$((failed+1))
+          if [ $rutracker == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
 
         ### Check Data
@@ -133,7 +137,11 @@ jobs:
           successful=$((successful+1))
         else
           echo "Status code: $response"
-          failed=$((failed+1))
+          if [ $kinozal == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
@@ -165,7 +173,11 @@ jobs:
           successful=$((successful+1))
         else
           echo "Status code: $response"
-          failed=$((failed+1))
+          if [ $rutor == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
@@ -197,7 +209,11 @@ jobs:
           successful=$((successful+1))
         else
           echo "Status code: $response"
-          failed=$((failed+1))
+          if [ $nonameclub == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
@@ -232,7 +248,11 @@ jobs:
           successful=$((successful+1))
         else
           echo "Status code: $response"
-          failed=$((failed+1))
+          if [ $rutracker == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
         
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
@@ -264,7 +284,11 @@ jobs:
           successful=$((successful+1))
         else
           echo "Status code: $response"
-          failed=$((failed+1))
+          if [ $kinozal == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
@@ -296,7 +320,11 @@ jobs:
           successful=$((successful+1))
         else
           echo "Status code: $response"
-          failed=$((failed+1))
+          if [ $rutor == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
@@ -328,7 +356,11 @@ jobs:
           successful=$((successful+1))
         else
           echo "Status code: $response"
-          failed=$((failed+1))
+          if [ $nonameclub == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
         fi
 
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)

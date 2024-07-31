@@ -85,7 +85,7 @@ npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090 --usernam
 
 📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs`
 
-📊 [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/tree/main/.github/workflows) are used for build docker image, test functional all endpoints and get response times.
+🧪 [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/tree/main/.github/workflows) are used for build docker image, test functional all endpoints and get response times.
 
 ## 🐳 Docker
 
