@@ -65,8 +65,6 @@ npm start
 
 By default, the server will be launched on port `8443`.
 
-📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs`
-
 You can specify a different port:
 
 ```js
@@ -85,7 +83,9 @@ If authorization on a proxy server is required:
 npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090 --username TorAPI --password TorAPI
 ```
 
-[GitHub Actions workflows](https://github.com/Lifailon/TorAPI/tree/main/.github/workflows) are used to build the image and check that all endpoints are working, as well as get response times.
+📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs`
+
+📊 [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/tree/main/.github/workflows) are used for build docker image, test functional all endpoints and get response times.
 
 ## 🐳 Docker
 

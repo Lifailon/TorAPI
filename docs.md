@@ -730,6 +730,74 @@ Get a list of available providers:
 ]
 ```
 
+### Tests
+
+```shell
+- Checking the availability of data on the server:
+
+RuTracker data avaliable: false
+Kinozal data avaliable: true
+RuTor data avaliable: true
+NoNameClub data avaliable: true
+
+- Search by Title:
+
+--- RuTracker:
+Response time (ms): 812
+Status code: 200
+Check data: true
+Data: Новичок / Новобранец / The Rookie / Сезон: 6 / Серии: 1-10 из 10 (Билл Роу, Майкл Гои) [2024, США, драма, комедия, криминал, WEB-DL 1080p] 3 x MVO (LostFilm, TVShows, HDrezka) + Original + Sub (Rus, Eng)
+
+--- Kinozal:
+Response time (ms): 321
+Status code: 200
+Check data: true
+Data: Новичок (Новобранец) (6 сезон: 1-10 серии из 10)
+
+--- RuTor:
+Response time (ms): 682
+Status code: 200
+Check data: true
+Data: Новичок / Новобранец / The Rookie [S06] (2024) WEB-DL 720p | LostFilm, TVShows, HDrezka Studio
+
+--- NoNameClub:
+Response time (ms): 682
+Status code: 200
+Check data: true
+Data: Агент Три нуля / Новички / Su ren te gong / The Rookies (2019) WEBRip [H.264/1080p]
+
+- Search by ID:
+
+--- RuTracker:
+Response time (ms): 56
+Status code: 200
+Check data: false
+! Skip counter, data is not available on the server
+Data: 
+
+--- Kinozal:
+Response time (ms): 877
+Status code: 200
+Check data: true
+Data: Новичок (Новобранец)
+
+--- RuTor:
+Response time (ms): 1119
+Status code: 200
+Check data: true
+Data: Новичок / Новобранец / The Rookie [S06] (2024) WEBRip от Kerob | L2
+
+--- NoNameClub:
+Response time (ms): 1202
+Status code: 200
+Check data: true
+Data: Новичок / The Rookie (2018) WEB-DL [H.264/1080p-LQ] (сезон 1, серии 1-20 из 20) TVShows
+
+Number all tests: 16
+Number successful tests: 15
+Number failed tests: 0
+```
+
 ### Save torrent file
 
 To save the torrent file on your computer, you can use one of the following constructs:
