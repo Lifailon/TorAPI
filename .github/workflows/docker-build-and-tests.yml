@@ -382,7 +382,8 @@ jobs:
         echo "Number all tests: $all"
         echo "Number successful tests: $successful"
         echo "Number failed tests: $failed"
-
+        echo
+        
         docker logs TorAPI
 
         # Exit with error or push image in Docker Hub

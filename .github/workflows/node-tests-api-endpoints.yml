@@ -407,6 +407,7 @@ jobs:
         echo "Number all tests: $all"
         echo "Number successful tests: $successful"
         echo "Number failed tests: $failed"
+        echo
 
         cat torapi.log
 
