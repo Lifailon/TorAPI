@@ -1,0 +1,233 @@
+name: Test API endpoints
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+
+jobs:
+  job_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v2
+
+    - name: Install node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16.x'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Start server
+      run: npm start &
+
+    - name: Run API tests
+      run: |
+        successful=0
+        failed=0
+
+        echo -e "Search by Title \n"
+
+        echo -e "Rutracker:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/title/rutracker?query=the+rookie)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          failed=$((failed+1))
+        fi
+        
+        startTime=$(date +%s%3N)
+        response=$(curl --silent http://localhost:8443/api/search/title/rutracker?query=the+rookie | grep Name)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        if [ -n "$response" ]; then
+          echo "Check data: true"
+          successful=$((successful+1))
+        else
+          echo "Check data: false"
+          failed=$((failed+1))
+        fi
+        echo -e "Response time: $responseTime ms \n"
+
+        echo -e "Kinozal:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/title/kinozal?query=the+rookie)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          failed=$((failed+1))
+        fi
+        
+        startTime=$(date +%s%3N)
+        response=$(curl --silent http://localhost:8443/api/search/title/kinozal?query=the+rookie | grep Name)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        if [ -n "$response" ]; then
+          echo "Check data: true"
+          successful=$((successful+1))
+        else
+          echo "Check data: false"
+          failed=$((failed+1))
+        fi
+        echo -e "Response time: $responseTime ms \n"
+
+        echo -e "RuTor:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/title/rutor?query=the+rookie)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          failed=$((failed+1))
+        fi
+        
+        startTime=$(date +%s%3N)
+        response=$(curl --silent http://localhost:8443/api/search/title/rutor?query=the+rookie | grep Name)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        if [ -n "$response" ]; then
+          echo "Check data: true"
+          successful=$((successful+1))
+        else
+          echo "Check data: false"
+          failed=$((failed+1))
+        fi
+        echo -e "Response time: $responseTime ms \n"
+
+        echo -e "NoNameClub:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/title/nonameclub?query=the+rookie)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          failed=$((failed+1))
+        fi
+        
+        startTime=$(date +%s%3N)
+        response=$(curl --silent http://localhost:8443/api/search/title/nonameclub?query=the+rookie | grep Name)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        if [ -n "$response" ]; then
+          echo "Check data: true"
+          successful=$((successful+1))
+        else
+          echo "Check data: false"
+          failed=$((failed+1))
+        fi
+        echo -e "Response time: $responseTime ms \n"
+
+        echo -e "Search by ID \n"
+
+        echo -e "Rutracker:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/id/rutracker?query=6489937)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          failed=$((failed+1))
+        fi
+        
+        startTime=$(date +%s%3N)
+        response=$(curl --silent http://localhost:8443/api/search/id/rutracker?query=6489937 | grep Size)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        if [ -n "$response" ]; then
+          echo "Check data: true"
+          successful=$((successful+1))
+        else
+          echo "Check data: false"
+          failed=$((failed+1))
+        fi
+        echo -e "Response time: $responseTime ms \n"
+
+        echo "Kinozal:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/id/kinozal?query=2022944)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          failed=$((failed+1))
+        fi
+
+        startTime=$(date +%s%3N)
+        response=$(curl --silent http://localhost:8443/api/search/id/kinozal?query=2022944 | grep Size)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        if [ -n "$response" ]; then
+          echo "Check data: true"
+          successful=$((successful+1))
+        else
+          echo "Check data: false"
+          failed=$((failed+1))
+        fi
+        echo -e "Response time: $responseTime ms \n"
+
+        echo "RuTor:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/id/rutor?query=970650)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          failed=$((failed+1))
+        fi
+
+        startTime=$(date +%s%3N)
+        response=$(curl --silent http://localhost:8443/api/search/id/rutor?query=970650 | grep Size)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        if [ -n "$response" ]; then
+          echo "Check data: true"
+          successful=$((successful+1))
+        else
+          echo "Check data: false"
+          failed=$((failed+1))
+        fi
+        echo -e "Response time: $responseTime ms \n"
+
+        echo "NoNameClub:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/id/nonameclub?query=1259608)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          failed=$((failed+1))
+        fi
+
+        startTime=$(date +%s%3N)
+        response=$(curl --silent http://localhost:8443/api/search/id/nonameclub?query=1259608 | grep Size)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        if [ -n "$response" ]; then
+          echo "Check data: true"
+          successful=$((successful+1))
+        else
+          echo "Check data: false"
+          failed=$((failed+1))
+        fi
+        echo -e "Response time: $responseTime ms \n"
+
+        echo "Number successful tests: $successful"
+        echo "Number failed tests: $failed"
+
+    - name: Stop server
+      run: kill $(jobs -p)
