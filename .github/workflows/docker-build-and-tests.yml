@@ -1,4 +1,4 @@
-name: CI
+name: Docker Build and Test the API
 
 on:
   workflow_dispatch:
