@@ -730,7 +730,9 @@ Get a list of available providers:
 ]
 ```
 
-### Tests
+### Tests endpoints
+
+Example of building a Docker container via GitHub Actions:
 
 ```shell
 - Checking the availability of data on the server:
@@ -743,25 +745,25 @@ NoNameClub data avaliable: true
 - Search by Title:
 
 --- RuTracker:
-Response time (ms): 812
+Response time (ms): 799
 Status code: 200
 Check data: true
 Data: Новичок / Новобранец / The Rookie / Сезон: 6 / Серии: 1-10 из 10 (Билл Роу, Майкл Гои) [2024, США, драма, комедия, криминал, WEB-DL 1080p] 3 x MVO (LostFilm, TVShows, HDrezka) + Original + Sub (Rus, Eng)
 
 --- Kinozal:
-Response time (ms): 321
+Response time (ms): 411
 Status code: 200
 Check data: true
 Data: Новичок (Новобранец) (6 сезон: 1-10 серии из 10)
 
 --- RuTor:
-Response time (ms): 682
+Response time (ms): 706
 Status code: 200
 Check data: true
 Data: Новичок / Новобранец / The Rookie [S06] (2024) WEB-DL 720p | LostFilm, TVShows, HDrezka Studio
 
 --- NoNameClub:
-Response time (ms): 682
+Response time (ms): 105
 Status code: 200
 Check data: true
 Data: Агент Три нуля / Новички / Su ren te gong / The Rookies (2019) WEBRip [H.264/1080p]
@@ -769,32 +771,33 @@ Data: Агент Три нуля / Новички / Su ren te gong / The Rookies
 - Search by ID:
 
 --- RuTracker:
-Response time (ms): 56
-Status code: 200
+Response time (ms): 31022
+Status code: 400
+! Skip counter, data is not available on the server
 Check data: false
 ! Skip counter, data is not available on the server
 Data: 
 
 --- Kinozal:
-Response time (ms): 877
+Response time (ms): 630
 Status code: 200
 Check data: true
 Data: Новичок (Новобранец)
 
 --- RuTor:
-Response time (ms): 1119
+Response time (ms): 757
 Status code: 200
 Check data: true
 Data: Новичок / Новобранец / The Rookie [S06] (2024) WEBRip от Kerob | L2
 
 --- NoNameClub:
-Response time (ms): 1202
+Response time (ms): 1354
 Status code: 200
 Check data: true
 Data: Новичок / The Rookie (2018) WEB-DL [H.264/1080p-LQ] (сезон 1, серии 1-20 из 20) TVShows
 
 Number all tests: 16
-Number successful tests: 15
+Number successful tests: 14
 Number failed tests: 0
 ```
 
