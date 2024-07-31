@@ -24,8 +24,8 @@ jobs:
 
     - name: Install dependencies for Puppeteer
       run: |
-        apt-get update
-        apt-get install -y \
+        sudo apt-get update
+        sudo apt-get install -y \
           wget \
           ca-certificates \
           fonts-liberation \
@@ -45,8 +45,7 @@ jobs:
           libxrandr2 \
           xdg-utils \
           --no-install-recommends \
-        apt-get clean
-        rm -rf /var/lib/apt/lists/*
+        sudo apt-get clean
 
     - name: Start server
       run: npm start &
