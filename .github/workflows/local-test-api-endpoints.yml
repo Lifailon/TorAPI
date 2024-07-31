@@ -59,6 +59,58 @@ jobs:
 
         echo -e "Check jq version: $(jq --version) \n"
 
+        data=$(curl -s https://rutracker.org/forum/index.php | grep "https")
+        if [ -n "$data" ]; then
+          echo "RuTracker data avaliable: true"
+        else
+          echo "RuTracker data avaliable: false"
+        fi
+
+        if ping -c 1 rutracker.org &> /dev/null; then
+          echo -e "RuTracker icmp test: true \n"
+        else
+          echo -e "RuTracker icmp test: false \n"
+        fi
+
+        data=$(curl -s https://kinozal.tv | grep "https")
+        if [ -n "$data" ]; then
+          echo "Kinozal data avaliable: true"
+        else
+          echo "Kinozal data avaliable: false"
+        fi
+
+        if ping -c 1 kinozal.tv &> /dev/null; then
+          echo -e "Kinozal icmp test: true \n"
+        else
+          echo -e "Kinozal icmp test: false \n"
+        fi
+
+        data=$(curl -s https://rutor.info | grep "https")
+        if [ -n "$data" ]; then
+          echo "RuTor data avaliable: true"
+        else
+          echo "RuTor data avaliable: false"
+        fi
+
+        if ping -c 1 rutor.info &> /dev/null; then
+          echo -e "RuTor icmp test: true \n"
+        else
+          echo -e "RuTor icmp test: false \n"
+        fi
+
+        data=$(curl -s https://nnmclub.to | grep "https")
+        if [ -n "$data" ]; then
+          echo "NoNameClub data avaliable: true"
+        else
+          echo "NoNameClub data avaliable: false"
+        fi
+
+        if ping -c 1 nnmclub.to &> /dev/null; then
+          echo -e "NoNameClub icmp test: true \n"
+        else
+          echo -e "NoNameClub icmp test: false \n"
+        fi
+
         successful=0
         failed=0
 
