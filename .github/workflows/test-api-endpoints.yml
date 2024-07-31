@@ -25,8 +25,13 @@ jobs:
     - name: Start server
       run: npm start &
 
+    - name: Install jq
+      run: sudo apt-get update && sudo apt-get install -y jq
+
     - name: Run API tests
       run: |
+        echo "Check jq version: $(jq --version)"
+
         successful=0
         failed=0
 
@@ -34,7 +39,14 @@ jobs:
 
         echo -e "Rutracker:"
 
-        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/title/rutracker?query=the+rookie)
+        ### Check Response Time
+        startTime=$(date +%s%3N)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/rutracker?query=the+rookie 2>/dev/null)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        echo "Response time (ms): $responseTime"
+        
+        ### Check Response Code
         if [ $response -eq 200 ]; then
           echo "Status code: $response"
           successful=$((successful+1))
@@ -42,23 +54,25 @@ jobs:
           echo "Status code: $response"
           failed=$((failed+1))
         fi
-        
-        startTime=$(date +%s%3N)
-        response=$(curl --silent http://localhost:8443/api/search/title/rutracker?query=the+rookie | grep Name)
-        endTime=$(date +%s%3N)
-        responseTime=$((endTime - startTime))
-        if [ -n "$response" ]; then
-          echo "Check data: true"
+
+        ### Check Data
+        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        if [ -n "$data" ]; then
+          echo -e "Check data: true \n"
           successful=$((successful+1))
         else
-          echo "Check data: false"
+          echo -e "Check data: false \n"
           failed=$((failed+1))
         fi
-        echo -e "Response time: $responseTime ms \n"
 
         echo -e "Kinozal:"
 
-        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/title/kinozal?query=the+rookie)
+        startTime=$(date +%s%3N)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/kinozal?query=the+rookie 2>/dev/null)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        echo "Response time (ms): $responseTime"
+        
         if [ $response -eq 200 ]; then
           echo "Status code: $response"
           successful=$((successful+1))
@@ -66,23 +80,24 @@ jobs:
           echo "Status code: $response"
           failed=$((failed+1))
         fi
-        
-        startTime=$(date +%s%3N)
-        response=$(curl --silent http://localhost:8443/api/search/title/kinozal?query=the+rookie | grep Name)
-        endTime=$(date +%s%3N)
-        responseTime=$((endTime - startTime))
-        if [ -n "$response" ]; then
-          echo "Check data: true"
+
+        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        if [ -n "$data" ]; then
+          echo -e "Check data: true \n"
           successful=$((successful+1))
         else
-          echo "Check data: false"
+          echo -e "Check data: false \n"
           failed=$((failed+1))
         fi
-        echo -e "Response time: $responseTime ms \n"
 
         echo -e "RuTor:"
 
-        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/title/rutor?query=the+rookie)
+        startTime=$(date +%s%3N)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/rutor?query=the+rookie 2>/dev/null)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        echo "Response time (ms): $responseTime"
+        
         if [ $response -eq 200 ]; then
           echo "Status code: $response"
           successful=$((successful+1))
@@ -90,23 +105,24 @@ jobs:
           echo "Status code: $response"
           failed=$((failed+1))
         fi
-        
-        startTime=$(date +%s%3N)
-        response=$(curl --silent http://localhost:8443/api/search/title/rutor?query=the+rookie | grep Name)
-        endTime=$(date +%s%3N)
-        responseTime=$((endTime - startTime))
-        if [ -n "$response" ]; then
-          echo "Check data: true"
+
+        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        if [ -n "$data" ]; then
+          echo -e "Check data: true \n"
           successful=$((successful+1))
         else
-          echo "Check data: false"
+          echo -e "Check data: false \n"
           failed=$((failed+1))
         fi
-        echo -e "Response time: $responseTime ms \n"
 
         echo -e "NoNameClub:"
 
-        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/title/nonameclub?query=the+rookie)
+        startTime=$(date +%s%3N)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/nonameclub?query=the+rookie 2>/dev/null)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        echo "Response time (ms): $responseTime"
+        
         if [ $response -eq 200 ]; then
           echo "Status code: $response"
           successful=$((successful+1))
@@ -114,25 +130,24 @@ jobs:
           echo "Status code: $response"
           failed=$((failed+1))
         fi
-        
-        startTime=$(date +%s%3N)
-        response=$(curl --silent http://localhost:8443/api/search/title/nonameclub?query=the+rookie | grep Name)
-        endTime=$(date +%s%3N)
-        responseTime=$((endTime - startTime))
-        if [ -n "$response" ]; then
-          echo "Check data: true"
+
+        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        if [ -n "$data" ]; then
+          echo -e "Check data: true \n"
           successful=$((successful+1))
         else
-          echo "Check data: false"
+          echo -e "Check data: false \n"
           failed=$((failed+1))
         fi
-        echo -e "Response time: $responseTime ms \n"
-
-        echo -e "Search by ID \n"
 
         echo -e "Rutracker:"
-
-        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/id/rutracker?query=6489937)
+         
+        startTime=$(date +%s%3N)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/rutracker?query=6489937 2>/dev/null)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        echo "Response time (ms): $responseTime"
+        
         if [ $response -eq 200 ]; then
           echo "Status code: $response"
           successful=$((successful+1))
@@ -140,23 +155,24 @@ jobs:
           echo "Status code: $response"
           failed=$((failed+1))
         fi
-        
-        startTime=$(date +%s%3N)
-        response=$(curl --silent http://localhost:8443/api/search/id/rutracker?query=6489937 | grep Size)
-        endTime=$(date +%s%3N)
-        responseTime=$((endTime - startTime))
-        if [ -n "$response" ]; then
-          echo "Check data: true"
+
+        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        if [ -n "$data" ]; then
+          echo -e "Check data: true \n"
           successful=$((successful+1))
         else
-          echo "Check data: false"
+          echo -e "Check data: false \n"
           failed=$((failed+1))
         fi
-        echo -e "Response time: $responseTime ms \n"
 
         echo "Kinozal:"
 
-        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/id/kinozal?query=2022944)
+        startTime=$(date +%s%3N)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/kinozal?query=2022944 2>/dev/null)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        echo "Response time (ms): $responseTime"
+        
         if [ $response -eq 200 ]; then
           echo "Status code: $response"
           successful=$((successful+1))
@@ -165,22 +181,23 @@ jobs:
           failed=$((failed+1))
         fi
 
-        startTime=$(date +%s%3N)
-        response=$(curl --silent http://localhost:8443/api/search/id/kinozal?query=2022944 | grep Size)
-        endTime=$(date +%s%3N)
-        responseTime=$((endTime - startTime))
-        if [ -n "$response" ]; then
-          echo "Check data: true"
+        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        if [ -n "$data" ]; then
+          echo -e "Check data: true \n"
           successful=$((successful+1))
         else
-          echo "Check data: false"
+          echo -e "Check data: false \n"
           failed=$((failed+1))
         fi
-        echo -e "Response time: $responseTime ms \n"
 
         echo "RuTor:"
 
-        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/id/rutor?query=970650)
+        startTime=$(date +%s%3N)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/rutor?query=970650 2>/dev/null)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        echo "Response time (ms): $responseTime"
+        
         if [ $response -eq 200 ]; then
           echo "Status code: $response"
           successful=$((successful+1))
@@ -189,22 +206,23 @@ jobs:
           failed=$((failed+1))
         fi
 
-        startTime=$(date +%s%3N)
-        response=$(curl --silent http://localhost:8443/api/search/id/rutor?query=970650 | grep Size)
-        endTime=$(date +%s%3N)
-        responseTime=$((endTime - startTime))
-        if [ -n "$response" ]; then
-          echo "Check data: true"
+        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        if [ -n "$data" ]; then
+          echo -e "Check data: true \n"
           successful=$((successful+1))
         else
-          echo "Check data: false"
+          echo -e "Check data: false \n"
           failed=$((failed+1))
         fi
-        echo -e "Response time: $responseTime ms \n"
 
         echo "NoNameClub:"
 
-        response=$(curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8443/api/search/id/nonameclub?query=1259608)
+        startTime=$(date +%s%3N)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/nonameclub?query=1259608 2>/dev/null)
+        endTime=$(date +%s%3N)
+        responseTime=$((endTime - startTime))
+        echo "Response time (ms): $responseTime"
+        
         if [ $response -eq 200 ]; then
           echo "Status code: $response"
           successful=$((successful+1))
@@ -213,18 +231,14 @@ jobs:
           failed=$((failed+1))
         fi
 
-        startTime=$(date +%s%3N)
-        response=$(curl --silent http://localhost:8443/api/search/id/nonameclub?query=1259608 | grep Size)
-        endTime=$(date +%s%3N)
-        responseTime=$((endTime - startTime))
-        if [ -n "$response" ]; then
-          echo "Check data: true"
+        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        if [ -n "$data" ]; then
+          echo -e "Check data: true \n"
           successful=$((successful+1))
         else
-          echo "Check data: false"
+          echo -e "Check data: false \n"
           failed=$((failed+1))
         fi
-        echo -e "Response time: $responseTime ms \n"
 
         echo "Number successful tests: $successful"
         echo "Number failed tests: $failed"
