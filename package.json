@@ -1,6 +1,6 @@
 {
     "name": "torapi",
-    "version": "0.3",
+    "version": "0.4",
     "main": "main.js",
     "scripts": {
         "start": "nodemon main.js"
@@ -20,7 +20,7 @@
         "swagger-ui-express": "^5.0.1",
         "yargs": "^17.7.2"
     },
-    "description": "Unofficial API server for RuTracker, Kinozal, RuTor and NoNameClub to get torrent files and other information by movie title, series or id",
+    "description": "Unofficial API (backend) for RuTracker, Kinozal, RuTor, NoNameClub and other torrent trackers to get torrent files and information by movie title, TV series or id.",
     "repository": {
         "type": "git",
         "url": "https://github.com/Lifailon/TorAPI"

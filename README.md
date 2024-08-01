@@ -48,7 +48,7 @@ Implemented:
 
 Registration is required only when downloading a torrent file via a direct link.
 
-All distributions when searching by ID contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to download content and generate a torrent file using any torrent client.
+All distributions when searching by ID contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to download the contents of the distribution or generate a torrent file using any torrent client after downloading the metadata.
 
 ---
 
