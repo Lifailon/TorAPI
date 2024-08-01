@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Static-Documentation"><img title="Wiki" src="https://img.shields.io/badge/API_Static_Docs-009CAB.svg?style=for-the-badge&logo=wikipedia&logoColor=white"></a>
+    <a href="https://lifailon.github.io/TorAPI"><img title="Wiki" src="https://img.shields.io/badge/API_Static_Docs-009CAB.svg?style=for-the-badge&logo=wikipedia&logoColor=white"></a>
     <a href="swagger.js"><img title="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"></a>
     <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"></a>
     <a href=".github/workflows"><img title="Actions" src="https://img.shields.io/badge/github%20actions-%230075A8.svg?style=for-the-badge&logo=githubactions&logoColor=white"></a>
