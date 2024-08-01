@@ -5,6 +5,8 @@ on:
   # push:
   #   branches:
   #     - main
+  # schedule:
+  # - cron: '0 12 * * *'
 
 jobs:
   job_test:
@@ -51,13 +53,13 @@ jobs:
       run: npm start > torapi.log 2>&1 &
 
     - name: Install jq
-      run: sudo apt-get install -y jq
+      run: |
+        sudo apt-get install -y jq
+        echo "Check jq version: $(jq --version)"
     
     - name: Run API tests
       run: |
         set +e
-
-        echo "Check jq version: $(jq --version)"
 
         echo
         echo "- Checking the availability of data on the server:"
@@ -407,7 +409,6 @@ jobs:
         echo "Number all tests: $all"
         echo "Number successful tests: $successful"
         echo "Number failed tests: $failed"
-        echo
 
         echo "failed=$failed" >> $GITHUB_ENV
 
@@ -416,6 +417,7 @@ jobs:
 
     - name: Final
       run: |
+        echo "Number failed tests: ${{ env.failed }}"
         if [ ${{ env.failed }} -ne 0 ]; then
           exit 1
         fi
