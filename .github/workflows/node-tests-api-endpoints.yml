@@ -409,8 +409,13 @@ jobs:
         echo "Number failed tests: $failed"
         echo
 
-        cat torapi.log
+        echo "failed=$failed" >> $GITHUB_ENV
 
-        if [ $failed -ne 0 ]; then
+    - name: Server logs
+      run: cat torapi.log
+
+    - name: Final
+      run: |
+        if [ ${{ env.failed }} -ne 0 ]; then
           exit 1
         fi
