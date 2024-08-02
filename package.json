@@ -21,7 +21,7 @@
         "xml2js": "^0.6.2",
         "yargs": "^17.7.2"
     },
-    "description": "Unofficial API (backend) for RuTracker, Kinozal, RuTor, NoNameClub and other torrent trackers to get torrent files and information by movie title, TV series or id.",
+    "description": "Unofficial API (backend) for RuTracker, Kinozal, RuTor and NoNameClub for receiving torrent files and detailed information about distribution by movie title, TV series or id, and also provides RSS news feed for all providers.",
     "repository": {
         "type": "git",
         "url": "https://github.com/Lifailon/TorAPI"

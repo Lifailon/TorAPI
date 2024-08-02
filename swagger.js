@@ -19,7 +19,7 @@
  *       - name: Accept
  *         in: header
  *         required: true
- *         description: To receive a response in the required format, use the response selection parameter in the responses block
+ *         description: To get the answer in the required format, use the parameter in the answer block
  *         schema:
  *           type: string
  *           enum: [application/xml, application/json]
