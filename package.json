@@ -18,6 +18,7 @@
         "puppeteer": "^22.6.0",
         "swagger-jsdoc": "^6.2.8",
         "swagger-ui-express": "^5.0.1",
+        "xml2js": "^0.6.2",
         "yargs": "^17.7.2"
     },
     "description": "Unofficial API (backend) for RuTracker, Kinozal, RuTor, NoNameClub and other torrent trackers to get torrent files and information by movie title, TV series or id.",

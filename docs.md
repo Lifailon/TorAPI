@@ -1,5 +1,5 @@
 <p align="center">
-    <b>API static documentation with output examples</b>
+    <b>API static documentation with output examples for version 0.3<</b>
 </p>
 
 ### Endpoint format

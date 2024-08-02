@@ -11,6 +11,41 @@
  *         description: Bad request
  *       404:
  *         description: Not found
+ * /api/get/rss/kinozal:
+ *   get:
+ *     tags: [RSS]
+ *     description: Get news feed from RSS in XML or JSON format
+ *     parameters:
+ *       - name: Accept
+ *         in: header
+ *         required: true
+ *         description: To receive a response in the required format, use the response selection parameter in the responses block
+ *         schema:
+ *           type: string
+ *           enum: [application/xml, application/json]
+ *           default: application/xml
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/xml:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 rss:
+ *                   type: string
+ *                   example: "Array"
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 rss:
+ *                   type: string
+ *                   example: "Array"
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Not found
  * /api/search/title/rutracker:
  *   get:
  *     tags: [Search by Title]
@@ -731,5 +766,5 @@
  *       400:
  *         description: Bad request
  *       404:
- *         description: Not found 
+ *         description: Not found
 */

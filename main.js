@@ -1,12 +1,13 @@
-const axios         = require('axios')
-const proxy         = require('https-proxy-agent')
-const cheerio       = require('cheerio')
-const puppeteer     = require('puppeteer')
-const iconv         = require('iconv-lite')
-const yargs         = require('yargs')
 const express       = require('express')
 const swaggerJsdoc  = require('swagger-jsdoc')
 const swaggerUi     = require('swagger-ui-express')
+const yargs         = require('yargs')
+const axios         = require('axios')
+const cheerio       = require('cheerio')
+const puppeteer     = require('puppeteer')
+const proxy         = require('https-proxy-agent')
+const iconv         = require('iconv-lite')
+const xml2js        = require('xml2js')
 
 // Параметры запуска
 const { hideBin } = require('yargs/helpers')
@@ -779,6 +780,28 @@ async function KinozalID(query) {
     }
 }
 
+// Kinozal RSS
+async function KinozalRSS(typeData) {
+    const url = "https://kinozal.tv/rss.xml"
+    console.log(`${getCurrentTime()} [Request] ${url}`)
+    let data
+    try {
+        const response = await axiosProxy.get(url, {
+            headers: headers
+        })
+        if (typeData === "json") {
+            const json = await xml2js.parseStringPromise(response.data)
+            return json
+        }
+        else {
+            return response.data
+        }
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return { 'Result': `Server is not available` }
+    }
+}
+
 // RuTor
 async function RuTor(query, page) {
     const urls = [
@@ -1396,7 +1419,7 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
         return res.json(providerList)
     }
-    if (type !== "title" && type !== "id") {
+    if (type !== "title" && type !== "id" && type !== "rss") {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
     }
@@ -1410,6 +1433,8 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     let query = req.query.query
     let page = req.query.page
     let year = req.query.year
+    // Обработка тип данных из тела запроса:
+    const headerAccept = req.get('Accept')
     // Кодируем запрос в формат URL (заменяется последовательностью процентов и двумя шестнадцатеричными числами, представляющими ASCII-код символа в кодировке UTF-8)
     query = encodeURIComponent(query)
     // Если необязательные параметры не были передан, присваиваем им значения по умолчанию
@@ -1486,6 +1511,28 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         try {
             const result = await KinozalID(query)
             return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                { Result: 'No data' }
+            )
+        }
+    }
+    // Kinozal RSS
+    // curl -s http://127.0.0.1:8443/api/get/rss/kinozal -H "Accept: application/json"
+    // curl -s http://127.0.0.1:8443/api/get/rss/kinozal -H "Accept: application/xml"
+    else if (category === 'get' && type === 'rss' && provider === 'kinozal') {
+        try {
+            let result
+            if (headerAccept.includes('json')) {
+                result = await KinozalRSS("json")
+                res.set('Content-Type', 'application/json')
+            }
+            else {
+                result = await KinozalRSS("xml")
+                res.set('Content-Type', 'application/xml')
+            }
+            return res.send(result)
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json(
