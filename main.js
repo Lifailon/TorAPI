@@ -443,7 +443,7 @@ async function RuTrackerID(query) {
             launchOptions.args.push(`--proxy-server=http://${argv.proxyAddress}:${argv.proxyPort}`)
         }
         // Запускаем браузер
-        const browser = await puppeteer.launch(launchOptions);
+        const browser = await puppeteer.launch(launchOptions)
         // Открываем новую пустую страницу
         const page = await browser.newPage()
         // Авторизация в Proxy
@@ -784,21 +784,38 @@ async function KinozalID(query) {
 async function KinozalRSS(typeData) {
     const url = "https://kinozal.tv/rss.xml"
     console.log(`${getCurrentTime()} [Request] ${url}`)
-    let data
     try {
         const response = await axiosProxy.get(url, {
             headers: headers
         })
         if (typeData === "json") {
-            const json = await xml2js.parseStringPromise(response.data)
+            const parser = new xml2js.Parser({
+                mergeAttrs: true, // Атрибуты элемента XML включаются в список дочерних элементов вместо добавления в отдельный объект с ключом $
+                explicitArray: false // Элементы, которые встречаются только один раз, преобразуются в объект, а не в массив.
+            })
+            let json = await parser.parseStringPromise(response.data)
+            // json = {
+            //     title: json.rss.channel.title,
+            //     link: json.rss.channel.link,
+            //     description: json.rss.channel.description,
+            //     language: json.rss.channel.language,
+            //     pubDate: json.rss.channel.pubDate,
+            //     lastBuildDate: json.rss.channel.lastBuildDate,
+            //     item: json.rss.channel.item.map(item => ({
+            //         title: item.title,
+            //         link: item.link,
+            //         category: item.category,
+            //         guid: item.guid,
+            //         pubDate: item.pubDate
+            //     }))
+            // }
             return json
-        }
-        else {
+        } else {
             return response.data
         }
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return { 'Result': `Server is not available` }
+        return { 'Result': `Server is not available` };
     }
 }
 
@@ -1301,6 +1318,34 @@ async function NoNameClubID(query) {
     ]
 }
 
+// NoNameClub RSS
+async function NoNameClubRSS(typeData) {
+    const url = "https://nnmclub.to/rssp.xml"
+    console.log(`${getCurrentTime()} [Request] ${url}`)
+    try {
+        const response = await axiosProxy.get(url, {
+            responseType: 'arraybuffer',
+            headers: headers
+        })
+        if (typeData === "json") {
+            data = iconv.decode(response.data, 'win1251')
+            const parser = new xml2js.Parser({
+                mergeAttrs: true,
+                explicitArray: false
+            })
+            let json = await parser.parseStringPromise(data)
+            return json
+        }
+        else {
+            data = iconv.decode(response.data, 'win1251')
+            return data
+        }
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return { 'Result': `Server is not available` }
+    }
+}
+
 // FastsTorrent
 async function FastsTorrent(query) {
     const url = `http://fasts-torrent.net/engine/ajax/search_torrent.php?title=${query}`
@@ -1519,8 +1564,8 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         }
     }
     // Kinozal RSS
-    // curl -s http://127.0.0.1:8443/api/get/rss/kinozal -H "Accept: application/json"
     // curl -s http://127.0.0.1:8443/api/get/rss/kinozal -H "Accept: application/xml"
+    // curl -s http://127.0.0.1:8443/api/get/rss/kinozal -H "accept: application/json" | jq .rss.channel[].item[1]
     else if (category === 'get' && type === 'rss' && provider === 'kinozal') {
         try {
             let result
@@ -1582,6 +1627,26 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         try {
             const result = await NoNameClubID(query)
             return res.json(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                { Result: 'No data' }
+            )
+        }
+    }
+    // NoNameClub RSS
+    else if (category === 'get' && type === 'rss' && provider === 'nonameclub') {
+        try {
+            let result
+            if (headerAccept.includes('json')) {
+                result = await NoNameClubRSS("json")
+                res.set('Content-Type', 'application/json')
+            }
+            else {
+                result = await NoNameClubRSS("xml")
+                res.set('Content-Type', 'application/xml')
+            }
+            return res.send(result)
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json(
