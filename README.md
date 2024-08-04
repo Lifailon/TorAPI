@@ -30,8 +30,9 @@ This project is inspired by ✨ [Torrents-Api](https://github.com/Ryuk-me/Torren
 
 Implemented:
 
-- **Search by title** to get all available distributions from a specified torrent tracker (its ID and brief information with a link to download the torrent file) or from all trackers at once.
-- **Search by ID** of the specified provider to get additional information (hash for direct download via torrent-client, links to Kinopoisk and IMDb databases, detailed description of the movie or series, as well as the content of the torrent-distribution).
+- **Search by title** to get all available distributions from a specified torrent tracker (its ID and brief information with a link to download the torrent file) or from **all** trackers at once.
+- **Search by ID** of the specified provider to get additional information: hash for direct download via torrent-client, links to Kinopoisk and IMDb databases, detailed description of the movie or series, as well as the content of the torrent-distribution.
+- **Get RSS news feeds** from all used providers in `XML` and also `JSON` formats.
 
 📄 Released under the [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
 
@@ -50,7 +51,7 @@ Registration is required only when downloading a torrent file via a direct link.
 
 All distributions when searching by ID contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to download the contents of the distribution or generate a torrent file using any torrent client after downloading the metadata.
 
-In case of native support, access to the RSS feed is implemented by means of redirection in `XML` and `JSON` format.
+In case of native support, access to the RSS feed is provided by redirecting the original feed.
 
 ---
 
@@ -93,6 +94,8 @@ npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090 --usernam
 
 ### Docker Hub
 
+#### Run
+
 Upload the image and run the container from the [Docker Hub](https://hub.docker.com/repository/docker/lifailon/torapi/general):
 
 ```shell
@@ -110,13 +113,16 @@ docker run -d --name TorAPI -p 8443:8443 \
   lifailon/torapi:latest
 ```
 
+#### Compose
+
 You can download and use the [docker-compose](docker-compose.yml) file to build the container from Docker Hub:
 
 ```shell
 curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/docker-compose.yml
+curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/.env.yml
 ```
 
-Create an environment variables file [.env](.env) and build the container:
+Edit the environment variables file [.env](.env) and build the container:
 
 ```shell
 docker-compose up -d
