@@ -1,8 +1,6 @@
 const axios         = require('axios')
 const cheerio       = require('cheerio')
-const puppeteer     = require('puppeteer')
 const iconv         = require('iconv-lite')
-const xml2js        = require('xml2js')
 
 const axiosProxy = axios.create()
 
@@ -11,6 +9,7 @@ const headers = {
 }
 
 const url = "https://rutor.info"
+
 const torrents = []
 
 const response = await axiosProxy.get(url, {
@@ -34,7 +33,7 @@ console.clear()
 // data('#ws #index tbody tr').not('.backgr').eq(0).find('td').eq(0).text()
 // data('#ws #index tbody tr').not('.backgr').eq(0).find('td').eq(1).text().replace('\n','')
 // data('#ws #index tbody tr').not('.backgr').eq(0).find('td a').text()
-// Метод html() всегда возвращает только первый элемент, по этому или смотрим родительский элемент целиком или прогоняем через массив
+
 // data('#ws #index tbody tr').not('.backgr').eq(0).find('td').map((index, element) => data(element).html()).get()
 
 data('#ws #index tbody tr').not('.backgr').each((index, element) => {
@@ -42,13 +41,11 @@ data('#ws #index tbody tr').not('.backgr').each((index, element) => {
     const torrent = {
         'Date': row.find('td').eq(0).text().trim(),
         'Name': row.find('td').eq(1).find('a').last().text().trim(),
-        'Magnet': row.find('td').eq(1).find('a[href^="magnet:"]').attr('href'),
-        'DownloadLink': 'https://d.rutor.info' + row.find('td').eq(1).find('a.downgif').attr('href'),
-        'Size': row.find('td').eq(2).text().trim(),
-        'Seeders': parseInt(row.find('td').eq(3).find('span.green').text().match(/\d+/)[0] || '0', 10),
-        'Leechers': parseInt(row.find('td').eq(3).find('span.red').text().match(/\d+/)[0] || '0', 10)
+        'Link': 'https://rutor.info' + row.find('td').eq(1).find('a[href^="/torrent"]').attr('href'),
+        'DownloadLink': 'https://' + row.find('td').eq(1).find('a.downgif').attr('href'),
+        'Magnet': row.find('td').eq(1).find('a[href^="magnet:"]').attr('href')
     }
     torrents.push(torrent)
 })
 
-console.log(JSON.stringify(torrents, null, 2))
+console.log(JSON.stringify(torrents, null, 4))

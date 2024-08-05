@@ -780,7 +780,7 @@ async function KinozalID(query) {
     }
 }
 
-// Kinozal RSS
+// Kinozal RSS Native
 async function KinozalRSS(typeData) {
     const url = "https://kinozal.tv/rss.xml"
     console.log(`${getCurrentTime()} [Request] ${url}`)
@@ -1005,8 +1005,8 @@ async function RuTorFiles(query) {
     }
 }
 
-// RuTor RSS
-async function RuTorRSS() {
+// RuTor RSS Custom
+async function RuTorRSS(typeData) {
     const url = "https://rutor.info"
     const torrents = []
     let html
@@ -1016,7 +1016,7 @@ async function RuTorRSS() {
             headers: headers
         })
         html = iconv.decode(response.data, 'utf8')
-        console.log(`${getCurrentTime()} [Request] ${url} > /rss (custom)`)
+        console.log(`${getCurrentTime()} [Request] ${url}/rss (custom)`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
         return { 'Result': `Server is not available` }
@@ -1027,18 +1027,71 @@ async function RuTorRSS() {
         const torrent = {
             'Date': row.find('td').eq(0).text().trim(),
             'Name': row.find('td').eq(1).find('a').last().text().trim(),
+            'Link': 'https://rutor.info' + row.find('td').eq(1).find('a[href^="/torrent"]').attr('href'),
+            'DownloadLink': 'https://' + row.find('td').eq(1).find('a.downgif').attr('href').replace(/^\//, ''),
             'Magnet': row.find('td').eq(1).find('a[href^="magnet:"]').attr('href'),
-            'DownloadLink': 'https://d.rutor.info' + row.find('td').eq(1).find('a.downgif').attr('href'),
-            'Size': row.find('td').eq(2).text().trim(),
-            'Seeders': parseInt(row.find('td').eq(3).find('span.green').text().match(/\d+/)[0] || '0', 10),
-            'Leechers': parseInt(row.find('td').eq(3).find('span.red').text().match(/\d+/)[0] || '0', 10)
+            'Size': '',
+            'Comments': 0,
+            'Seeds': 0,
+            'Peers': 0
         }
+        // Обработка размера и комментариев
+        const cells = row.find('td')
+        // Есть комментарии
+        if (cells.length === 5) {
+            torrent.Size = cells.eq(3).text().trim()
+            torrent.Comments = parseInt(cells.eq(2).text().match(/\d+/)[0], 10)
+        }
+        // Нет комментариев
+        else if (cells.length === 4) {
+            torrent.Size = cells.eq(2).text().trim()
+        }
+        // Обработка сидов и пиров через last (всегда в последней ячейке)
+        const lastCell = cells.last()
+        torrent.Seeds = parseInt(lastCell.find('span.green').text().match(/\d+/)[0] || '0', 10)
+        torrent.Peers = parseInt(lastCell.find('span.red').text().match(/\d+/)[0] || '0', 10)
         torrents.push(torrent)
     })
     if (torrents.length === 0) {
         return { 'Result': `Server is not available` }
     } else {
-        return torrents
+        if (typeData === "json") {
+            return torrents
+        } else {
+            const builder = new xml2js.Builder()
+            const rss = {
+                rss: {
+                  $: {
+                    version: '2.0'
+                  },
+                  channel: {
+                    title: 'Торрент трекер',
+                    link: 'https://rutor.info',
+                    description: 'Раздачи на главной торрент трекера',
+                    language: 'ru-ru',
+                    pubDate: new Date(Date.now() + 3 * 60 * 60 * 1000).toUTCString().replace('GMT', '+0300'),
+                    lastBuildDate: new Date(Date.now() + 3 * 60 * 60 * 1000).toUTCString().replace('GMT', '+0300'),
+                    item: torrents.map(torrent => ({
+                      title: torrent.Name,
+                      link: torrent.Link,
+                      guid: torrent.Magnet,
+                      pubDate: torrent.Date,
+                      Size: torrent.Size,
+                      Comments: torrent.Comments,
+                      Seeds: torrent.Seeds,
+                      Peers: torrent.Peers,
+                      enclosure: {
+                        $: {
+                          url: torrent.DownloadLink,
+                          type: 'application/x-bittorrent'
+                        }
+                      }
+                    }))
+                  }
+                }
+              }
+              return builder.buildObject(rss)
+        }
     }
 }
 
@@ -1355,7 +1408,7 @@ async function NoNameClubID(query) {
     ]
 }
 
-// NoNameClub RSS
+// NoNameClub RSS Native
 async function NoNameClubRSS(typeData) {
     const url = "https://nnmclub.to/rssp.xml"
     console.log(`${getCurrentTime()} [Request] ${url}`)
@@ -1600,13 +1653,11 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
             )
         }
     }
-    // Kinozal RSS
-    // curl -s http://127.0.0.1:8443/api/get/rss/kinozal -H "Accept: application/xml"
-    // curl -s http://127.0.0.1:8443/api/get/rss/kinozal -H "accept: application/json" | jq .rss.channel[].item[1]
+    // Kinozal RSS Native
     else if (category === 'get' && type === 'rss' && provider === 'kinozal') {
         try {
             let result
-            if (headerAccept.includes('json')) {
+            if (headerAccept && headerAccept.includes('json')) {
                 result = await KinozalRSS("json")
                 res.set('Content-Type', 'application/json')
             }
@@ -1647,6 +1698,26 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
             )
         }
     }
+    // RuTor RSS Custom
+    else if (category === 'get' && type === 'rss' && provider === 'rutor') {
+        try {
+            let result
+            if (headerAccept && headerAccept.includes('json')) {
+                result = await RuTorRSS("json")
+                res.set('Content-Type', 'application/json')
+            }
+            else {
+                result = await RuTorRSS("xml")
+                res.set('Content-Type', 'application/xml')
+            }
+            return res.send(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                { Result: 'No data' }
+            )
+        }
+    }
     // NoNameClub Title
     else if (type === 'title' && provider === 'nonameclub') {
         try {
@@ -1671,11 +1742,11 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
             )
         }
     }
-    // NoNameClub RSS
+    // NoNameClub RSS Native
     else if (category === 'get' && type === 'rss' && provider === 'nonameclub') {
         try {
             let result
-            if (headerAccept.includes('json')) {
+            if (headerAccept && headerAccept.includes('json')) {
                 result = await NoNameClubRSS("json")
                 res.set('Content-Type', 'application/json')
             }

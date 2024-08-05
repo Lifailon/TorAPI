@@ -19,9 +19,9 @@
 <p align="center">
     <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker"src="https://img.shields.io/docker/image-size/lifailon/torapi?&color=blue&label=Docker%20Image"></a>
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/docker-build-and-tests.yml?logo=GitHub-Actions&label=Build%20and%20Tests"></a>
-    <a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=GitHub&color=white&label=Version"></a>
+    <a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=GitHub&color=gray&label=Version"></a>
     <a href="https://github.com/Lifailon/TorAPI"><img title="Language"src="https://img.shields.io/github/languages/top/lifailon/TorAPI?logo=JavaScript&color=gold&label=JavaScript"></a>
-    <a href="https://github.com/Lifailon/TorAPI/blob/main/LICENSE"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=Readme&color=orange&label=License"></a>
+    <a href="https://github.com/Lifailon/TorAPI/blob/main/LICENSE"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=Readme&color=white&label=License"></a>
 </p>
 
 Unofficial API (**backend**) for RuTracker, Kinozal, RuTor and NoNameClub for receiving torrent files and detailed information about distribution by movie title, TV series or id, and also provides RSS news feed for all providers.
@@ -40,18 +40,16 @@ Implemented:
 
 ### 🔗 Full list of available providers:
 
-| Provider name                       | Mirrors | Registration | VPN | Search by ID | RSS    |
-| -                                   | -       | -            | -   | -            | -      |
-| [RuTracker](https://rutracker.org)  | 3       | Yes          | Yes | Yes          | No     |
-| [Kinozal](https://kinozal.tv)       | 2       | Yes          | Yes | Yes          | Native |
-| [RuTor](https://rutor.info)         | 2       | No           | Yes | Yes          | No     |
-| [NoNameClub](https://nnmclub.to)    | 1       | No           | Yes | Yes          | Native |
+| Provider name                       | Mirrors | Registration | Search by ID | RSS      |
+| -                                   | -       | -            | -            | -        |
+| [RuTracker](https://rutracker.org)  | 3       | Yes*         | Yes          | No       |
+| [Kinozal](https://kinozal.tv)       | 2       | Yes*         | Yes          | Native   |
+| [RuTor](https://rutor.info)         | 2       | No           | Yes          | *Custom* |
+| [NoNameClub](https://nnmclub.to)    | 1       | No           | Yes          | Native   |
 
-Registration is required only when downloading a torrent file via a direct link.
+**\*** Registration is required only when downloading a torrent file via a direct link. All distributions when searching by ID contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to download the contents of the distribution or generate a torrent file using any torrent client after downloading the metadata.
 
-All distributions when searching by ID contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to download the contents of the distribution or generate a torrent file using any torrent client after downloading the metadata.
-
-In case of native support, access to the RSS feed is provided by redirecting the original feed.
+In case of native support, access to the RSS feed is provided by redirecting the original feed. For providers that do not support RSS by default, a custom news feed has been implemented from the main page.
 
 ---
 
