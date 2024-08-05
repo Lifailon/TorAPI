@@ -815,7 +815,7 @@ async function KinozalRSS(typeData) {
         }
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return { 'Result': `Server is not available` };
+        return { 'Result': `Server is not available` }
     }
 }
 
@@ -1002,6 +1002,43 @@ async function RuTorFiles(query) {
                 Files: torrents
             }
         ]
+    }
+}
+
+// RuTor RSS
+async function RuTorRSS() {
+    const url = "https://rutor.info"
+    const torrents = []
+    let html
+    try {
+        const response = await axiosProxy.get(url, {
+            responseType: 'arraybuffer',
+            headers: headers
+        })
+        html = iconv.decode(response.data, 'utf8')
+        console.log(`${getCurrentTime()} [Request] ${url} > /rss (custom)`)
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return { 'Result': `Server is not available` }
+    }
+    const data = cheerio.load(html)
+    data('#ws #index tbody tr').not('.backgr').each((index, element) => {
+        const row = data(element)
+        const torrent = {
+            'Date': row.find('td').eq(0).text().trim(),
+            'Name': row.find('td').eq(1).find('a').last().text().trim(),
+            'Magnet': row.find('td').eq(1).find('a[href^="magnet:"]').attr('href'),
+            'DownloadLink': 'https://d.rutor.info' + row.find('td').eq(1).find('a.downgif').attr('href'),
+            'Size': row.find('td').eq(2).text().trim(),
+            'Seeders': parseInt(row.find('td').eq(3).find('span.green').text().match(/\d+/)[0] || '0', 10),
+            'Leechers': parseInt(row.find('td').eq(3).find('span.red').text().match(/\d+/)[0] || '0', 10)
+        }
+        torrents.push(torrent)
+    })
+    if (torrents.length === 0) {
+        return { 'Result': `Server is not available` }
+    } else {
+        return torrents
     }
 }
 
