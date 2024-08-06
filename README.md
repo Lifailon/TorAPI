@@ -42,14 +42,14 @@ Implemented:
 
 | Provider name                       | Mirrors | Registration | Search by ID | RSS      |
 | -                                   | -       | -            | -            | -        |
-| [RuTracker](https://rutracker.org)  | 3       | Yes*         | Yes          | No       |
-| [Kinozal](https://kinozal.tv)       | 2       | Yes*         | Yes          | Native   |
+| [RuTracker](https://rutracker.org)  | 3       | Yes*         | Yes          | Native   |
+| [Kinozal](https://kinozal.tv)       | 3       | Yes*         | Yes          | Native   |
 | [RuTor](https://rutor.info)         | 2       | No           | Yes          | *Custom* |
 | [NoNameClub](https://nnmclub.to)    | 1       | No           | Yes          | Native   |
 
 **\*** Registration is required only when downloading a torrent file via a direct link. All distributions when searching by ID contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to download the contents of the distribution or generate a torrent file using any torrent client after downloading the metadata.
 
-In case of native support, access to the RSS feed is provided by redirecting the original feed. For providers that do not support RSS by default, a custom news feed has been implemented from the main page.
+The RSS feed is accessed by redirecting the original feed. For providers that do not support RSS by default, a custom news feed has been implemented from the main page.
 
 ---
 

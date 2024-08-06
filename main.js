@@ -553,11 +553,47 @@ async function RuTrackerID(query) {
     ]
 }
 
+// RuTracker RSS Native
+async function RuTrackerRSS(typeData) {
+    const url = "https://feed.rutracker.cc/atom/f/0.atom"
+    console.log(`${getCurrentTime()} [Request] ${url}`)
+    try {
+        const response = await axiosProxy.get(url, {
+            headers: headers
+        })
+        if (typeData === "json") {
+            const parser = new xml2js.Parser({
+                mergeAttrs: true,
+                explicitArray: false
+            })
+            let json = await parser.parseStringPromise(response.data)
+            // Вытаскиваем только item (entry) для json
+            json = json.feed.entry.map(item => ({
+                id: item.id,
+                link: item.link.href,
+                updated: item.updated,
+                title: item.title,
+                author: item.author.name,
+                author: item.author.name,
+                category: item.category.term,
+                categoryLable: item.category.label
+            }))
+            return json
+        } else {
+            return response.data
+        }
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return { 'Result': `Server is not available` }
+    }
+}
+
 // Kinozal
 async function Kinozal(query, page, year) {
     const urls = [
         'https://kinozal.tv/browse.php?s=',
-        'https://kinozal.me/browse.php?s='
+        'https://kinozal.me/browse.php?s=',
+        'https://kinozal.guru/browse.php?s='
     ]
     let checkUrl = false
     const torrents = []
@@ -791,24 +827,17 @@ async function KinozalRSS(typeData) {
         if (typeData === "json") {
             const parser = new xml2js.Parser({
                 mergeAttrs: true, // Атрибуты элемента XML включаются в список дочерних элементов вместо добавления в отдельный объект с ключом $
-                explicitArray: false // Элементы, которые встречаются только один раз, преобразуются в объект, а не в массив.
+                explicitArray: false // Элементы, которые встречаются только один раз, преобразуются в объект, а не в массив
             })
             let json = await parser.parseStringPromise(response.data)
-            // json = {
-            //     title: json.rss.channel.title,
-            //     link: json.rss.channel.link,
-            //     description: json.rss.channel.description,
-            //     language: json.rss.channel.language,
-            //     pubDate: json.rss.channel.pubDate,
-            //     lastBuildDate: json.rss.channel.lastBuildDate,
-            //     item: json.rss.channel.item.map(item => ({
-            //         title: item.title,
-            //         link: item.link,
-            //         category: item.category,
-            //         guid: item.guid,
-            //         pubDate: item.pubDate
-            //     }))
-            // }
+            // Вытаскиваем только item для json
+            json = json.rss.channel.item.map(item => ({
+                    title: item.title,
+                    link: item.link,
+                    category: item.category,
+                    guid: item.guid,
+                    pubDate: item.pubDate
+            }))
             return json
         } else {
             return response.data
@@ -1005,8 +1034,72 @@ async function RuTorFiles(query) {
     }
 }
 
+// RuTor Puppeteer
+async function RuTorFilesPuppeteer(query) {
+    const torrents = []
+    // Запускаем браузер и открываем новую пустую страницу 
+    const browser = await puppeteer.launch({
+        headless: true // Скрыть отображение браузера (по умолчанию)
+    })
+    const page = await browser.newPage()
+    // Открываем страницу с ожиданием загрузки 60 сек
+    await page.goto(`https://rutor.info/torrent/${query}`, {
+        timeout: 60000,
+        waitUntil: 'domcontentloaded' // ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
+    })
+    // await page.goto(`https://rutor.info/torrent/970650`, {timeout: 60000})
+    await page.evaluate(() => {
+        // Находим кнопку по JavaScript пути и нажимаем на нее
+        // document.querySelector("#details > tbody > tr:nth-child(11) > td.header > span").click()
+        // document.querySelector("#details > tbody > tr:nth-child(12) > td.header > span").click()
+        // Находим все кпноки
+        const buttons = document.querySelectorAll('span.button')
+        // Проходимся по найденным кнопкам
+        buttons.forEach(button => {
+            // Проверяем, содержит ли кнопка текст "Файлы" и нажимаем на нее
+            if (button.textContent.includes('Файлы')) {
+                button.click()
+            }
+        })
+    })
+    // Дождаться загрузки результатов
+    // const elementHandle = await page.waitForSelector('#files')
+    // Ищем элемент с идентификатором #files и проверяем, что элемент существует его содержимое не содержит текст загрузки
+    await page.waitForFunction(() => {
+        const element = document.querySelector('#files')
+        return element && !element.textContent.includes("Происходит загрузка списка файлов...")
+    }, {
+        timeout: 30000, // Ожидать результат 30 секунд
+        polling: 50   // Проверка каждые 50мс (по умолчанию 100мс)
+    })
+    // Забираем результат после успешной проверки
+    const elementContent = await page.evaluate(() => {
+        const element = document.querySelector('#files')
+        return element ? element.textContent : null
+    })
+    // Закрываем браузер
+    await browser.close()
+    // Разбиваем на массив из строк исключая первую строку
+    const lines = elementContent.trim().split('\n').slice(1)
+    // Регулярное выражение для разбиения строки на название и размер
+    const regex = /^(.+?)([\d.]+\s*\S+)\s+\((\d+)\)$/
+    for (const line of lines) {
+        const match = line.match(regex)
+        const torrent = {
+            'Name': match[1],
+            'Size': match[2]
+        }
+        torrents.push(torrent)
+    }
+    if (torrents.length === 0) {
+        return { 'Result': 'No matches were found for your ID' }
+    } else {
+        return torrents
+    }
+}
+
 // RuTor RSS Custom
-async function RuTorRSS(typeData) {
+async function RuTorRssCustom(typeData) {
     const url = "https://rutor.info"
     const torrents = []
     let html
@@ -1095,67 +1188,34 @@ async function RuTorRSS(typeData) {
     }
 }
 
-// RuTor Puppeteer
-async function RuTorFilesPuppeteer(query) {
-    const torrents = []
-    // Запускаем браузер и открываем новую пустую страницу 
-    const browser = await puppeteer.launch({
-        headless: true // Скрыть отображение браузера (по умолчанию)
-    })
-    const page = await browser.newPage()
-    // Открываем страницу с ожиданием загрузки 60 сек
-    await page.goto(`https://rutor.info/torrent/${query}`, {
-        timeout: 60000,
-        waitUntil: 'domcontentloaded' // ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
-    })
-    // await page.goto(`https://rutor.info/torrent/970650`, {timeout: 60000})
-    await page.evaluate(() => {
-        // Находим кнопку по JavaScript пути и нажимаем на нее
-        // document.querySelector("#details > tbody > tr:nth-child(11) > td.header > span").click()
-        // document.querySelector("#details > tbody > tr:nth-child(12) > td.header > span").click()
-        // Находим все кпноки
-        const buttons = document.querySelectorAll('span.button')
-        // Проходимся по найденным кнопкам
-        buttons.forEach(button => {
-            // Проверяем, содержит ли кнопка текст "Файлы" и нажимаем на нее
-            if (button.textContent.includes('Файлы')) {
-                button.click()
-            }
+// RuTor RSS Native
+async function RuTorRSS(typeData) {
+    const url = "https://alt.rutor.info/rss.php"
+    console.log(`${getCurrentTime()} [Request] ${url}`)
+    try {
+        const response = await axiosProxy.get(url, {
+            headers: headers
         })
-    })
-    // Дождаться загрузки результатов
-    // const elementHandle = await page.waitForSelector('#files')
-    // Ищем элемент с идентификатором #files и проверяем, что элемент существует его содержимое не содержит текст загрузки
-    await page.waitForFunction(() => {
-        const element = document.querySelector('#files')
-        return element && !element.textContent.includes("Происходит загрузка списка файлов...")
-    }, {
-        timeout: 30000, // Ожидать результат 30 секунд
-        polling: 50   // Проверка каждые 50мс (по умолчанию 100мс)
-    })
-    // Забираем результат после успешной проверки
-    const elementContent = await page.evaluate(() => {
-        const element = document.querySelector('#files')
-        return element ? element.textContent : null
-    })
-    // Закрываем браузер
-    await browser.close()
-    // Разбиваем на массив из строк исключая первую строку
-    const lines = elementContent.trim().split('\n').slice(1)
-    // Регулярное выражение для разбиения строки на название и размер
-    const regex = /^(.+?)([\d.]+\s*\S+)\s+\((\d+)\)$/
-    for (const line of lines) {
-        const match = line.match(regex)
-        const torrent = {
-            'Name': match[1],
-            'Size': match[2]
+        if (typeData === "json") {
+            const parser = new xml2js.Parser({
+                mergeAttrs: true,
+                explicitArray: false
+            })
+            let json = await parser.parseStringPromise(response.data)
+            // Вытаскиваем только item для json
+            json = json.rss.channel.item.map(item => ({
+                title: item.title,
+                description: item.description,
+                pubDate: item.pubDate,
+                link: item.link
+            }))
+            return json
+        } else {
+            return response.data
         }
-        torrents.push(torrent)
-    }
-    if (torrents.length === 0) {
-        return { 'Result': 'No matches were found for your ID' }
-    } else {
-        return torrents
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return { 'Result': `Server is not available` }
     }
 }
 
@@ -1424,6 +1484,19 @@ async function NoNameClubRSS(typeData) {
                 explicitArray: false
             })
             let json = await parser.parseStringPromise(data)
+            // Вытаскиваем только item для json
+            json = json.rss.channel.item.map(item => ({
+                turbo: item.turbo,
+                title: item.title,
+                link: item.link,
+                pubDate: item.pubDate,
+                description: item.description,
+                content: item["turbo:content"],
+                creator: item["dc:creator"],
+                commentRss: item["wfw:commentRss"],
+                comments: item["slash:comments"],
+                enclosure: item.enclosure
+            }))
             return json
         }
         else {
@@ -1467,27 +1540,38 @@ async function FastsTorrent(query) {
     }
 }
 
-// Список провайдеров для конечной точки provider/list
-const providerList = {
-    "Provider_List": [
-        {
-            "Provider": "RuTracker",
-            "Url": "https://rutracker.org"
-        },
-        {
-            "Provider": "Kinozal",
-            "Url": "https://kinozal.tv"
-        },
-        {
-            "Provider": "RuTor",
-            "Url": "https://rutor.info"
-        },
-        {
-            "Provider": "NoNameClub",
-            "Url": "https://nnmclub.to"
-        }
-    ]
-}
+// Список провайдеров для конечной точки /api/provider/list
+const providerList = [
+    {
+        "Provider": "RuTracker",
+        "Urls": [
+            "https://rutracker.org",
+            "https://rutracker.net",
+            "https://rutracker.nl"
+        ]
+    },
+    {
+        "Provider": "Kinozal",
+        "Urls": [
+            "https://kinozal.tv",
+            "https://kinozal.me",
+            "https://kinozal.guru"
+        ]
+    },
+    {
+        "Provider": "RuTor",
+        "Urls": [
+            "https://rutor.info",
+            "https://rutor.is"
+        ]
+    },
+    {
+        "Provider": "NoNameClub",
+        "Urls": [
+            "https://nnmclub.to"
+        ]
+    }
+]
 
 // Создание экземпляра Express
 const web = express()
@@ -1629,6 +1713,26 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
             )
         }
     }
+    // RuTracker RSS Native
+    else if (category === 'get' && type === 'rss' && provider === 'rutracker') {
+        try {
+            let result
+            if (headerAccept && headerAccept.includes('json')) {
+                result = await RuTrackerRSS("json")
+                res.set('Content-Type', 'application/json')
+            }
+            else {
+                result = await RuTrackerRSS("xml")
+                res.set('Content-Type', 'application/xml')
+            }
+            return res.send(result)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json(
+                { Result: 'No data' }
+            )
+        }
+    }
     // Kinozal Title
     else if (type === 'title' && provider === 'kinozal') {
         try {
@@ -1703,11 +1807,13 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         try {
             let result
             if (headerAccept && headerAccept.includes('json')) {
-                result = await RuTorRSS("json")
+                // result = await RuTorRSS("json")
+                result = await RuTorRssCustom("json")
                 res.set('Content-Type', 'application/json')
             }
             else {
-                result = await RuTorRSS("xml")
+                // result = await RuTorRSS("xml")
+                result = await RuTorRssCustom("xml")
                 res.set('Content-Type', 'application/xml')
             }
             return res.send(result)
