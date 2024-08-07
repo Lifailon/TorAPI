@@ -1681,6 +1681,109 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
             return res.status(400).json({ Result: 'No data' })
         }
     }
+    // Конечная точка проверки доступности всех конечных точек
+    if (category === "provider" && type === "test") {
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
+        let testQuery = query || "The Rookie"
+        try {
+            // Проверяем RSS
+            const RuTrackerRssResult = await RuTrackerRSS("json")
+            const RuTrackerRssCheck = Array.isArray(RuTrackerRssResult) && RuTrackerRssResult.length > 0 && RuTrackerRssResult[0].link && RuTrackerRssResult[0].title
+            const KinozalRssResult = await KinozalRSS("json")
+            const KinozalRssCheck = Array.isArray(KinozalRssResult) && KinozalRssResult.length > 0 && KinozalRssResult[0].link && KinozalRssResult[0].title
+            const RuTorRssResult = await RuTorRSS("json")
+            const RuTorRssCheck = Array.isArray(RuTorRssResult) && RuTorRssResult.length > 0 && RuTorRssResult[0].link && RuTorRssResult[0].title
+            const NoNameClubRssResult = await NoNameClubRSS("json")
+            const NoNameClubRssCheck = Array.isArray(NoNameClubRssResult) && NoNameClubRssResult.length > 0 && NoNameClubRssResult[0].link && NoNameClubRssResult[0].title
+            // Проверяем поиск по Title
+            const RuTrackerResult = await RuTracker(testQuery, 0)
+            const RuTrackerCheck = Array.isArray(RuTrackerResult) && RuTrackerResult.length > 0 && RuTrackerResult[0].Name && RuTrackerResult[0].Id && RuTrackerResult[0].Url
+            const KinozalResult = await Kinozal(testQuery, 0, 0)
+            const KinozalCheck = Array.isArray(KinozalResult) && KinozalResult.length > 0 && KinozalResult[0].Name && KinozalResult[0].Id && KinozalResult[0].Url
+            const RuTorResult = await RuTor(testQuery, 0)
+            const RuTorCheck = Array.isArray(RuTorResult) && RuTorResult.length > 0 && RuTorResult[0].Name && RuTorResult[0].Id && RuTorResult[0].Url
+            const NoNameClubResult = await NoNameClub(testQuery, 0)
+            const NoNameClubCheck = Array.isArray(NoNameClubResult) && NoNameClubResult.length > 0 && NoNameClubResult[0].Name && NoNameClubResult[0].Id && NoNameClubResult[0].Url
+            // Проверяем поиск по полученному id из запроса Title
+            let RuTrackerIdCheck = false
+            if (RuTrackerCheck) {
+                const RuTrackerIdResult = await RuTrackerID(RuTrackerResult[0].Id)
+                RuTrackerIdCheck = Array.isArray(RuTrackerIdResult) && 
+                    RuTrackerIdResult.length > 0 && 
+                    RuTrackerIdResult[0].Name && 
+                    RuTrackerIdResult[0].Url &&
+                    RuTrackerIdResult[0].Hash &&
+                    RuTrackerIdResult[0].Magnet &&
+                    RuTrackerIdResult[0].Torrent
+            }
+            let KinozalIdCheck = false
+            if (KinozalCheck) {
+                const KinozalIdResult = await KinozalID(KinozalResult[0].Id)
+                KinozalIdCheck = Array.isArray(KinozalIdResult) && 
+                    KinozalIdResult.length > 0 && 
+                    KinozalIdResult[0].Name && 
+                    KinozalIdResult[0].Url &&
+                    KinozalIdResult[0].Hash &&
+                    KinozalIdResult[0].Magnet // &&
+                    // KinozalIdResult[0].Torrent
+            }
+            let RuTorIdCheck = false
+            if (RuTorCheck) {
+                const RuTorIdResult = await RuTorFiles(RuTorResult[0].Id)
+                RuTorIdCheck = Array.isArray(RuTorIdResult) && 
+                    RuTorIdResult.length > 0 && 
+                    RuTorIdResult[0].Name && 
+                    RuTorIdResult[0].Url &&
+                    RuTorIdResult[0].Hash &&
+                    RuTorIdResult[0].Magnet &&
+                    RuTorIdResult[0].Torrent
+            }
+            let NoNameClubIdCheck = false
+            if (NoNameClubCheck) {
+                const NoNameClubIdResult = await NoNameClubID(NoNameClubResult[0].Id)
+                NoNameClubIdCheck = Array.isArray(NoNameClubIdResult) && 
+                    NoNameClubIdResult.length > 0 && 
+                    NoNameClubIdResult[0].Name && 
+                    NoNameClubIdResult[0].Url &&
+                    NoNameClubIdResult[0].Hash &&
+                    NoNameClubIdResult[0].Magnet &&
+                    NoNameClubIdResult[0].Torrent
+            }
+            // Объединяем результаты в один массив
+            const Results = [
+                {
+                    RSS: {
+                        RuTracker: RuTrackerRssCheck ? true : false,
+                        Kinozal: KinozalRssCheck ? true : false,
+                        RuTor: RuTorRssCheck ? true : false,
+                        NoNameClub: NoNameClubRssCheck ? true : false
+                    },
+                    Title: {
+                        RuTracker: RuTrackerCheck ? true : false,
+                        Kinozal: KinozalCheck ? true : false,
+                        RuTor: RuTorCheck ? true : false,
+                        NoNameClub: NoNameClubCheck ? true : false
+                    },
+                    Id: {
+                        RuTracker: RuTrackerResult[0].Id ? parseInt(RuTrackerResult[0].Id, 10) : null,
+                        Kinozal: KinozalResult[0].Id ? parseInt(KinozalResult[0].Id, 10) : null,
+                        RuTor: RuTorResult[0].Id ? parseInt(RuTorResult[0].Id, 10) : null,
+                        NoNameClub: NoNameClubResult[0].Id ? parseInt(NoNameClubResult[0].Id, 10) : null
+                    },
+                    Result: {
+                        RuTracker: RuTrackerIdCheck ? true : false,
+                        Kinozal: KinozalIdCheck ? true : false,
+                        RuTor: RuTorIdCheck ? true : false,
+                        NoNameClub: NoNameClubIdCheck ? true : false
+                    }
+                }
+            ]
+            return res.json(Results)
+        } catch (error) {
+            console.error("Error:", error)
+            return res.status(400).json({ Result: 'No data' })
+        }
+    }
     if (type !== "title" && type !== "id" && type !== "rss") {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
