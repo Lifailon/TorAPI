@@ -1745,7 +1745,17 @@ const options = {
                 name: "License MIT",
                 url: "https://github.com/Lifailon/TorAPI/blob/main/LICENSE"
             }
-        }
+        },
+        servers: [
+            {
+              url: 'http://localhost:8443',
+              description: 'Local server'
+            },
+            {
+              url: 'https://toruapi.vercel.app',
+              description: 'Production server'
+            }
+        ]
     },
     apis: ['./swagger/swagger.js']
 }
@@ -2083,6 +2093,9 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         return res.status(400).send(`Provider ${provider} not found`)
     }
 })
+
+// Экспорт Express как serverless функцию для Vercel
+module.exports = web
 
 // Запуск Express
 const port = argv.port

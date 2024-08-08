@@ -11,7 +11,7 @@
 
 <p align="center">
     <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"></a>
-    <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI/0.3.0"><img title="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"></a>
+    <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"></a>
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions" src="https://img.shields.io/badge/Actions-%230075A8.svg?style=for-the-badge&logo=githubactions&logoColor=white"></a>
 </p>
 
@@ -68,6 +68,12 @@ npm start
 ```
 
 By default, the server will be launched on port `8443`.
+
+To dev, use run in nodemon mode:
+
+```
+npm run dev
+```
 
 📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs`
 

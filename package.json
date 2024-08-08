@@ -3,7 +3,8 @@
     "version": "0.4",
     "main": "main.js",
     "scripts": {
-        "start": "nodemon main.js",
+        "start": "node main.js",
+        "dev": "nodemon main.js",
         "docs": "node swagger/swagger-convert.js"
     },
     "keywords": [],
