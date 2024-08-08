@@ -11,7 +11,7 @@
 
 <p align="center">
     <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"></a>
-    <a href="https://app.swaggerhub.com/apis-docs/TorAPI-7df/TorAPI/0.3.0"><img title="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"></a>
+    <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI/0.3.0"><img title="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"></a>
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions" src="https://img.shields.io/badge/Actions-%230075A8.svg?style=for-the-badge&logo=githubactions&logoColor=white"></a>
 </p>
 
@@ -50,7 +50,7 @@ Implemented:
 
 The RSS feed is accessed by redirecting the original feed. For providers that do not support RSS by default, a custom news feed has been implemented from the main page.
 
-You can see examples of requests and responses in the static documentation posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Static-Documentation) and [GitHub Page](https://lifailon.github.io/TorAPI).
+You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Static-Documentation) and [GitHub Page](https://lifailon.github.io/TorAPI).
 
 [![Wikipedia](https://img.shields.io/badge/API_Static_Docs-009CAB.svg?style=for-the-badge&logo=wikipedia&logoColor=white)](https://lifailon.github.io/TorAPI)
 
@@ -70,6 +70,12 @@ npm start
 By default, the server will be launched on port `8443`.
 
 📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs`
+
+To create up-to-date Swagger documentation files in `JSON` and `YAML` format, use the command:
+
+```shell
+npm run docs
+```
 
 You can specify a different port:
 

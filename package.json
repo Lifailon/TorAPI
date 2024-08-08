@@ -3,7 +3,8 @@
     "version": "0.4",
     "main": "main.js",
     "scripts": {
-        "start": "nodemon main.js"
+        "start": "nodemon main.js",
+        "docs": "node swagger/swagger-convert.js"
     },
     "keywords": [],
     "author": "Lifailon",
@@ -14,6 +15,7 @@
         "express": "^4.17.1",
         "https-proxy-agent": "^7.0.5",
         "iconv-lite": "^0.6.3",
+        "js-yaml": "^4.1.0",
         "nodemon": "^2.0.4",
         "puppeteer": "^22.6.0",
         "swagger-jsdoc": "^6.2.8",
