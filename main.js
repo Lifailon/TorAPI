@@ -771,6 +771,7 @@ async function KinozalID(query) {
         'Url': url,
         'Hash': Hash,
         'Magnet': addTrackerList(Hash,"Kinozal"),
+        'Torrent': `https://dl.kinozal.tv/download.php?id=${query}`,
         'IMDb_link': imdb,
         'Kinopoisk_link': kp,
         'IMDB_id': imdb.replace(/[^0-9]/g, ''),
@@ -1573,6 +1574,158 @@ const providerList = [
     }
 ]
 
+// Test API Endpoints
+async function testEndpoints(query) {
+    let testQuery = query || "The Rookie"
+    // Проверяем RSS
+    const RuTrackerRssResult = await RuTrackerRSS("json")
+    const RuTrackerRssCheck = Array.isArray(RuTrackerRssResult) && RuTrackerRssResult.length > 0 && RuTrackerRssResult[0].link && RuTrackerRssResult[0].title
+    const KinozalRssResult = await KinozalRSS("json")
+    const KinozalRssCheck = Array.isArray(KinozalRssResult) && KinozalRssResult.length > 0 && KinozalRssResult[0].link && KinozalRssResult[0].title
+    const RuTorRssResult = await RuTorRSS("json")
+    const RuTorRssCheck = Array.isArray(RuTorRssResult) && RuTorRssResult.length > 0 && RuTorRssResult[0].link && RuTorRssResult[0].title
+    const NoNameClubRssResult = await NoNameClubRSS("json")
+    const NoNameClubRssCheck = Array.isArray(NoNameClubRssResult) && NoNameClubRssResult.length > 0 && NoNameClubRssResult[0].link && NoNameClubRssResult[0].title
+
+    // Проверяем поиск по Title
+    let startTime = performance.now()
+    const RuTrackerResult = await RuTracker(testQuery, 0)
+    let endTime = performance.now()
+    const RuTrackerCheck = Array.isArray(RuTrackerResult) && RuTrackerResult.length > 0 && RuTrackerResult[0].Name && RuTrackerResult[0].Id && RuTrackerResult[0].Url
+    // Фиксируем время выполнения функции
+    const RuTrackerRunTime = ((endTime - startTime) / 1000).toFixed(3)
+    console.log(`${getCurrentTime()} [DEBUG] RuTracker ID: ${RuTrackerResult[0].Id}`)
+
+    startTime = performance.now()
+    const KinozalResult = await Kinozal(testQuery, 0, 0)
+    const KinozalCheck = Array.isArray(KinozalResult) && KinozalResult.length > 0 && KinozalResult[0].Name && KinozalResult[0].Id && KinozalResult[0].Url
+    endTime = performance.now()
+    const KinozalRunTime = ((endTime - startTime) / 1000).toFixed(3)
+    console.log(`${getCurrentTime()} [DEBUG] Kinozal ID: ${KinozalResult[0].Id}`)
+
+    startTime = performance.now()
+    const RuTorResult = await RuTor(testQuery, 0)
+    const RuTorCheck = Array.isArray(RuTorResult) && RuTorResult.length > 0 && RuTorResult[0].Name && RuTorResult[0].Id && RuTorResult[0].Url
+    endTime = performance.now()
+    const RuTorRunTime = ((endTime - startTime) / 1000).toFixed(3)
+    console.log(`${getCurrentTime()} [DEBUG] RuTor ID: ${RuTorResult[0].Id}`)
+    
+    startTime = performance.now()
+    const NoNameClubResult = await NoNameClub(testQuery, 0)
+    const NoNameClubCheck = Array.isArray(NoNameClubResult) && NoNameClubResult.length > 0 && NoNameClubResult[0].Name && NoNameClubResult[0].Id && NoNameClubResult[0].Url
+    endTime = performance.now()
+    const NoNameClubRunTime = ((endTime - startTime) / 1000).toFixed(3)
+    console.log(`${getCurrentTime()} [DEBUG] NoNameClub ID: ${NoNameClubResult[0].Id}`)
+
+    // Проверяем поиск по полученному id из запроса Title
+    let RuTrackerIdCheck = false
+    startTime = performance.now()
+    if (RuTrackerCheck) {
+        const RuTrackerIdResult = await RuTrackerID(RuTrackerResult[0].Id)
+        RuTrackerIdCheck = Array.isArray(RuTrackerIdResult) && 
+            RuTrackerIdResult.length > 0 && 
+            RuTrackerIdResult[0].Name && 
+            RuTrackerIdResult[0].Url &&
+            RuTrackerIdResult[0].Hash &&
+            RuTrackerIdResult[0].Magnet &&
+            RuTrackerIdResult[0].Torrent
+    }
+    endTime = performance.now()
+    const RuTrackerIdRunTime = ((endTime - startTime) / 1000).toFixed(3)
+
+    let KinozalIdCheck = false
+    startTime = performance.now()
+    if (KinozalCheck) {
+        const KinozalIdResult = await KinozalID(KinozalResult[0].Id)
+        KinozalIdCheck = Array.isArray(KinozalIdResult) && 
+            KinozalIdResult.length > 0 && 
+            KinozalIdResult[0].Name && 
+            KinozalIdResult[0].Url &&
+            KinozalIdResult[0].Hash &&
+            KinozalIdResult[0].Magnet &&
+            KinozalIdResult[0].Torrent
+    }
+    endTime = performance.now()
+    const KinozalIdRunTime = ((endTime - startTime) / 1000).toFixed(3)
+
+    let RuTorIdCheck = false
+    startTime = performance.now()
+    if (RuTorCheck) {
+        const RuTorIdResult = await RuTorFiles(RuTorResult[0].Id)
+        RuTorIdCheck = Array.isArray(RuTorIdResult) && 
+            RuTorIdResult.length > 0 && 
+            RuTorIdResult[0].Name && 
+            RuTorIdResult[0].Url &&
+            RuTorIdResult[0].Hash &&
+            RuTorIdResult[0].Magnet &&
+            RuTorIdResult[0].Torrent
+    }
+    endTime = performance.now()
+    const RuTorIdRunTime = ((endTime - startTime) / 1000).toFixed(3)
+
+    let NoNameClubIdCheck = false
+    startTime = performance.now()
+    if (NoNameClubCheck) {
+        const NoNameClubIdResult = await NoNameClubID(NoNameClubResult[0].Id)
+        NoNameClubIdCheck = Array.isArray(NoNameClubIdResult) && 
+            NoNameClubIdResult.length > 0 && 
+            NoNameClubIdResult[0].Name && 
+            NoNameClubIdResult[0].Url &&
+            NoNameClubIdResult[0].Hash &&
+            NoNameClubIdResult[0].Magnet &&
+            NoNameClubIdResult[0].Torrent
+    }
+    endTime = performance.now()
+    const NoNameClubIdRunTime = ((endTime - startTime) / 1000).toFixed(3)
+    
+    // Объединяем результаты в один массив
+    const Results = [
+        {
+            RSS: {
+                RuTracker: RuTrackerRssCheck ? true : false,
+                Kinozal: KinozalRssCheck ? true : false,
+                RuTor: RuTorRssCheck ? true : false,
+                NoNameClub: NoNameClubRssCheck ? true : false
+            },
+            Title: {
+                Status: {
+                    RuTracker: RuTrackerCheck ? true : false,
+                    Kinozal: KinozalCheck ? true : false,
+                    RuTor: RuTorCheck ? true : false,
+                    NoNameClub: NoNameClubCheck ? true : false
+                },
+                RunTime: {
+                    RuTracker: parseFloat(RuTrackerRunTime),
+                    Kinozal: parseFloat(KinozalRunTime),
+                    RuTor: parseFloat(RuTorRunTime),
+                    NoNameClub: parseFloat(NoNameClubRunTime)
+                },
+                Id: {
+                    RuTracker: RuTrackerResult[0].Id ? parseInt(RuTrackerResult[0].Id, 10) : null,
+                    Kinozal: KinozalResult[0].Id ? parseInt(KinozalResult[0].Id, 10) : null,
+                    RuTor: RuTorResult[0].Id ? parseInt(RuTorResult[0].Id, 10) : null,
+                    NoNameClub: NoNameClubResult[0].Id ? parseInt(NoNameClubResult[0].Id, 10) : null
+                }
+            },
+            Id: {
+                Status: {
+                    RuTracker: RuTrackerIdCheck ? true : false,
+                    Kinozal: KinozalIdCheck ? true : false,
+                    RuTor: RuTorIdCheck ? true : false,
+                    NoNameClub: NoNameClubIdCheck ? true : false
+                },
+                RunTime: {
+                    RuTracker: parseFloat(RuTrackerIdRunTime),
+                    Kinozal: parseFloat(KinozalIdRunTime),
+                    RuTor: parseFloat(RuTorIdRunTime),
+                    NoNameClub: parseFloat(NoNameClubIdRunTime)
+                }
+            }
+        }
+    ]
+    return Results
+}
+
 // Создание экземпляра Express
 const web = express()
 
@@ -1582,15 +1735,19 @@ const options = {
         openapi: '3.0.0',
         info: {
             title: 'TorAPI',
-            version: '0.3.0',
-            description: 'API documentation for TorAPI. Unofficial API (backend) for RuTracker, Kinozal, RuTor, NoNameClub and other torrent trackers.',
+            version: '0.4.0',
+            description: 'Unofficial API (backend) for RuTracker, Kinozal, RuTor and NoNameClub',
             contact: {
-                name: "Alex Kup (Lifailon)",
+                name: "© Lifailon (Alex Kup)",
                 url: "https://github.com/Lifailon/TorAPI"
             },
-        },
+            license: {
+                name: "License MIT",
+                url: "https://github.com/Lifailon/TorAPI/blob/main/LICENSE"
+            }
+        }
     },
-    apis: ['./swagger.js']
+    apis: ['./swagger/swagger.js']
 }
 
 // Генерация спецификации Swagger
@@ -1684,104 +1841,14 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     // Конечная точка проверки доступности всех конечных точек
     if (category === "provider" && type === "test") {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
-        let testQuery = query || "The Rookie"
         try {
-            // Проверяем RSS
-            const RuTrackerRssResult = await RuTrackerRSS("json")
-            const RuTrackerRssCheck = Array.isArray(RuTrackerRssResult) && RuTrackerRssResult.length > 0 && RuTrackerRssResult[0].link && RuTrackerRssResult[0].title
-            const KinozalRssResult = await KinozalRSS("json")
-            const KinozalRssCheck = Array.isArray(KinozalRssResult) && KinozalRssResult.length > 0 && KinozalRssResult[0].link && KinozalRssResult[0].title
-            const RuTorRssResult = await RuTorRSS("json")
-            const RuTorRssCheck = Array.isArray(RuTorRssResult) && RuTorRssResult.length > 0 && RuTorRssResult[0].link && RuTorRssResult[0].title
-            const NoNameClubRssResult = await NoNameClubRSS("json")
-            const NoNameClubRssCheck = Array.isArray(NoNameClubRssResult) && NoNameClubRssResult.length > 0 && NoNameClubRssResult[0].link && NoNameClubRssResult[0].title
-            // Проверяем поиск по Title
-            const RuTrackerResult = await RuTracker(testQuery, 0)
-            const RuTrackerCheck = Array.isArray(RuTrackerResult) && RuTrackerResult.length > 0 && RuTrackerResult[0].Name && RuTrackerResult[0].Id && RuTrackerResult[0].Url
-            const KinozalResult = await Kinozal(testQuery, 0, 0)
-            const KinozalCheck = Array.isArray(KinozalResult) && KinozalResult.length > 0 && KinozalResult[0].Name && KinozalResult[0].Id && KinozalResult[0].Url
-            const RuTorResult = await RuTor(testQuery, 0)
-            const RuTorCheck = Array.isArray(RuTorResult) && RuTorResult.length > 0 && RuTorResult[0].Name && RuTorResult[0].Id && RuTorResult[0].Url
-            const NoNameClubResult = await NoNameClub(testQuery, 0)
-            const NoNameClubCheck = Array.isArray(NoNameClubResult) && NoNameClubResult.length > 0 && NoNameClubResult[0].Name && NoNameClubResult[0].Id && NoNameClubResult[0].Url
-            // Проверяем поиск по полученному id из запроса Title
-            let RuTrackerIdCheck = false
-            if (RuTrackerCheck) {
-                const RuTrackerIdResult = await RuTrackerID(RuTrackerResult[0].Id)
-                RuTrackerIdCheck = Array.isArray(RuTrackerIdResult) && 
-                    RuTrackerIdResult.length > 0 && 
-                    RuTrackerIdResult[0].Name && 
-                    RuTrackerIdResult[0].Url &&
-                    RuTrackerIdResult[0].Hash &&
-                    RuTrackerIdResult[0].Magnet &&
-                    RuTrackerIdResult[0].Torrent
-            }
-            let KinozalIdCheck = false
-            if (KinozalCheck) {
-                const KinozalIdResult = await KinozalID(KinozalResult[0].Id)
-                KinozalIdCheck = Array.isArray(KinozalIdResult) && 
-                    KinozalIdResult.length > 0 && 
-                    KinozalIdResult[0].Name && 
-                    KinozalIdResult[0].Url &&
-                    KinozalIdResult[0].Hash &&
-                    KinozalIdResult[0].Magnet // &&
-                    // KinozalIdResult[0].Torrent
-            }
-            let RuTorIdCheck = false
-            if (RuTorCheck) {
-                const RuTorIdResult = await RuTorFiles(RuTorResult[0].Id)
-                RuTorIdCheck = Array.isArray(RuTorIdResult) && 
-                    RuTorIdResult.length > 0 && 
-                    RuTorIdResult[0].Name && 
-                    RuTorIdResult[0].Url &&
-                    RuTorIdResult[0].Hash &&
-                    RuTorIdResult[0].Magnet &&
-                    RuTorIdResult[0].Torrent
-            }
-            let NoNameClubIdCheck = false
-            if (NoNameClubCheck) {
-                const NoNameClubIdResult = await NoNameClubID(NoNameClubResult[0].Id)
-                NoNameClubIdCheck = Array.isArray(NoNameClubIdResult) && 
-                    NoNameClubIdResult.length > 0 && 
-                    NoNameClubIdResult[0].Name && 
-                    NoNameClubIdResult[0].Url &&
-                    NoNameClubIdResult[0].Hash &&
-                    NoNameClubIdResult[0].Magnet &&
-                    NoNameClubIdResult[0].Torrent
-            }
-            // Объединяем результаты в один массив
-            const Results = [
-                {
-                    RSS: {
-                        RuTracker: RuTrackerRssCheck ? true : false,
-                        Kinozal: KinozalRssCheck ? true : false,
-                        RuTor: RuTorRssCheck ? true : false,
-                        NoNameClub: NoNameClubRssCheck ? true : false
-                    },
-                    Title: {
-                        RuTracker: RuTrackerCheck ? true : false,
-                        Kinozal: KinozalCheck ? true : false,
-                        RuTor: RuTorCheck ? true : false,
-                        NoNameClub: NoNameClubCheck ? true : false
-                    },
-                    Id: {
-                        RuTracker: RuTrackerResult[0].Id ? parseInt(RuTrackerResult[0].Id, 10) : null,
-                        Kinozal: KinozalResult[0].Id ? parseInt(KinozalResult[0].Id, 10) : null,
-                        RuTor: RuTorResult[0].Id ? parseInt(RuTorResult[0].Id, 10) : null,
-                        NoNameClub: NoNameClubResult[0].Id ? parseInt(NoNameClubResult[0].Id, 10) : null
-                    },
-                    Result: {
-                        RuTracker: RuTrackerIdCheck ? true : false,
-                        Kinozal: KinozalIdCheck ? true : false,
-                        RuTor: RuTorIdCheck ? true : false,
-                        NoNameClub: NoNameClubIdCheck ? true : false
-                    }
-                }
-            ]
-            return res.json(Results)
+            const result = await testEndpoints(query)
+            return res.json(result)
         } catch (error) {
             console.error("Error:", error)
-            return res.status(400).json({ Result: 'No data' })
+            return res.status(400).json(
+                { Result: 'No data' }
+            )
         }
     }
     if (type !== "title" && type !== "id" && type !== "rss") {

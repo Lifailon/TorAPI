@@ -2,7 +2,7 @@
  * @openapi
  * /api/provider/list:
  *   get:
- *     tags: [Provider]
+ *     tags: [Providers]
  *     description: Get a list of providers
  *     responses:
  *       200:
@@ -11,72 +11,168 @@
  *         description: Bad request
  *       404:
  *         description: Not found
- * /api/get/rss/kinozal:
+ * /api/provider/check:
  *   get:
- *     tags: [RSS]
- *     description: Get RSS news feed from Kinozal provider in XML or JSON format.
+ *     tags: [Providers]
+ *     description: Quickly check availability for all providers by searching by name
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Not found
+ * /api/provider/test:
+ *   get:
+ *     tags: [Providers]
+ *     description: Testing all endpoints
  *     parameters:
- *       - name: Accept
- *         in: header
+ *       - name: query
+ *         in: query
  *         required: true
- *         description: To get the answer in the required format, use the parameter in the answer block
+ *         description: Query parameter
  *         schema:
  *           type: string
- *           enum: [application/xml, application/json]
- *           default: application/xml
+ *           example: "The Rookie"
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Not found
+ * /api/get/rss/rutracker:
+ *   get:
+ *     tags: [Get RSS feed]
+ *     description: Get native RSS news feed from RuTracker provider in XML or JSON format. To get the answer in the required format, use the parameter in the answer block.
  *     responses:
  *       200:
  *         description: Successful response
  *         content:
  *           application/xml:
  *             schema:
- *               type: object
- *               properties:
- *                 rss:
- *                   type: string
- *                   example: "Array"
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 rss:
- *                   type: string
- *                   example: "Array"
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   link:
+ *                     type: string
+ *                   updated:
+ *                     type: string
+ *                   title:
+ *                     type: string
+ *                   author:
+ *                     type: string
+ *                   category:
+ *                     type: string
+ *                   categoryLable:
+ *                     type: string
+ * /api/get/rss/kinozal:
+ *   get:
+ *     tags: [Get RSS feed]
+ *     description: Get native RSS news feed from Kinozal provider in XML or JSON format. To get the answer in the required format, use the parameter in the answer block.
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/xml:
+ *             schema:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   title:
+ *                     type: string
+ *                   link:
+ *                     type: string
+ *                   category:
+ *                     type: string
+ *                   guid:
+ *                     type: string
+ *                   pubDate:
+ *                     type: string
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Not found
+ * /api/get/rss/rutor:
+ *   get:
+ *     tags: [Get RSS feed]
+ *     description: Get custom RSS news feed from RuTor provider in XML or JSON format. To get the answer in the required format, use the parameter in the answer block.
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/xml:
+ *             schema:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   date:
+ *                     type: string
+ *                   title:
+ *                     type: string
+ *                   link:
+ *                     type: string
+ *                   downloadLink:
+ *                     type: string
+ *                   magnet:
+ *                     type: string
+ *                   size:
+ *                     type: string
+ *                   comments:
+ *                     type: integer
+ *                   seeds:
+ *                     type: integer
+ *                   peers:
+ *                     type: integer
  *       400:
  *         description: Bad request
  *       404:
  *         description: Not found
  * /api/get/rss/nonameclub:
  *   get:
- *     tags: [RSS]
- *     description: Get RSS news feed from NoNameClub provider in XML or JSON format.
- *     parameters:
- *       - name: Accept
- *         in: header
- *         required: true
- *         description: To get the answer in the required format, use the parameter in the answer block
- *         schema:
- *           type: string
- *           enum: [application/xml, application/json]
- *           default: application/xml
+ *     tags: [Get RSS feed]
+ *     description: Get native RSS news feed from NoNameClub provider in XML or JSON format. To get the answer in the required format, use the parameter in the answer block.
  *     responses:
  *       200:
  *         description: Successful response
  *         content:
  *           application/xml:
  *             schema:
- *               type: object
- *               properties:
- *                 rss:
- *                   type: string
- *                   example: "Array"
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 rss:
- *                   type: string
- *                   example: "Array"
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   turbo:
+ *                     type: string
+ *                   title:
+ *                     type: string
+ *                   link:
+ *                     type: string
+ *                   pubDate:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   "content":
+ *                     type: string
+ *                   "creator":
+ *                     type: string
+ *                   "commentRss":
+ *                     type: string
+ *                   "comments":
+ *                     type: string
  *       400:
  *         description: Bad request
  *       404:
@@ -100,14 +196,6 @@
  *           type: integer
  *           default: 0
  *           minimum: 0
- *       - name: year
- *         in: query
- *         description: Year release
- *         schema:
- *           type: integer
- *           default: 0
- *           minimum: 0
- *           maximum: 2024
  *     responses:
  *       '200':
  *         description: Successful response
@@ -232,14 +320,6 @@
  *           type: integer
  *           default: 0
  *           minimum: 0
- *       - name: year
- *         in: query
- *         description: Year release
- *         schema:
- *           type: integer
- *           default: 0
- *           minimum: 0
- *           maximum: 2024
  *     responses:
  *       '200':
  *         description: Successful response
@@ -293,14 +373,6 @@
  *           type: integer
  *           default: 0
  *           minimum: 0
- *       - name: year
- *         in: query
- *         description: Year release
- *         schema:
- *           type: integer
- *           default: 0
- *           minimum: 0
- *           maximum: 2024
  *     responses:
  *       '200':
  *         description: Successful response
@@ -588,6 +660,8 @@
  *                   Hash:
  *                     type: string
  *                   Magnet:
+ *                     type: string
+ *                   Torrent:
  *                     type: string
  *                   IMDb_link:
  *                     type: string
