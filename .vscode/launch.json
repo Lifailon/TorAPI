@@ -2,20 +2,31 @@
     "version": "0.3.0",
     "configurations": [
         {
+            "name": "Running dev using nodemon",
             "type": "node",
             "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "dev"
+            ],
+            "console": "internalConsole"
+        },
+        {
             "name": "Running on port 2024",
-            "program": "${workspaceFolder}\\main.js",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.js",
             "args": [
                 "--port",
                 "2024"
-            ]
+            ],
         },
         {
+            "name": "Running using Proxy",
             "type": "node",
             "request": "launch",
-            "name": "Running using Proxy",
-            "program": "${workspaceFolder}\\main.js",
+            "program": "${workspaceFolder}/main.js",
             "args": [
                 "--proxyAddress",
                 "192.168.3.100",

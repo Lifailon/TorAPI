@@ -20,12 +20,16 @@ const options = {
         },
         servers: [
             {
-              url: 'http://localhost:8443',
-              description: 'Local server'
+                url: 'https://toruapi.vercel.app',
+                description: 'Production server'
             },
             {
-              url: 'https://toruapi.vercel.app',
-              description: 'Production server'
+                url: 'https://rutorapi.vercel.app',
+                description: 'Production server'
+            },
+            {
+                url: 'https://torrapi.vercel.app',
+                description: 'Production server'
             }
         ]
     },

@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="logo.png" alt="Image alt">
+    <img src="image/logo-02.png" alt="Image alt">
 </p>
 
 ---
@@ -12,6 +12,7 @@
 <p align="center">
     <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"></a>
     <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"></a>
+    <a href="https://vercel.com/torapi/torapi"><img title="Vercel" src="https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white"></a>
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions" src="https://img.shields.io/badge/Actions-%230075A8.svg?style=for-the-badge&logo=githubactions&logoColor=white"></a>
 </p>
 
@@ -50,13 +51,19 @@ Implemented:
 
 The RSS feed is accessed by redirecting the original feed. For providers that do not support RSS by default, a custom news feed has been implemented from the main page.
 
-You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Static-Documentation) and [GitHub Page](https://lifailon.github.io/TorAPI).
-
-[![Wikipedia](https://img.shields.io/badge/API_Static_Docs-009CAB.svg?style=for-the-badge&logo=wikipedia&logoColor=white)](https://lifailon.github.io/TorAPI)
-
 ---
 
-## 🚀 Install
+## 🚀 Deploy
+
+You can deploy your own public API to Vercel from this repository, just click the button below and follow the instructions:
+
+[![Vercel](https://img.shields.io/badge/Deploy-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/new/torapi/clone?repository-url=https://github.com/lifailon/TorAPI)
+
+Or use the **open and free production version** on [Vercel](https://toruapi.vercel.app/api/provider/list). Documentation is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAP) website.
+
+You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Static-Documentation) and [GitHub Page](https://lifailon.github.io/TorAPI).
+
+## 🔨 Install
 
 Clone the repository, install dependencies and start the server:
 
@@ -69,7 +76,13 @@ npm start
 
 By default, the server will be launched on port `8443`.
 
-To dev, use run in nodemon mode:
+You can specify a different port:
+
+```js
+npm start -- --port 2024
+```
+
+To dev, use run in **nodemon** mode:
 
 ```
 npm run dev
@@ -77,17 +90,13 @@ npm run dev
 
 📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs`
 
-To create up-to-date Swagger documentation files in `JSON` and `YAML` format, use the command:
+To create up-to-date or update Swagger documentation files in `JSON` and `YAML` format, use the command:
 
 ```shell
 npm run docs
 ```
 
-You can specify a different port:
-
-```js
-npm start -- --port 2024
-```
+### Proxy
 
 Use a proxy for all requests:
 
@@ -101,9 +110,9 @@ If authorization on a proxy server is required:
 npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090 --username TorAPI --password TorAPI
 ```
 
-🧪 [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/tree/main/.github/workflows) are used for build docker image, test functional all endpoints and get response times.
-
 ## 🐳 Docker
+
+🧪 [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/tree/main/.github/workflows) are used for build docker image, test functional all endpoints and get response times.
 
 ### Docker Hub
 
