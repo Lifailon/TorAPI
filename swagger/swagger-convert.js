@@ -17,7 +17,17 @@ const options = {
                 name: "License MIT",
                 url: "https://github.com/Lifailon/TorAPI/blob/main/LICENSE"
             }
-        }
+        },
+        servers: [
+            {
+              url: 'http://localhost:8443',
+              description: 'Local server'
+            },
+            {
+              url: 'https://toruapi.vercel.app',
+              description: 'Production server'
+            }
+        ]
     },
     apis: ['./swagger/swagger.js']
 }

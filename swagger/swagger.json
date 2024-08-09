@@ -13,6 +13,16 @@
       "url": "https://github.com/Lifailon/TorAPI/blob/main/LICENSE"
     }
   },
+  "servers": [
+    {
+      "url": "http://localhost:8443",
+      "description": "Local server"
+    },
+    {
+      "url": "https://toruapi.vercel.app",
+      "description": "Production server"
+    }
+  ],
   "paths": {
     "/api/provider/list": {
       "get": {
@@ -22,7 +32,28 @@
         "description": "Get a list of providers",
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "Provider": {
+                        "type": "string"
+                      },
+                      "Urls": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad request"
@@ -41,7 +72,31 @@
         "description": "Quickly check availability for all providers by searching by name",
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "RuTracker": {
+                        "type": "boolean"
+                      },
+                      "Kinozal": {
+                        "type": "boolean"
+                      },
+                      "RuTor": {
+                        "type": "boolean"
+                      },
+                      "NoNameClub": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad request"
@@ -72,7 +127,131 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "RSS": {
+                        "type": "object",
+                        "properties": {
+                          "RuTracker": {
+                            "type": "boolean"
+                          },
+                          "Kinozal": {
+                            "type": "boolean"
+                          },
+                          "RuTor": {
+                            "type": "boolean"
+                          },
+                          "NoNameClub": {
+                            "type": "boolean"
+                          }
+                        }
+                      },
+                      "Title": {
+                        "type": "object",
+                        "properties": {
+                          "Status": {
+                            "type": "object",
+                            "properties": {
+                              "RuTracker": {
+                                "type": "boolean"
+                              },
+                              "Kinozal": {
+                                "type": "boolean"
+                              },
+                              "RuTor": {
+                                "type": "boolean"
+                              },
+                              "NoNameClub": {
+                                "type": "boolean"
+                              }
+                            }
+                          },
+                          "RunTime": {
+                            "type": "object",
+                            "properties": {
+                              "RuTracker": {
+                                "type": "number"
+                              },
+                              "Kinozal": {
+                                "type": "number"
+                              },
+                              "RuTor": {
+                                "type": "number"
+                              },
+                              "NoNameClub": {
+                                "type": "number"
+                              }
+                            }
+                          },
+                          "Id": {
+                            "type": "object",
+                            "properties": {
+                              "RuTracker": {
+                                "type": "integer"
+                              },
+                              "Kinozal": {
+                                "type": "integer"
+                              },
+                              "RuTor": {
+                                "type": "integer"
+                              },
+                              "NoNameClub": {
+                                "type": "integer"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Id": {
+                        "type": "object",
+                        "properties": {
+                          "Status": {
+                            "type": "object",
+                            "properties": {
+                              "RuTracker": {
+                                "type": "boolean"
+                              },
+                              "Kinozal": {
+                                "type": "boolean"
+                              },
+                              "RuTor": {
+                                "type": "boolean"
+                              },
+                              "NoNameClub": {
+                                "type": "boolean"
+                              }
+                            }
+                          },
+                          "RunTime": {
+                            "type": "object",
+                            "properties": {
+                              "RuTracker": {
+                                "type": "number"
+                              },
+                              "Kinozal": {
+                                "type": "number"
+                              },
+                              "RuTor": {
+                                "type": "number"
+                              },
+                              "NoNameClub": {
+                                "type": "number"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad request"
@@ -94,7 +273,17 @@
             "description": "Successful response",
             "content": {
               "application/xml": {
-                "schema": null
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "rss": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
               },
               "application/json": {
                 "schema": {
@@ -143,7 +332,17 @@
             "description": "Successful response",
             "content": {
               "application/xml": {
-                "schema": null
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "rss": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
               },
               "application/json": {
                 "schema": {
@@ -192,7 +391,17 @@
             "description": "Successful response",
             "content": {
               "application/xml": {
-                "schema": null
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "rss": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
               },
               "application/json": {
                 "schema": {
@@ -253,7 +462,17 @@
             "description": "Successful response",
             "content": {
               "application/xml": {
-                "schema": null
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "rss": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
               },
               "application/json": {
                 "schema": {

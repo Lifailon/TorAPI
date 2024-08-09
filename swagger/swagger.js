@@ -7,6 +7,19 @@
  *     responses:
  *       200:
  *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   Provider:
+ *                     type: string
+ *                   Urls:
+ *                     type: array
+ *                     items:
+ *                       type: string
  *       400:
  *         description: Bad request
  *       404:
@@ -18,6 +31,21 @@
  *     responses:
  *       200:
  *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   RuTracker:
+ *                     type: boolean
+ *                   Kinozal:
+ *                     type: boolean
+ *                   RuTor:
+ *                     type: boolean
+ *                   NoNameClub:
+ *                     type: boolean
  *       400:
  *         description: Bad request
  *       404:
@@ -37,6 +65,85 @@
  *     responses:
  *       200:
  *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   RSS:
+ *                     type: object
+ *                     properties:
+ *                       RuTracker:
+ *                         type: boolean
+ *                       Kinozal:
+ *                         type: boolean
+ *                       RuTor:
+ *                         type: boolean
+ *                       NoNameClub:
+ *                         type: boolean
+ *                   Title:
+ *                     type: object
+ *                     properties:
+ *                       Status:
+ *                         type: object
+ *                         properties:
+ *                           RuTracker:
+ *                             type: boolean
+ *                           Kinozal:
+ *                             type: boolean
+ *                           RuTor:
+ *                             type: boolean
+ *                           NoNameClub:
+ *                             type: boolean
+ *                       RunTime:
+ *                         type: object
+ *                         properties:
+ *                           RuTracker:
+ *                             type: number
+ *                           Kinozal:
+ *                             type: number
+ *                           RuTor:
+ *                             type: number
+ *                           NoNameClub:
+ *                             type: number
+ *                       Id:
+ *                         type: object
+ *                         properties:
+ *                           RuTracker:
+ *                             type: integer
+ *                           Kinozal:
+ *                             type: integer
+ *                           RuTor:
+ *                             type: integer
+ *                           NoNameClub:
+ *                             type: integer
+ *                   Id:
+ *                     type: object
+ *                     properties:
+ *                       Status:
+ *                         type: object
+ *                         properties:
+ *                           RuTracker:
+ *                             type: boolean
+ *                           Kinozal:
+ *                             type: boolean
+ *                           RuTor:
+ *                             type: boolean
+ *                           NoNameClub:
+ *                             type: boolean
+ *                       RunTime:
+ *                         type: object
+ *                         properties:
+ *                           RuTracker:
+ *                             type: number
+ *                           Kinozal:
+ *                             type: number
+ *                           RuTor:
+ *                             type: number
+ *                           NoNameClub:
+ *                             type: number
  *       400:
  *         description: Bad request
  *       404:
@@ -51,6 +158,12 @@
  *         content:
  *           application/xml:
  *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   rss:
+ *                     type: string
  *           application/json:
  *             schema:
  *               type: array
@@ -81,6 +194,12 @@
  *         content:
  *           application/xml:
  *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   rss:
+ *                     type: string
  *           application/json:
  *             schema:
  *               type: array
@@ -111,6 +230,12 @@
  *         content:
  *           application/xml:
  *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   rss:
+ *                     type: string
  *           application/json:
  *             schema:
  *               type: array
@@ -149,6 +274,12 @@
  *         content:
  *           application/xml:
  *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   rss:
+ *                     type: string
  *           application/json:
  *             schema:
  *               type: array
