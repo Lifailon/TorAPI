@@ -14,9 +14,21 @@ const { hideBin } = require('yargs/helpers')
 const argv = yargs(hideBin(process.argv))
     .option('port', {
         alias: 'p',
-        describe: 'Express server port',
         type: 'number',
-        default: 8443
+        default: 8443,
+        description: 'Express server port'
+    })
+    .option('test', {
+        alias: 't',
+        type: 'boolean',
+        default: false,
+        description: 'Test endpoints and stop server'
+    })
+    .option('query', {
+        alias: 'q',
+        type: 'string',
+        default: 'The+Rookie',
+        description: 'Title for test'
     })
     .option('proxyAddress', {
         type: 'string',
@@ -2107,5 +2119,27 @@ module.exports = web
 
 // Запуск Express
 const port = argv.port
-web.listen(port)
+const server = web.listen(port)
 console.log(`Server is running on port: ${port}`)
+
+// Локальное тестирование с последующим завершением
+function testRequest() {
+    axios.get(`http://localhost:${port}/api/provider/test?query=${argv.query}`)
+        .then(response => {
+            const prettyJson = JSON.stringify(response.data, null, 4)
+            console.log(prettyJson)
+            server.close(() => {
+                console.log('Server closed')
+            })
+        })
+        .catch(error => {
+            console.error(`Error: ${error}`)
+            server.close(() => {
+                console.log('Server closed after error')
+            })
+        })
+}
+
+if (argv.test) {
+    JSON.stringify(testRequest(), null, 4)
+}

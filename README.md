@@ -28,6 +28,10 @@ Unofficial API (**backend**) for RuTracker, Kinozal, RuTor and NoNameClub for re
 
 This project is inspired by ✨ [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) for Russian-speaking torrent providers.
 
+You can try the **open and free production version**, which is published on [Vercel](https://toruapi.vercel.app/api/provider/list). Documentation is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
+
+You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Static-Documentation) and [GitHub Page](https://lifailon.github.io/TorAPI).
+
 Implemented:
 
 - **Search by title** to get all available distributions from a specified torrent tracker (its ID and brief information with a link to download the torrent file) or from **all** trackers at once.
@@ -58,10 +62,6 @@ The RSS feed is accessed by redirecting the original feed. For providers that do
 You can deploy your own public API to Vercel from this repository, just click the button below and follow the instructions:
 
 [![Vercel](https://img.shields.io/badge/Deploy-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/new/torapi/clone?repository-url=https://github.com/lifailon/TorAPI)
-
-Or use the **open and free production version** on [Vercel](https://toruapi.vercel.app/api/provider/list). Documentation is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAP) website.
-
-You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Static-Documentation) and [GitHub Page](https://lifailon.github.io/TorAPI).
 
 ## 🔨 Install
 
@@ -110,9 +110,23 @@ If authorization on a proxy server is required:
 npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090 --username TorAPI --password TorAPI
 ```
 
-## 🐳 Docker
+### 🧪 Tests
 
-🧪 [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/tree/main/.github/workflows) are used for build docker image, test functional all endpoints and get response times.
+You can run testing to quickly check the health of all endpoints in the console:
+
+```shell
+npm start -- --test
+```
+
+To change the header parameter in a request:
+
+```shell
+npm start -- --test --q "The Rookie"
+```
+
+The project also uses [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/actions) to build the Docker container and automatically test the functionality of all endpoints and get response times.
+
+## 🐳 Docker
 
 ### Docker Hub
 
