@@ -63,8 +63,8 @@ const createAxiosProxy = () => {
 const axiosProxy = createAxiosProxy()
 
 // Использовать Puppeteer для получения списка файлов
-// Требуется стабильное VPN подключение (не работает в режиме Split Tunneling через Hotspot Shield)
-const RuTrackerFiles = true
+const RuTrackerPuppeteer = false
+const RuTorPuppeteer     = false
 
 // Имя агента в заголовке запросов (вместо axios)
 const headers = {
@@ -74,13 +74,13 @@ const headers = {
 // Cookie для автроризации на сайте RuTracker (требуется для получения info hash списка файлов)
 const headers_RuTracker = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 Win64 x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Cookie': 'bb_guid=OX8UGBHMi1DW; bb_ssl=1; bb_session=0-44590272-Sp8wQfjonpx37QjDuZUD; bb_t=a%3A5%3A%7Bi%3A6489937%3Bi%3A1709887615%3Bi%3A6496948%3Bi%3A1709891767%3Bi%3A6387499%3Bi%3A1690356948%3Bi%3A6387500%3Bi%3A1689726770%3Bi%3A6358163%3Bi%3A1684231793%3B%7D; _ym_uid=1675005035139917782; _ym_d=1697464991; _ym_isad=1; cf_clearance=3BsUm3qZLnU1DbxOWHDKEYQiqF3txcKZtck9A3SZOcs-1711117293-1.0.1.1-MoRPAGq.5IDiUQJnZGAcp5fTSwniloZIDKnaG2UR4kTy.g4TY3cGcdSDQDuRRgSGGzju3rLynXLvc1Vbzurl8A'
+    'Cookie': 'bb_session=0-44590272-Sp8wQfjonpx37QjDuZUD'
 }
 
 // Cookie для автроризации на сайте Kinozal (требуется для получения info hash списка файлов)
 const headers_Kinozal = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 Win64 x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Cookie': 'uid=20631917; pass=KOJ4DJf1VS; chash=4GPagC3lyL; _ma=bd5e8639-b468-45ee-b985-a37d236b69d9; _ym_uid=1676045081150190531; adrcid=AyOHe7Bo41EA-dljunU4d4g; adtech_uid=e2dc7224-a3e7-4668-bb1a-e66540433903%3Akinozal.tv; top100_id=t1.7627570.1643663093.1685299403536; last_visit=1685288911412%3A%3A1685299711412; t3_sid_7627570=s1.1160736113.1685299403538.1685299712381.1.18; _ac_oid=e8d96ae4a3e0ddf7f1dc00adeb090382%3A1685329226280; _buzz_fpc=JTdCJTIycGF0aCUyMiUzQSUyMiUyRiUyMiUyQyUyMmRvbWFpbiUyMiUzQSUyMi5raW5vemFsLnR2JTIyJTJDJTIyZXhwaXJlcyUyMiUzQSUyMlRodSUyQyUyMDEyJTIwU2VwJTIwMjAyNCUyMDIwJTNBMzAlM0ExMiUyMEdNVCUyMiUyQyUyMlNhbWVTaXRlJTIyJTNBJTIyTGF4JTIyJTJDJTIydmFsdWUlMjIlM0ElMjIlN0IlNUMlMjJ1ZnAlNUMlMjIlM0ElNUMlMjJmNTFiNzlkYzk1MDgxMGM0NTMwMzhmNWNmMWU5ZDQwYiU1QyUyMiUyQyU1QyUyMmJyb3dzZXJWZXJzaW9uJTVDJTIyJTNBJTVDJTIyMTE2LjAlNUMlMjIlN0QlMjIlN0Q=; _ym_d=1701461342; la_page_depth=%7B%22last%22%3A%22https%3A%2F%2Fkinozal.tv%2Fbrowse.php%3Fs%3Dcastle%26g%3D0%26c%3D0%26v%3D0%26d%3D2020%26w%3D0%26t%3D0%26f%3D0%22%2C%22depth%22%3A400%7D; page_load_uuid=c29f5be0-f58b-49c2-bb75-90ba88038c6d'
+    'Cookie': 'uid=20631917; pass=KOJ4DJf1VS'
 }
 
 // Функция получения текущего времени для логирования
@@ -293,7 +293,6 @@ async function RuTracker(query, page) {
 // RuTracker ID
 async function RuTrackerID(query) {
     const url = `https://rutracker.org/forum/viewtopic.php?t=${query}`
-    const torrents = []
     let html
     try {
         const response = await axiosProxy.get(url, {
@@ -438,106 +437,11 @@ async function RuTrackerID(query) {
             return ''
         }
     })()
+    // Получаем список файлов
+    let torrents = []
     // Puppeteer
-    if (RuTrackerFiles == true) {
-        const launchOptions = {
-            // Скрыть отображение браузера (по умолчанию)
-            headless: true,
-            // Опции запуска браузера без песочницы, которая изолирует процессы от операционной системы (для работы через Docker)
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-quic'
-            ]
-        }
-        // Добавляем Proxy в конфигурацию запуска браузера
-        if (argv.proxyAddress && argv.proxyPort) {
-            launchOptions.args.push(`--proxy-server=http://${argv.proxyAddress}:${argv.proxyPort}`)
-        }
-        // Запускаем браузер
-        const browser = await puppeteer.launch(launchOptions)
-        // Открываем новую пустую страницу
-        const page = await browser.newPage()
-        // Авторизация в Proxy
-        if (argv.username && argv.password) {
-            await page.authenticate({
-                username: argv.username,
-                password: argv.password
-            })
-        }
-        // Устанавливаем Cookie
-        const cookies = [
-            { name: '_ym_d', value: '1713608104', domain: '.rutracker.org', path: '/' },
-            { name: '_ym_isad', value: '1', domain: '.rutracker.org', path: '/' },
-            { name: '_ym_uid', value: '1675005035139917782', domain: '.rutracker.org', path: '/' },
-            { name: 'bb_guid', value: 'OX8UGBHMi1DW', domain: '.rutracker.org', path: '/' },
-            { name: 'bb_session', value: '0-44590272-Sp8wQfjonpx37QjDuZUD', domain: '.rutracker.org', path: '/' },
-            { name: 'bb_ssl', value: '1', domain: '.rutracker.org', path: '/' },
-            { name: 'bb_t', value: 'a%3A6%3A%7Bi%3A6487040%3Bi%3A1711832640%3Bi%3A6489937%3Bi%3A1712340699%3Bi%3A6496948%3Bi%3A1709891767%3Bi%3A6387499%3Bi%3A1690356948%3Bi%3A6387500%3Bi%3A1689726770%3Bi%3A6358163%3Bi%3A1684231793%3B%7D', domain: '.rutracker.org', path: '/' },
-            { name: 'cf_clearance', value: 'Nru732Vi6LTb.p_fm1orml.24cTnJtFB6eQ2Qn1dw6g-1714060753-1.0.1.1-nWAl13hHBBGeHcJNVjYB5VcI65OaR26C46BKP6Wyrkj6n2k4Eu2SQ.17JdRXKcM.lnsEFGPHGxDaktfSzmFVZw', domain: '.rutracker.org', path: '/' }
-        ]
-        for (const cookie of cookies) {
-            await page.setCookie(cookie)
-        }
-        // Открываем страницу
-        // await page.goto(`https://rutracker.org/forum/viewtopic.php?t=6489937`, {timeout: 60000, waitUntil: 'domcontentloaded'})
-        await page.goto(url, {
-            // Ожиданием загрузку страницы 60 секунд
-            timeout: 60000,
-            // Ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
-            waitUntil: 'domcontentloaded'
-        })
-        // Ожидаем загрузку кнопки на странице
-        await page.waitForSelector('.lite')
-        // Метод выполнения JavaScript в контексте страницы браузера
-        await page.evaluate(() => {
-            // Находим кнопку по пути JavaScript (по id) и нажимаем на нее
-            document.querySelector("#tor-filelist-btn").click()
-            // Находим все кпноки (по классу или id)
-            // const buttons = document.querySelectorAll('.lite')
-            // const buttons = document.querySelectorAll('#tor-filelist-btn')
-            // Проходимся по найденным кнопкам
-            // buttons.forEach(button => {
-            //     // Проверяем, содержит ли кнопка текст "Список файлов" и нажимаем на нее
-            //     if (button.textContent.includes('Список файлов')) {
-            //         button.click()
-            //     }
-            // })
-        })
-
-        // Дожидаемся загрузки нового элемента
-        // const elementHandle = await page.waitForSelector('#tor-filelist')
-        // Находим элемент с идентификатором #tor-filelist или по классу .med.ftree-windowed
-        await page.waitForFunction(() => {
-            // Первый аргумент функция с условием, которая должна вернуть true
-            const element = document.querySelector('#tor-filelist')
-            // Проверяем, что элемент существует и его содержимое не содержит текст загрузки
-            return element && !element.textContent.includes("загружается...")
-        },
-            // Опции
-            {
-                // Ожидать результат 30 секунд (по умолчанию)
-                timeout: 30000,
-                // Проверка каждые 50мс (по умолчанию 100мс)
-                polling: 50
-            })
-        // После успешной проверки возвращаем результат, используя метод textContent, innerText (массив) или innerHTML (включая HTML-разметку внутри элемента) или null
-        const elementTable = await page.evaluate(() => {
-            const element = document.querySelector('#tor-filelist')
-            return element ? element.innerHTML : null
-        })
-        // Закрываем браузер
-        await browser.close()
-        // Заполняем массив
-        const dataFiles = cheerio.load(elementTable)
-        dataFiles('li.file').each((index, element) => {
-            const fileName = dataFiles(element).find('b').text().trim()
-            const fileSize = dataFiles(element).find('s').text().trim()
-            torrents.push({
-                Name: fileName,
-                Size: fileSize
-            })
-        })
+    if (RuTrackerPuppeteer == true) {
+        torrents = await RuTrackerFilesPuppetter(query)
     }
     return [
         {
@@ -563,6 +467,102 @@ async function RuTrackerID(query) {
             Files: torrents
         }
     ]
+}
+
+async function RuTrackerFilesPuppetter(query) {
+    const torrents = []
+    const url = `https://rutracker.org/forum/viewtopic.php?t=${query}`
+    const launchOptions = {
+        // Скрыть отображение браузера (по умолчанию)
+        headless: true,
+        // Опции запуска браузера без песочницы, которая изолирует процессы от операционной системы (для работы через Docker)
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-quic'
+        ]
+    }
+    // Добавляем Proxy в конфигурацию запуска браузера
+    if (argv.proxyAddress && argv.proxyPort) {
+        launchOptions.args.push(`--proxy-server=http://${argv.proxyAddress}:${argv.proxyPort}`)
+    }
+    // Запускаем браузер
+    const browser = await puppeteer.launch(launchOptions)
+    // Открываем новую пустую страницу
+    const page = await browser.newPage()
+    // Авторизация в Proxy
+    if (argv.username && argv.password) {
+        await page.authenticate({
+            username: argv.username,
+            password: argv.password
+        })
+    }
+    // Устанавливаем Cookie
+    const cookies = [
+        { name: 'bb_session', value: '0-44590272-Sp8wQfjonpx37QjDuZUD', domain: '.rutracker.org', path: '/' }
+    ]
+    for (const cookie of cookies) {
+        await page.setCookie(cookie)
+    }
+    // Открываем страницу
+    // await page.goto(`https://rutracker.org/forum/viewtopic.php?t=6489937`, {timeout: 60000, waitUntil: 'domcontentloaded'})
+    await page.goto(url, {
+        // Ожиданием загрузку страницы 60 секунд
+        timeout: 60000,
+        // Ожидать только полной загрузки DOM (не ждать загрузки внешних ресурсов, таких как изображения, стили и скрипты)
+        waitUntil: 'domcontentloaded'
+    })
+    // Ожидаем загрузку кнопки на странице
+    await page.waitForSelector('.lite')
+    // Метод выполнения JavaScript в контексте страницы браузера
+    await page.evaluate(() => {
+        // Находим кнопку по пути JavaScript (по id) и нажимаем на нее
+        document.querySelector("#tor-filelist-btn").click()
+        // Находим все кпноки (по классу или id)
+        // const buttons = document.querySelectorAll('.lite')
+        // const buttons = document.querySelectorAll('#tor-filelist-btn')
+        // Проходимся по найденным кнопкам
+        // buttons.forEach(button => {
+        //     // Проверяем, содержит ли кнопка текст "Список файлов" и нажимаем на нее
+        //     if (button.textContent.includes('Список файлов')) {
+        //         button.click()
+        //     }
+        // })
+    })
+    // Дожидаемся загрузки нового элемента
+    // const elementHandle = await page.waitForSelector('#tor-filelist')
+    // Находим элемент с идентификатором #tor-filelist или по классу .med.ftree-windowed
+    await page.waitForFunction(() => {
+        // Первый аргумент функция с условием, которая должна вернуть true
+        const element = document.querySelector('#tor-filelist')
+        // Проверяем, что элемент существует и его содержимое не содержит текст загрузки
+        return element && !element.textContent.includes("загружается...")
+    },
+        // Опции
+        {
+            // Ожидать результат 30 секунд (по умолчанию)
+            timeout: 30000,
+            // Проверка каждые 50мс (по умолчанию 100мс)
+            polling: 50
+        })
+    // После успешной проверки возвращаем результат, используя метод textContent, innerText (массив) или innerHTML (включая HTML-разметку внутри элемента) или null
+    const elementTable = await page.evaluate(() => {
+        const element = document.querySelector('#tor-filelist')
+        return element ? element.innerHTML : null
+    })
+    // Закрываем браузер
+    await browser.close()
+    // Заполняем массив
+    const dataFiles = cheerio.load(elementTable)
+    dataFiles('li.file').each((index, element) => {
+        const fileName = dataFiles(element).find('b').text().trim()
+        const fileSize = dataFiles(element).find('s').text().trim()
+        torrents.push({
+            Name: fileName,
+            Size: fileSize
+        })
+    })
+    return torrents
 }
 
 // RuTracker RSS Native
@@ -928,9 +928,8 @@ async function RuTor(query, page) {
 }
 
 // RuTor ID
-async function RuTorFiles(query) {
+async function RuTorID(query) {
     const url_files = `https://rutor.info/descriptions/${query}.files`
-    const torrents = []
     let html
     const url = `https://rutor.info/torrent/${query}`
     try {
@@ -999,27 +998,33 @@ async function RuTorFiles(query) {
     let add_date = data(`#details > tbody > tr:nth-child(${index + 5}) > td:nth-child(2)`).text()
     let size = data(`#details > tbody > tr:nth-child(${index + 6}) > td:nth-child(2)`).text().replace(/\s+/g, ' ')
     // Получаем список файлов
-    try {
-        const response = await axiosProxy.get(url_files, {
-            responseType: 'arraybuffer',
-            headers: headers
-        })
-        // Получаем байты и преобразуем их в строку UTF-8
-        html = response.data.toString('utf-8')
-        console.log(`${getCurrentTime()} [Request] ${url_files}`)
-    } catch (error) {
-        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
-        return { 'Result': `The ${error.hostname} server is not available` }
-    }
-    // Оборачиваем строки таблицы в тег <table> для правильного разбора с помощью Cheerio
-    const data_files = cheerio.load(`<table>${html}</table>`)
-    data_files('tr').each((_, element) => {
-        const torrent = {
-            'Name': data_files(element).find('td').eq(0).text().trim(),
-            'Size': data_files(element).find('td').eq(1).text().replace(/\(.+/g, '').trim().replace(/'\s| |┬а'/g, '')
+    let torrents = []
+    // Puppeteer
+    if (RuTorPuppeteer == true) {
+        torrents = await RuTorFilesPuppeteer(query)
+    } else {
+        try {
+            const response = await axiosProxy.get(url_files, {
+                responseType: 'arraybuffer',
+                headers: headers
+            })
+            // Получаем байты и преобразуем их в строку UTF-8
+            html = response.data.toString('utf-8')
+            console.log(`${getCurrentTime()} [Request] ${url_files}`)
+        } catch (error) {
+            console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+            return { 'Result': `The ${error.hostname} server is not available` }
         }
-        torrents.push(torrent)
-    })
+        // Оборачиваем строки таблицы в тег <table> для правильного разбора с помощью Cheerio
+        const data_files = cheerio.load(`<table>${html}</table>`)
+        data_files('tr').each((_, element) => {
+            const torrent = {
+                'Name': data_files(element).find('td').eq(0).text().trim(),
+                'Size': data_files(element).find('td').eq(1).text().replace(/\(.+/g, '').trim().replace(/'\s| |┬а'/g, '')
+            }
+            torrents.push(torrent)
+        })
+    }
     if (torrents.length === 0) {
         return { 'Result': 'No matches were found for your ID' }
     } else {
@@ -1663,7 +1668,7 @@ async function testEndpoints(query) {
     let RuTorIdCheck = false
     startTime = performance.now()
     if (RuTorCheck) {
-        const RuTorIdResult = await RuTorFiles(RuTorResult[0].Id)
+        const RuTorIdResult = await RuTorID(RuTorResult[0].Id)
         RuTorIdCheck = Array.isArray(RuTorIdResult) && 
             RuTorIdResult.length > 0 && 
             RuTorIdResult[0].Name && 
@@ -2020,8 +2025,7 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     // RuTor ID
     else if (type === 'id' && provider === 'rutor') {
         try {
-            // const result = await RuTorFilesPuppeteer(query)
-            const result = await RuTorFiles(query)
+            const result = await RuTorID(query)
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)
