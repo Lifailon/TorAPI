@@ -1210,6 +1210,9 @@
                       "Video": {
                         "type": "string"
                       },
+                      "Poster": {
+                        "type": "string"
+                      },
                       "Files": {
                         "type": "array",
                         "items": {
@@ -1366,6 +1369,15 @@
                       "Update_Date": {
                         "type": "string"
                       },
+                      "Poster": {
+                        "type": "string"
+                      },
+                      "Posters": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
                       "Files": {
                         "type": "array",
                         "items": {
@@ -1469,6 +1481,9 @@
                         "type": "string"
                       },
                       "Size": {
+                        "type": "string"
+                      },
+                      "Poster": {
                         "type": "string"
                       },
                       "Files": {
@@ -1592,6 +1607,9 @@
                         "type": "string"
                       },
                       "Size": {
+                        "type": "string"
+                      },
+                      "Poster": {
                         "type": "string"
                       },
                       "Files": {

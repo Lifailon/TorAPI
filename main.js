@@ -437,6 +437,12 @@ async function RuTrackerID(query) {
             return ''
         }
     })()
+    // Постер
+    let Poster = ''
+    const posterElement = data('.postImg.postImgAligned.img-right').attr('title')
+    if (posterElement && posterElement.length) {
+        Poster = posterElement
+    }
     // Получаем список файлов
     let torrents = []
     // Puppeteer
@@ -487,6 +493,7 @@ async function RuTrackerID(query) {
             Description: Description.replace(/:\s/g, ''),
             Quality: videoQuality.replace(/:\s/g, ''),
             Video: Video.replace(/:\s/g, ''),
+            Poster: Poster,
             Files: torrents
         }
     ]
@@ -780,6 +787,37 @@ async function KinozalID(query) {
         kp = ""
     }
     let Hash = dataFiles('li').eq(0).text().replace(/.+:/, '').trim()
+    // Постер
+    let Poster = ''
+    const posterElement = data('div.content > div.mn_wrap > div.mn1_menu > ul > li > a > img').attr('src')
+    if (posterElement && posterElement.length) {
+        Poster = 'https://kinozal.tv' + posterElement
+    }
+    // Массив из внешних постеров
+    const url_posters = `https://kinozal.tv/get_srv_details.php?id=${query}&pagesd=2`
+    let Posters = []
+    let html3
+    try {
+        const response = await axiosProxy.get(url_posters, {
+            responseType: 'arraybuffer',
+            headers: headers_Kinozal
+        })
+        html3 = iconv.decode(response.data, 'utf8')
+        console.log(`${getCurrentTime()} [Request] ${url}`)
+    } catch (error) {
+        console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+        return { 'Result': `The ${error.hostname} server is not available` }
+    }
+    let dataPosters = cheerio.load(html3)
+    // dataPosters('a').attr('href')
+    // Перебрать все элементы с тэгом 'a' для получения значения их атрибута 'href'
+    dataPosters('a').each((index, element) => {
+        const href = dataPosters(element).attr('href')
+        if (href) {
+            Posters.push(href)
+        }
+    })
+    // Заполняем массив
     const torrent = {
         'Name': (() => {
             const element = data('div.mn1_content .bx1 b:contains("Название:")')[0]
@@ -842,6 +880,8 @@ async function KinozalID(query) {
         'Votes': data('div.mn1_menu').find('span.floatright').eq(8).text().trim(),
         'Added_Date': data('div.mn1_menu').find('span.floatright.green.n').eq(1).text().trim(),
         'Update_Date': data('div.mn1_menu').find('span.floatright.green.n').eq(2).text().trim(),
+        'Poster': Poster,
+        'Posters': Posters,
         'Files': torrentFiles
     }
     torrents.push(torrent)
@@ -1019,6 +1059,12 @@ async function RuTorID(query) {
     let seed_date = data(`#details > tbody > tr:nth-child(${index + 4}) > td:nth-child(2)`).text()
     let add_date = data(`#details > tbody > tr:nth-child(${index + 5}) > td:nth-child(2)`).text()
     let size = data(`#details > tbody > tr:nth-child(${index + 6}) > td:nth-child(2)`).text().replace(/\s+/g, ' ')
+    // Постер
+    let Poster = ''
+    const posterElement = data('tbody > tr > td > img').attr('src')
+    if (posterElement && posterElement.length) {
+        Poster = posterElement
+    }
     // Получаем список файлов
     let torrents = []
     // Puppeteer
@@ -1069,6 +1115,7 @@ async function RuTorID(query) {
                 Seed_Date: seed_date,
                 Add_Date: add_date,
                 Size: size,
+                Poster: Poster,
                 Files: torrents
             }
         ]
@@ -1452,6 +1499,12 @@ async function NoNameClubID(query) {
     let ratingNum = Rating.replace(/\s.+/g, '')
     let votesCount = Rating.replace(/.+: /g, '')
     const Size = data('tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(4) > td:nth-child(2) > span:nth-child(1)').text().trim()
+    // Постер
+    let Poster = ''
+    const posterElement = data('.postImg.postImgAligned.img-right').attr('title')
+    if (posterElement && posterElement.length) {
+        Poster = posterElement
+    }
     // Получаем список файлов
     let torrentId = Torrent.replace(/.+id=/, '')
     let urlTorrentFiles = `https://nnmclub.to/forum/filelst.php?attach_id=${torrentId}`
@@ -1504,6 +1557,7 @@ async function NoNameClubID(query) {
             Rating: ratingNum,
             Votes: votesCount,
             Size: Size,
+            Poster: Poster,
             Files: torrents
         }
     ]

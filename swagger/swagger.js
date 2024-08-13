@@ -758,6 +758,8 @@
  *                     type: string
  *                   Video:
  *                     type: string
+ *                   Poster:
+ *                     type: string
  *                   Files:
  *                     type: array
  *                     items:
@@ -859,6 +861,12 @@
  *                     type: string
  *                   Update_Date:
  *                     type: string
+ *                   Poster:
+ *                     type: string
+ *                   Posters:
+ *                     type: array
+ *                     items:
+ *                       type: string
  *                   Files:
  *                     type: array
  *                     items:
@@ -925,6 +933,8 @@
  *                   Add_Date:
  *                     type: string
  *                   Size:
+ *                     type: string
+ *                   Poster:
  *                     type: string
  *                   Files:
  *                     type: array
@@ -1004,6 +1014,8 @@
  *                   Votes:
  *                     type: string
  *                   Size:
+ *                     type: string
+ *                   Poster:
  *                     type: string
  *                   Files:
  *                     type: array
