@@ -48,6 +48,10 @@ const argv = yargs(hideBin(process.argv))
     })
     .argv
 
+// Использовать Puppeteer для получения списка файлов
+const RuTrackerPuppeteer = false
+const RuTorPuppeteer     = false
+
 // Создание экземпляра Axios с использованием конфигурации Proxy
 const createAxiosProxy = () => {
     const config = {}
@@ -61,10 +65,6 @@ const createAxiosProxy = () => {
     return axios.create(config)
 }
 const axiosProxy = createAxiosProxy()
-
-// Использовать Puppeteer для получения списка файлов
-const RuTrackerPuppeteer = false
-const RuTorPuppeteer     = false
 
 // Имя агента в заголовке запросов (вместо axios)
 const headers = {
@@ -442,6 +442,29 @@ async function RuTrackerID(query) {
     // Puppeteer
     if (RuTrackerPuppeteer == true) {
         torrents = await RuTrackerFilesPuppetter(query)
+    } else {
+        const urlFiles = 'https://rutracker.org/forum/viewtorrent.php'
+        const postData = `t=${query}`
+        try {
+            const response = await axiosProxy.post(urlFiles, postData, {
+                responseType: 'arraybuffer',
+                headers: headers_RuTracker
+            })
+            html = iconv.decode(response.data, 'win1251')
+            console.log(`${getCurrentTime()} [Request] ${urlFiles} (RuTracker Files)`)
+        } catch (error) {
+            console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
+            return { 'Result': `The ${error.hostname} server is not available` }
+        }
+        const dataFiles = cheerio.load(html)
+        dataFiles('ul.ftree > li.dir > ul > li').each((index, element) => {
+            const fileName = dataFiles(element).find('b').text().trim()
+            const fileSize = dataFiles(element).find('i').text().trim()
+            torrents.push({
+                Name: fileName,
+                Size: fileSize
+            })
+        })
     }
     return [
         {
@@ -716,9 +739,9 @@ async function KinozalID(query) {
         const fileSize = dataFiles(element).find('i').text().trim()
         torrentFiles.push({
             // Удаляем размер из названия (разбиваем на массив, удаляем последние 3 элемента и объединяем обратно)
-            name: fileName.split(' ').slice(0, -3).join(' '),
+            Name: fileName.split(' ').slice(0, -3).join(' '),
             // Удаляем байты
-            size: fileSize.replace(/ \(.+/, '')
+            Size: fileSize.replace(/ \(.+/, '')
         })
     })
     // Проверяем количество элементов в массиве
@@ -929,9 +952,8 @@ async function RuTor(query, page) {
 
 // RuTor ID
 async function RuTorID(query) {
-    const url_files = `https://rutor.info/descriptions/${query}.files`
-    let html
     const url = `https://rutor.info/torrent/${query}`
+    let html
     try {
         const response = await axiosProxy.get(url, {
             responseType: 'arraybuffer',
@@ -1003,14 +1025,15 @@ async function RuTorID(query) {
     if (RuTorPuppeteer == true) {
         torrents = await RuTorFilesPuppeteer(query)
     } else {
+        const urlFiles = `https://rutor.info/descriptions/${query}.files`
         try {
-            const response = await axiosProxy.get(url_files, {
+            const response = await axiosProxy.get(urlFiles, {
                 responseType: 'arraybuffer',
                 headers: headers
             })
             // Получаем байты и преобразуем их в строку UTF-8
             html = response.data.toString('utf-8')
-            console.log(`${getCurrentTime()} [Request] ${url_files}`)
+            console.log(`${getCurrentTime()} [Request] ${urlFiles}`)
         } catch (error) {
             console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
             return { 'Result': `The ${error.hostname} server is not available` }
@@ -1636,6 +1659,7 @@ async function testEndpoints(query) {
 
     // Проверяем поиск по полученному id из запроса Title
     let RuTrackerIdCheck = false
+    let RuTrackerIdCheckFiles = false
     startTime = performance.now()
     if (RuTrackerCheck) {
         const RuTrackerIdResult = await RuTrackerID(RuTrackerResult[0].Id)
@@ -1646,11 +1670,16 @@ async function testEndpoints(query) {
             RuTrackerIdResult[0].Hash &&
             RuTrackerIdResult[0].Magnet &&
             RuTrackerIdResult[0].Torrent
+        // Проверяем содержимое файлов
+        if (RuTrackerIdCheck) {
+            RuTrackerIdCheckFiles = RuTrackerIdResult[0].Files[0].Name
+        }
     }
     endTime = performance.now()
     const RuTrackerIdRunTime = ((endTime - startTime) / 1000).toFixed(3)
 
     let KinozalIdCheck = false
+    let KinozalIdCheckFiles = false
     startTime = performance.now()
     if (KinozalCheck) {
         const KinozalIdResult = await KinozalID(KinozalResult[0].Id)
@@ -1661,11 +1690,15 @@ async function testEndpoints(query) {
             KinozalIdResult[0].Hash &&
             KinozalIdResult[0].Magnet &&
             KinozalIdResult[0].Torrent
+        if (KinozalIdCheck) {
+            KinozalIdCheckFiles = KinozalIdResult[0].Files[0].Name
+        }
     }
     endTime = performance.now()
     const KinozalIdRunTime = ((endTime - startTime) / 1000).toFixed(3)
 
     let RuTorIdCheck = false
+    let RuTorIdCheckFiles = false
     startTime = performance.now()
     if (RuTorCheck) {
         const RuTorIdResult = await RuTorID(RuTorResult[0].Id)
@@ -1676,11 +1709,15 @@ async function testEndpoints(query) {
             RuTorIdResult[0].Hash &&
             RuTorIdResult[0].Magnet &&
             RuTorIdResult[0].Torrent
+        if (RuTorIdCheck) {
+            RuTorIdCheckFiles = RuTorIdResult[0].Files[0].Name
+        }
     }
     endTime = performance.now()
     const RuTorIdRunTime = ((endTime - startTime) / 1000).toFixed(3)
 
     let NoNameClubIdCheck = false
+    let NoNameClubIdCheckFiles = false
     startTime = performance.now()
     if (NoNameClubCheck) {
         const NoNameClubIdResult = await NoNameClubID(NoNameClubResult[0].Id)
@@ -1691,6 +1728,9 @@ async function testEndpoints(query) {
             NoNameClubIdResult[0].Hash &&
             NoNameClubIdResult[0].Magnet &&
             NoNameClubIdResult[0].Torrent
+        if (NoNameClubIdCheck) {
+            NoNameClubIdCheckFiles = NoNameClubIdResult[0].Files[0].Name
+        }
     }
     endTime = performance.now()
     const NoNameClubIdRunTime = ((endTime - startTime) / 1000).toFixed(3)
@@ -1711,17 +1751,17 @@ async function testEndpoints(query) {
                     RuTor: RuTorCheck ? true : false,
                     NoNameClub: NoNameClubCheck ? true : false
                 },
-                RunTime: {
-                    RuTracker: parseFloat(RuTrackerRunTime),
-                    Kinozal: parseFloat(KinozalRunTime),
-                    RuTor: parseFloat(RuTorRunTime),
-                    NoNameClub: parseFloat(NoNameClubRunTime)
-                },
                 Id: {
                     RuTracker: RuTrackerResult[0].Id ? parseInt(RuTrackerResult[0].Id, 10) : null,
                     Kinozal: KinozalResult[0].Id ? parseInt(KinozalResult[0].Id, 10) : null,
                     RuTor: RuTorResult[0].Id ? parseInt(RuTorResult[0].Id, 10) : null,
                     NoNameClub: NoNameClubResult[0].Id ? parseInt(NoNameClubResult[0].Id, 10) : null
+                },
+                RunTime: {
+                    RuTracker: parseFloat(RuTrackerRunTime),
+                    Kinozal: parseFloat(KinozalRunTime),
+                    RuTor: parseFloat(RuTorRunTime),
+                    NoNameClub: parseFloat(NoNameClubRunTime)
                 }
             },
             Id: {
@@ -1730,6 +1770,12 @@ async function testEndpoints(query) {
                     Kinozal: KinozalIdCheck ? true : false,
                     RuTor: RuTorIdCheck ? true : false,
                     NoNameClub: NoNameClubIdCheck ? true : false
+                },
+                Files: {
+                    RuTracker: RuTrackerIdCheckFiles ? true : false,
+                    Kinozal: KinozalIdCheckFiles ? true : false,
+                    RuTor: RuTorIdCheckFiles ? true : false,
+                    NoNameClub: NoNameClubIdCheckFiles ? true : false
                 },
                 RunTime: {
                     RuTracker: parseFloat(RuTrackerIdRunTime),
@@ -1774,10 +1820,6 @@ const options = {
             },
             {
                 url: 'https://rutorapi.vercel.app',
-                description: 'Production server'
-            },
-            {
-                url: 'https://torrapi.vercel.app',
                 description: 'Production server'
             }
         ]

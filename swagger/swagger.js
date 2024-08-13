@@ -97,17 +97,6 @@
  *                             type: boolean
  *                           NoNameClub:
  *                             type: boolean
- *                       RunTime:
- *                         type: object
- *                         properties:
- *                           RuTracker:
- *                             type: number
- *                           Kinozal:
- *                             type: number
- *                           RuTor:
- *                             type: number
- *                           NoNameClub:
- *                             type: number
  *                       Id:
  *                         type: object
  *                         properties:
@@ -119,10 +108,32 @@
  *                             type: integer
  *                           NoNameClub:
  *                             type: integer
+ *                       RunTime:
+ *                         type: object
+ *                         properties:
+ *                           RuTracker:
+ *                             type: number
+ *                           Kinozal:
+ *                             type: number
+ *                           RuTor:
+ *                             type: number
+ *                           NoNameClub:
+ *                             type: number
  *                   Id:
  *                     type: object
  *                     properties:
  *                       Status:
+ *                         type: object
+ *                         properties:
+ *                           RuTracker:
+ *                             type: boolean
+ *                           Kinozal:
+ *                             type: boolean
+ *                           RuTor:
+ *                             type: boolean
+ *                           NoNameClub:
+ *                             type: boolean
+ *                       Files:
  *                         type: object
  *                         properties:
  *                           RuTracker:

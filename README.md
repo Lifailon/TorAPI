@@ -19,7 +19,7 @@
 <p align="center">
     <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker"src="https://img.shields.io/docker/image-size/lifailon/torapi?&color=blue&label=Docker%20Image"></a>
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/docker-build-and-tests.yml?logo=GitHub-Actions&label=Build%20and%20Tests"></a>
-    <a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=GitHub&color=gray&label=Version"></a>
+    <a href="https://github.com/Lifailon/TorAPI"><img title="Version"src="https://img.shields.io/github/v/tag/lifailon/TorAPI?logo=GitHub&color=orange&label=Version"></a>
     <a href="https://github.com/Lifailon/TorAPI"><img title="Language"src="https://img.shields.io/github/languages/top/lifailon/TorAPI?logo=JavaScript&color=gold&label=JavaScript"></a>
     <a href="https://github.com/Lifailon/TorAPI/blob/main/LICENSE"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=Readme&color=white&label=License"></a>
 </p>
@@ -28,9 +28,7 @@ Unofficial API (**backend**) for RuTracker, Kinozal, RuTor and NoNameClub for re
 
 This project is inspired by ✨ [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) for Russian-speaking torrent providers.
 
-You can try the **open and free production version**, which is published on [Vercel](https://toruapi.vercel.app/api/provider/list). Documentation is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
-
-You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Static-Documentation) and [GitHub Page](https://lifailon.github.io/TorAPI).
+👉 You can try the **open and free version**, which is published on 🔼 [Vercel](https://toruapi.vercel.app/api/provider/list). OpenAPI specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website. You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Static-Documentation) and [GitHub Page](https://lifailon.github.io/TorAPI).
 
 Implemented:
 
@@ -62,6 +60,71 @@ The RSS feed is accessed by redirecting the original feed. For providers that do
 You can deploy your own public API to Vercel from this repository, just click the button below and follow the instructions:
 
 [![Vercel](https://img.shields.io/badge/Deploy-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/new/torapi/clone?repository-url=https://github.com/lifailon/TorAPI)
+
+## 🐳 Docker
+
+### Docker Hub
+
+The project uses [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/actions) to build the Docker container and automatically test the functionality of all endpoints.
+
+#### Run
+
+Upload the image and run the container from the [Docker Hub](https://hub.docker.com/repository/docker/lifailon/torapi/general):
+
+```shell
+docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
+```
+
+If you are using a proxy server:
+
+```shell
+docker run -d --name TorAPI -p 8443:8443 \
+  -e PROXY_ADDRESS="192.168.3.100" \
+  -e PROXY_PORT="9090" \
+  -e USERNAME="TorAPI" \
+  -e PASSWORD="TorAPI" \
+  lifailon/torapi:latest
+```
+
+#### Compose
+
+You can download and use the [docker-compose](docker-compose.yml) file to build the container from Docker Hub:
+
+```shell
+curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/docker-compose.yml
+curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/.env.yml
+```
+
+Edit the environment variables file [.env](.env) and build the container:
+
+```shell
+docker-compose up -d
+```
+
+### Dockerfile
+
+You can use project files to build from [dockerfile](dockerfile):
+
+```shell
+git clone https://github.com/Lifailon/TorAPI
+cd TorAPI
+```
+
+When using a proxy, edit the variables in dockerfile:
+
+```shell
+ENV PROXY_ADDRESS="192.168.3.100"
+ENV PROXY_PORT="9090"
+ENV USERNAME="TorAPI"
+ENV PASSWORD="TorAPI"
+```
+
+Build the image and run the container:
+
+```shell
+docker build -t torapi .
+docker run -d --name TorAPI -p 8443:8443 torapi
+```
 
 ## 🔨 Install
 
@@ -124,67 +187,69 @@ To change the header parameter in a request:
 npm start -- --test --q "The Rookie"
 ```
 
-The project also uses [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/actions) to build the Docker container and automatically test the functionality of all endpoints and get response times.
+Example output:
 
-## 🐳 Docker
-
-### Docker Hub
-
-#### Run
-
-Upload the image and run the container from the [Docker Hub](https://hub.docker.com/repository/docker/lifailon/torapi/general):
-
-```shell
-docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
+```json
+[
+  {
+    "RSS": {
+      "RuTracker": true,
+      "Kinozal": true,
+      "RuTor": true,
+      "NoNameClub": true
+    },
+    "Title": {
+      "Status": {
+        "RuTracker": true,
+        "Kinozal": true,
+        "RuTor": true,
+        "NoNameClub": true
+      },
+      "Id": {
+        "RuTracker": 6489949,
+        "Kinozal": 2023066,
+        "RuTor": 986185,
+        "NoNameClub": 1679153
+      },
+      "RunTime": {
+        "RuTracker": 0.99,
+        "Kinozal": 0.347,
+        "RuTor": 1.206,
+        "NoNameClub": 0.182
+      }
+    },
+    "Id": {
+      "Status": {
+        "RuTracker": true,
+        "Kinozal": true,
+        "RuTor": true,
+        "NoNameClub": true
+      },
+      "Files": {
+        "RuTracker": true,
+        "Kinozal": true,
+        "RuTor": true,
+        "NoNameClub": true
+      },
+      "RunTime": {
+        "RuTracker": 0.552,
+        "Kinozal": 0.784,
+        "RuTor": 0.675,
+        "NoNameClub": 1.278
+      }
+    }
+  }
+]
 ```
 
-If you are using a proxy server:
+---
 
-```shell
-docker run -d --name TorAPI -p 8443:8443 \
-  -e PROXY_ADDRESS="192.168.3.100" \
-  -e PROXY_PORT="9090" \
-  -e USERNAME="TorAPI" \
-  -e PASSWORD="TorAPI" \
-  lifailon/torapi:latest
-```
+## Other projects:
 
-#### Compose
+- 🧲 [Telegram bot for Kinozal](https://github.com/Lifailon/Kinozal-Bot) - that implements remote control of the qBittorrent and Transmission torrent client, interface for the Kinozal torrent tracker and synchronization of downloaded media content with Plex Media Server.
 
-You can download and use the [docker-compose](docker-compose.yml) file to build the container from Docker Hub:
+- ❤️ [WebTorrent Desktop api](https://github.com/Lifailon/webtorrent-desktop-api) - branch (fork) of the original version of [WebTorrent Desktop](https://github.com/webtorrent/webtorrent-desktop), which add a remote control mechanism via the `REST API` on base [Express Framework](https://github.com/expressjs/express).
 
-```shell
-curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/docker-compose.yml
-curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/.env.yml
-```
+- 🎞️ [Open Kinopoisk Chrome Extension](https://github.com/Lifailon/OpenKinopoisk) - adds buttons to the Kinopoisk website for searching for films and TV series in open sources.
 
-Edit the environment variables file [.env](.env) and build the container:
-
-```shell
-docker-compose up -d
-```
-
-### Dockerfile
-
-You can use project files to build from [dockerfile](dockerfile):
-
-```shell
-git clone https://github.com/Lifailon/TorAPI
-cd TorAPI
-```
-
-When using a proxy, edit the variables in dockerfile:
-
-```shell
-ENV PROXY_ADDRESS="192.168.3.100"
-ENV PROXY_PORT="9090"
-ENV USERNAME="TorAPI"
-ENV PASSWORD="TorAPI"
-```
-
-Build the image and run the container:
-
-```shell
-docker build -t torapi .
-docker run -d --name TorAPI -p 8443:8443 torapi
-```
+- 📡 [Reverse Proxy .NET](https://github.com/Lifailon/rpnet) - cross-platform command line utility for implementing a .NET-based reverse proxy. It is used to provide access to hosts from one network interface to remote applications via TCP, UDP or HTTP/HTTPS protocols accessible through another network interface without unnecessary settings and with authorization support.

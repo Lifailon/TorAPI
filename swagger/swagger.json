@@ -21,10 +21,6 @@
     {
       "url": "https://rutorapi.vercel.app",
       "description": "Production server"
-    },
-    {
-      "url": "https://torrapi.vercel.app",
-      "description": "Production server"
     }
   ],
   "paths": {
@@ -176,23 +172,6 @@
                               }
                             }
                           },
-                          "RunTime": {
-                            "type": "object",
-                            "properties": {
-                              "RuTracker": {
-                                "type": "number"
-                              },
-                              "Kinozal": {
-                                "type": "number"
-                              },
-                              "RuTor": {
-                                "type": "number"
-                              },
-                              "NoNameClub": {
-                                "type": "number"
-                              }
-                            }
-                          },
                           "Id": {
                             "type": "object",
                             "properties": {
@@ -209,6 +188,23 @@
                                 "type": "integer"
                               }
                             }
+                          },
+                          "RunTime": {
+                            "type": "object",
+                            "properties": {
+                              "RuTracker": {
+                                "type": "number"
+                              },
+                              "Kinozal": {
+                                "type": "number"
+                              },
+                              "RuTor": {
+                                "type": "number"
+                              },
+                              "NoNameClub": {
+                                "type": "number"
+                              }
+                            }
                           }
                         }
                       },
@@ -216,6 +212,23 @@
                         "type": "object",
                         "properties": {
                           "Status": {
+                            "type": "object",
+                            "properties": {
+                              "RuTracker": {
+                                "type": "boolean"
+                              },
+                              "Kinozal": {
+                                "type": "boolean"
+                              },
+                              "RuTor": {
+                                "type": "boolean"
+                              },
+                              "NoNameClub": {
+                                "type": "boolean"
+                              }
+                            }
+                          },
+                          "Files": {
                             "type": "object",
                             "properties": {
                               "RuTracker": {

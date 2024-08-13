@@ -26,10 +26,6 @@ const options = {
             {
                 url: 'https://rutorapi.vercel.app',
                 description: 'Production server'
-            },
-            {
-                url: 'https://torrapi.vercel.app',
-                description: 'Production server'
             }
         ]
     },
