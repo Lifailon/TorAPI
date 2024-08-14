@@ -1,6 +1,4 @@
-<p align="center">
-    <b>API static documentation with output examples for version 0.3<</b>
-</p>
+## API static documentation
 
 ### Endpoint format
 
@@ -25,26 +23,175 @@ Get a list of available providers:
 🔹 `curl -s http://localhost:8443/api/provider/list`
 
 ```json
-{
-  "Provider_List": [
-    {
-      "Provider": "RuTracker",
-      "Url": "https://rutracker.org"
-    },
-    {
-      "Provider": "Kinozal",
-      "Url": "https://kinozal.tv"
-    },
-    {
-      "Provider": "RuTor",
-      "Url": "https://rutor.info"
-    },
-    {
-      "Provider": "NoNameClub",
-      "Url": "https://nnmclub.to"
+[
+  {
+    "Provider": "RuTracker",
+    "Urls": [
+      "https://rutracker.org",
+      "https://rutracker.net",
+      "https://rutracker.nl"
+    ]
+  },
+  {
+    "Provider": "Kinozal",
+    "Urls": [
+      "https://kinozal.tv",
+      "https://kinozal.me",
+      "https://kinozal.guru"
+    ]
+  },
+  {
+    "Provider": "RuTor",
+    "Urls": [
+      "https://rutor.info",
+      "https://rutor.is"
+    ]
+  },
+  {
+    "Provider": "NoNameClub",
+    "Urls": [
+      "https://nnmclub.to"
+    ]
+  }
+]
+```
+
+Quick check of provider availability:
+
+🔹 `curl -s http://localhost:8443/api/provider/check`
+
+```json
+[
+  {
+    "RuTracker": true,
+    "Kinozal": true,
+    "RuTor": true,
+    "NoNameClub": true
+  }
+]
+```
+
+### RSS feed
+
+#### RuTracker
+
+🔹 `curl -s -X GET http://localhost:8443/api/get/rss/rutracker -H 'accept: application/json'`
+
+```json
+[
+  {
+    "id": "tag:rto.feed,2024-08-14:/t/6562254",
+    "link": "https://rutracker.org/forum/viewtopic.php?t=6562254",
+    "updated": "2024-08-14T08:16:30+00:00",
+    "title": "Долгий день уходит в ночь / Long Day's Journey Into Night (Сидни Люмет / Sidney Lumet) [1962, США, драма, BDRemux 1080p] [GBR Transfer] MVO (НТВ+) + Sub Eng + Original Eng [38.87 GB]",
+    "author": "Bloomsbury",
+    "category": "f-2198",
+    "categoryLable": "HD Video"
+  },
+  {
+    "id": "tag:rto.feed,2024-08-14:/t/6562249",
+    "link": "https://rutracker.org/forum/viewtopic.php?t=6562249",
+    "updated": "2024-08-14T08:14:40+00:00",
+    "title": "Оклахома / Rodgers and Hammerstein's Oklahoma! (Тревор Нанн / Trevor Nunn) [1999, musical, мюзикл, вестерн, мелодрама, HDRip-AVC] MVO + Original Eng + Sub Rus, Eng [4.18 GB]",
+    "author": "Bartimeyse",
+    "category": "f-702",
+    "categoryLable": "Опера, Оперетта и Мюзикл (Видео)"
+  },
+...
+]
+```
+
+#### Kinozal
+
+🔹 `curl -s -X GET http://localhost:8443/api/get/rss/kinozal -H 'accept: application/json'`
+
+```json
+[
+  {
+    "title": "Уцелевший (Боевой конь) / Warhorse One / 2023 / ПМ / WEB-DLRip",
+    "link": "https://kinozal.tv/details.php?id=1984064",
+    "category": "6",
+    "guid": "https://kinozal.tv/details.php?id=1984064",
+    "pubDate": "Wed, 14 Aug 2024 11:57:36 +0300"
+  },
+  {
+    "title": "Губка Боб - Квадратные Штаны (9 сезон: 1-26 серии из 26) / SpongeBob SquarePants /...",
+    "link": "https://kinozal.tv/details.php?id=1979045",
+    "category": "21",
+    "guid": "https://kinozal.tv/details.php?id=1979045",
+    "pubDate": "Wed, 14 Aug 2024 11:50:44 +0300"
+  },
+...
+]
+```
+
+#### RuTor
+
+🔹 `curl -s -X GET http://localhost:8443/api/get/rss/rutor -H 'accept: application/json'`
+
+```json
+[
+  {
+    "date": "14 Авг 24",
+    "title": "Русская жена [S01] (2022) WEBRip-AVC от Files-х",
+    "link": "https://rutor.info/torrent/994998/russkaja-zhena-s01-2022-webrip-avc-ot-files-h",
+    "downloadLink": "https:///d.rutor.info/download/994998",
+    "magnet": "magnet:?xt=urn:btih:3a21beda484ddd86dc520e961ffaffcc0421bc02&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
+    "size": "10.33 GB",
+    "comments": 0,
+    "seeds": 20,
+    "peers": 43
+  },
+  {
+    "date": "14 Авг 24",
+    "title": "Зверь внутри / The Beast Within (2024) WEB-DL 720p от селезень | L | RGB",
+    "link": "https://rutor.info/torrent/997426/zver-vnutri_the-beast-within-2024-web-dl-720p-ot-selezen-l-rgb",
+    "downloadLink": "https:///d.rutor.info/download/997426",
+    "magnet": "magnet:?xt=urn:btih:939b5f0326458f839a81bab476cb38f9060ca00b&dn=rutor.info&tr=udp://opentor.net:6969&tr=http://retracker.local/announce",
+    "size": "2.55 GB",
+    "comments": 0,
+    "seeds": 0,
+    "peers": 0
+  },
+...
+]
+```
+
+#### NoNameClub
+
+🔹 `curl -s -X GET http://localhost:8443/api/get/rss/nonameclub -H 'accept: application/json'`
+
+```json
+[
+  {
+    "turbo": "true",
+    "title": "Людям с расстройством сексуального поведения могут запретить водить машину",
+    "link": "https://nnmclub.to/forum/viewtopic.php?t=1742015",
+    "pubDate": "Thu, 15 Aug 2024 20:14:53 +0400",
+    "description": "<a href=\"https://nnmclub.to/forum/viewtopic.php?t=1742015\" target=\"_blank\"><img itemprop=\"image\" itemborder=\"0\" width=\"256\" src=\"https://nnmstatic.win/forum/image.php?link=%2F%2Fi.ibb.co%2FWKXZ0yn%2Fimgec675c1de88562127ac08baa10a2c2f5.webp\" align=\"left\" style=\"margin-bottom:8px;margin-right:8px;\"></a><meta property=\"og:image\" content=\"https://i.ibb.co/WKXZ0yn/imgec675c1de88562127ac08baa10a2c2f5.webp\" />В России могут запретить водить машину людям с расстройством сексуального поведения. Проект распоряжения правительства, разработанный Минздравом, <span style=\"text-decoration: underline\">размещен</span> для общественного обсуждения.<br />Документом предусмотрен новый перечень заболеваний. Он представлен кодами по Международной классификации болезней 10-го пересмотра (МКБ-10). Так, в числе диагнозов значатся расстройства&nbsp;(<a href=\"https://nnmclub.to/forum/viewtopic.php?t=1742015\">   Читать дальше...   </a>)",
+    "content": "&lt;a href=&quot;https://nnmclub.to/forum/viewtopic.php?t=1742015&quot; target=&quot;_blank&quot;&gt;&lt;img itemprop=&quot;image&quot; itemborder=&quot;0&quot; width=&quot;256&quot; src=&quot;https://nnmstatic.win/forum/image.php?link=%2F%2Fi.ibb.co%2FWKXZ0yn%2Fimgec675c1de88562127ac08baa10a2c2f5.webp&quot; align=&quot;left&quot; style=&quot;margin-bottom:8px;margin-right:8px;&quot;&gt;&lt;/a&gt;&lt;meta property=&quot;og:image&quot; content=&quot;https://i.ibb.co/WKXZ0yn/imgec675c1de88562127ac08baa10a2c2f5.webp&quot; /&gt;В России могут запретить водить машину людям с расстройством сексуального поведения. Проект распоряжения правительства, разработанный Минздравом, &lt;span style=&quot;text-decoration: underline&quot;&gt;размещен&lt;/span&gt; для общественного обсуждения.&lt;br /&gt;Документом предусмотрен новый перечень заболеваний. Он представлен кодами по Международной классификации болезней 10-го пересмотра (МКБ-10). Так, в числе диагнозов значатся расстройства&amp;nbsp;(&lt;a href=&quot;https://nnmclub.to/forum/viewtopic.php?t=1742015&quot;&gt;   Читать дальше...   &lt;/a&gt;)",
+    "creator": "Romanukjr",
+    "commentRss": "https://nnmclub.to/forum/rss.php?topic=1742015",
+    "comments": "59"
+  },
+  {
+    "turbo": "true",
+    "title": "Огни рампы / Limelight (1952) BDRip [H.264/720p] [Platinum]",
+    "link": "https://nnmclub.to/forum/viewtopic.php?t=1741805",
+    "pubDate": "Thu, 15 Aug 2024 00:00:57 +0400",
+    "description": "<a href=\"https://nnmclub.to/forum/viewtopic.php?t=1741805\" target=\"_blank\"><img itemprop=\"image\" itemborder=\"0\" width=\"256\" src=\"https://nnmstatic.win/forum/image.php?link=%2F%2Fi8.imageban.ru%2Fout%2F2024%2F08%2F08%2Fd154f774230cb7dc6dcdc84c322e3138.jpg\" align=\"left\" style=\"margin-bottom:8px;margin-right:8px;\"></a>Стареющий клоун Калверо спасает от самоубийства соседку, девушку-танцовщицу, вынужденную из-за болезни покинуть балетную труппу. Так начинается эта дружба-любовь, которая, по мнению Калверо, не может иметь продолжения - слишком велика разница в возрасте...<br /><br /><b>Производство</b>: США / Charles Chaplin Productions<br /><b>Жанр</b>: драма, мелодрама, музыка<br /><b>Режиссер</b>: Чарли Чаплин<br /><b>Актеры</b>: Чарли Чаплин, Клер Блум, Найджел Брюс, Бастер Китон, Сидни Чаплин, Норман Ллойд, Андре Эглевский, Мелисса Хейден, Марджори Беннетт, Вилер Драйден<br /><b>Перевод</b>: дублированный, профессиональный многоголосый, любительский одноголосый<br /><b>Язык озвучки</b>: русский, английский<br /><b>Субтитры</b>: русские, английские<br /><b>Продолжительность</b>: 02:17:51",
+    "content": "&lt;a href=&quot;https://nnmclub.to/forum/viewtopic.php?t=1741805&quot; target=&quot;_blank&quot;&gt;&lt;img itemprop=&quot;image&quot; itemborder=&quot;0&quot; width=&quot;256&quot; src=&quot;https://nnmstatic.win/forum/image.php?link=%2F%2Fi8.imageban.ru%2Fout%2F2024%2F08%2F08%2Fd154f774230cb7dc6dcdc84c322e3138.jpg&quot; align=&quot;left&quot; style=&quot;margin-bottom:8px;margin-right:8px;&quot;&gt;&lt;/a&gt;Стареющий клоун Калверо спасает от самоубийства соседку, девушку-танцовщицу, вынужденную из-за болезни покинуть балетную труппу. Так начинается эта дружба-любовь, которая, по мнению Калверо, не может иметь продолжения - слишком велика разница в возрасте...&lt;br /&gt;&lt;br /&gt;&lt;b&gt;Производство&lt;/b&gt;: США / Charles Chaplin Productions&lt;br /&gt;&lt;b&gt;Жанр&lt;/b&gt;: драма, мелодрама, музыка&lt;br /&gt;&lt;b&gt;Режиссер&lt;/b&gt;: Чарли Чаплин&lt;br /&gt;&lt;b&gt;Актеры&lt;/b&gt;: Чарли Чаплин, Клер Блум, Найджел Брюс, Бастер Китон, Сидни Чаплин, Норман Ллойд, Андре Эглевский, Мелисса Хейден, Марджори Беннетт, Вилер Драйден&lt;br /&gt;&lt;b&gt;Перевод&lt;/b&gt;: дублированный, профессиональный многоголосый, любительский одноголосый&lt;br /&gt;&lt;b&gt;Язык озвучки&lt;/b&gt;: русский, английский&lt;br /&gt;&lt;b&gt;Субтитры&lt;/b&gt;: русские, английские&lt;br /&gt;&lt;b&gt;Продолжительность&lt;/b&gt;: 02:17:51",
+    "creator": "msltel",
+    "commentRss": "https://nnmclub.to/forum/rss.php?topic=1741805",
+    "comments": "0",
+    "enclosure": {
+      "url": "https://nnmclub.to/forum/download.php?id=1334625",
+      "length": "51218",
+      "type": "application/x-bittorrent"
     }
-  ]
-}
+  },
+...
+]
 ```
 
 ### Search by Title
@@ -57,18 +204,32 @@ Get a list of available providers:
 {
   "RuTracker": [
     {
-      "Name": "[DL] Bō (Bo): Path of the Teal Lotus [P] [ENG + 8] (2024, Arcade) [Scene]",
+      "Name": "[DL] Bō (Bo): Path of the Teal Lotus [P] [ENG + 8] (2024, Arcade) (1.1.0) [Scene]",
       "Id": "6553038",
       "Url": "https://rutracker.net/forum/viewtopic.php?t=6553038",
       "Torrent": "https://rutracker.net/forum/dl.php?t=6553038",
-      "Size": "5.28 GB",
-      "Download_Count": "554",
+      "Size": "5.56 GB",
+      "Download_Count": "49",
       "Checked": "True",
-      "Type": "Горячие Новинки",
-      "Type_Link": "https://rutracker.net/forum/tracker.php?f=635",
-      "Seeds": "28",
-      "Peers": "2",
-      "Date": "20.07.2024"
+      "Type": "Аркады",
+      "Type_Link": "https://rutracker.net/forum/tracker.php?f=127",
+      "Seeds": "3",
+      "Peers": "0",
+      "Date": "12.08.2024"
+    },
+    {
+      "Name": "[DL] Bō (Bo): Path of the Teal Lotus [P] [RUS + ENG + 7] (2024, Arcade) (1.0.6) [P2P]",
+      "Id": "6556973",
+      "Url": "https://rutracker.net/forum/viewtopic.php?t=6556973",
+      "Torrent": "https://rutracker.net/forum/dl.php?t=6556973",
+      "Size": "986.4 MB",
+      "Download_Count": "187",
+      "Checked": "True",
+      "Type": "Аркады",
+      "Type_Link": "https://rutracker.net/forum/tracker.php?f=127",
+      "Seeds": "7",
+      "Peers": "1",
+      "Date": "31.07.2024"
     },
     {
       "Name": "[Nintendo Switch] Bo: Path of the Teal Lotus [NSZ][ENG]",
@@ -76,12 +237,12 @@ Get a list of available providers:
       "Url": "https://rutracker.net/forum/viewtopic.php?t=6552174",
       "Torrent": "https://rutracker.net/forum/dl.php?t=6552174",
       "Size": "800.8 MB",
-      "Download_Count": "617",
+      "Download_Count": "727",
       "Checked": "True",
       "Type": "Switch",
       "Type_Link": "https://rutracker.net/forum/tracker.php?f=1605",
-      "Seeds": "75",
-      "Peers": "4",
+      "Seeds": "42",
+      "Peers": "20",
       "Date": "17.07.2024"
     }
   ],
@@ -93,16 +254,40 @@ Get a list of available providers:
   },
   "NoNameClub": [
     {
-      "Name": "Bo: Path of the Teal Lotus (2024) [Multi] (1.0) Scene Tenoke",
+      "Name": "Bo: Path of the Teal Lotus (2024) [Multi] (1.1.0) Repack FitGirl",
+      "Id": "1742972",
+      "Url": "https://nnmclub.to/forum/viewtopic.php?t=1742972",
+      "Torrent": "https://nnmclub.to/forum/download.php?id=1335276",
+      "Size": "944 MB",
+      "Comments": "0",
+      "Type": "Горячие новинки Игр",
+      "Seeds": "3",
+      "Peers": "0",
+      "Date": "14.08.2024 08:53"
+    },
+    {
+      "Name": "Bo: Path of the Teal Lotus (2024) [Multi] (1.1.0) Scene Tenoke",
       "Id": "1739268",
       "Url": "https://nnmclub.to/forum/viewtopic.php?t=1739268",
       "Torrent": "https://nnmclub.to/forum/download.php?id=1333049",
-      "Size": "5.28 GB",
+      "Size": "5.56 GB",
+      "Comments": "1",
+      "Type": "Горячие новинки Игр",
+      "Seeds": "2",
+      "Peers": "1",
+      "Date": "12.08.2024 18:06"
+    },
+    {
+      "Name": "Bo: Path of the Teal Lotus (2024) [Ru/Multi] (1.0.6) Repack dixen18",
+      "Id": "1740083",
+      "Url": "https://nnmclub.to/forum/viewtopic.php?t=1740083",
+      "Torrent": "https://nnmclub.to/forum/download.php?id=1333578",
+      "Size": "986 MB",
       "Comments": "0",
       "Type": "Горячие новинки Игр",
-      "Seeds": "0",
+      "Seeds": "2",
       "Peers": "0",
-      "Date": "27.07.2024 03:28"
+      "Date": "31.07.2024 12:55"
     }
   ]
 }
@@ -120,12 +305,12 @@ Get a list of available providers:
     "Url": "https://rutracker.net/forum/viewtopic.php?t=6489949",
     "Torrent": "https://rutracker.net/forum/dl.php?t=6489949",
     "Size": "32.79 GB",
-    "Download_Count": "999",
+    "Download_Count": "1307",
     "Checked": "True",
     "Type": "Сериалы США и Канады (HD Video)",
     "Type_Link": "https://rutracker.net/forum/tracker.php?f=266",
-    "Seeds": "36",
-    "Peers": "9",
+    "Seeds": "62",
+    "Peers": "15",
     "Date": "26.06.2024"
   },
   {
@@ -134,12 +319,12 @@ Get a list of available providers:
     "Url": "https://rutracker.net/forum/viewtopic.php?t=6498673",
     "Torrent": "https://rutracker.net/forum/dl.php?t=6498673",
     "Size": "18.33 GB",
-    "Download_Count": "1637",
+    "Download_Count": "1784",
     "Checked": "True",
     "Type": "Сериалы США и Канады (HD Video)",
     "Type_Link": "https://rutracker.net/forum/tracker.php?f=266",
-    "Seeds": "29",
-    "Peers": "8",
+    "Seeds": "30",
+    "Peers": "12",
     "Date": "25.05.2024"
   },
   {
@@ -148,12 +333,12 @@ Get a list of available providers:
     "Url": "https://rutracker.net/forum/viewtopic.php?t=6489937",
     "Torrent": "https://rutracker.net/forum/dl.php?t=6489937",
     "Size": "5.95 GB",
-    "Download_Count": "3669",
+    "Download_Count": "3970",
     "Checked": "True",
     "Type": "Сериалы США и Канады",
     "Type_Link": "https://rutracker.net/forum/tracker.php?f=235",
-    "Seeds": "90",
-    "Peers": "31",
+    "Seeds": "107",
+    "Peers": "42",
     "Date": "24.05.2024"
   },
   {
@@ -162,11 +347,11 @@ Get a list of available providers:
     "Url": "https://rutracker.net/forum/viewtopic.php?t=6499482",
     "Torrent": "https://rutracker.net/forum/dl.php?t=6499482",
     "Size": "5.3 MB",
-    "Download_Count": "50",
+    "Download_Count": "54",
     "Checked": "True",
     "Type": "Саундтреки к сериалам (lossy)",
     "Type_Link": "https://rutracker.net/forum/tracker.php?f=1499",
-    "Seeds": "2",
+    "Seeds": "3",
     "Peers": "0",
     "Date": "14.03.2024"
   }
@@ -190,8 +375,8 @@ Get a list of available providers:
     "Torrent": "https://dl.kinozal.tv/download.php?id=2023066",
     "Size": "32.79 ГБ",
     "Comments": "34",
-    "Seeds": "9",
-    "Peers": "2",
+    "Seeds": "13",
+    "Peers": "5",
     "Date": "26.06.2024 01:17"
   },
   {
@@ -205,7 +390,7 @@ Get a list of available providers:
     "Torrent": "https://dl.kinozal.tv/download.php?id=2042752",
     "Size": "153.07 ГБ",
     "Comments": "1",
-    "Seeds": "3",
+    "Seeds": "1",
     "Peers": "4",
     "Date": "25.06.2024 09:30"
   },
@@ -220,8 +405,8 @@ Get a list of available providers:
     "Torrent": "https://dl.kinozal.tv/download.php?id=2026484",
     "Size": "18.33 ГБ",
     "Comments": "4",
-    "Seeds": "9",
-    "Peers": "4",
+    "Seeds": "8",
+    "Peers": "2",
     "Date": "25.05.2024 11:02"
   },
   {
@@ -236,7 +421,7 @@ Get a list of available providers:
     "Size": "5.95 ГБ",
     "Comments": "22",
     "Seeds": "43",
-    "Peers": "13",
+    "Peers": "11",
     "Date": "24.05.2024 14:31"
   },
   {
@@ -251,7 +436,7 @@ Get a list of available providers:
     "Size": "249.58 ГБ",
     "Comments": "148",
     "Seeds": "7",
-    "Peers": "11",
+    "Peers": "14",
     "Date": "24.05.2024 10:58"
   }
 ]
@@ -271,7 +456,7 @@ Get a list of available providers:
     "Hash": "6c3fa72ddc8f39afc7743f147e8ca3ee66ee99df",
     "Size": "18.33 GB",
     "Comments": "0",
-    "Seeds": "5",
+    "Seeds": "7",
     "Peers": "2",
     "Date": "25.05.2024"
   },
@@ -283,8 +468,8 @@ Get a list of available providers:
     "Hash": "3348d0a58dd8f5b251c7a361c9d235549260ba60",
     "Size": "5.95 GB",
     "Comments": "0",
-    "Seeds": "36",
-    "Peers": "19",
+    "Seeds": "27",
+    "Peers": "16",
     "Date": "25.05.2024"
   },
   {
@@ -295,33 +480,9 @@ Get a list of available providers:
     "Hash": "2fdb28133eee0e3842ed855a08c07f35e482eedc",
     "Size": "32.79 GB",
     "Comments": "0",
-    "Seeds": "16",
+    "Seeds": "25",
     "Peers": "8",
     "Date": "25.05.2024"
-  },
-  {
-    "Name": "Новичок / Новобранец / The Rookie [S06] (2024) WEBRip от Kerob | L2",
-    "Id": "970650",
-    "Url": "https://rutor.info/torrent/970650/novichok_novobranec_the-rookie-s06-2024-webrip-ot-kerob-l2",
-    "Torrent": "https://d.rutor.info/download/970650",
-    "Hash": "b7a46e99dd9164787baf77d4f98d84ceb5301ac0",
-    "Size": "5.92 GB",
-    "Comments": "7",
-    "Seeds": "6",
-    "Peers": "2",
-    "Date": "22.05.2024"
-  },
-  {
-    "Name": "Новичок / Новобранец / The Rookie [S06] (2024) WEBRip 720p от Kerob | L2",
-    "Id": "970647",
-    "Url": "https://rutor.info/torrent/970647/novichok_novobranec_the-rookie-s06-2024-webrip-720p-ot-kerob-l2",
-    "Torrent": "https://d.rutor.info/download/970647",
-    "Hash": "99bb9749164676d36d17b2b72497d6f02bf88c50",
-    "Size": "12.18 GB",
-    "Comments": "0",
-    "Seeds": "1",
-    "Peers": "3",
-    "Date": "22.05.2024"
   }
 ]
 ```
@@ -341,8 +502,8 @@ Get a list of available providers:
     "Comments": "6",
     "Type": "Зарубежные сериалы",
     "Seeds": "1",
-    "Peers": "0",
-    "Date": "22.04.2019 09:09"
+    "Peers": "1",
+    "Date": "22.04.2019 12:09"
   },
   {
     "Name": "Новичок / The Rookie (2018) WEB-DL [H.264/1080p-LQ] (сезон 1, серии 1-20 из 20) LostFilm",
@@ -352,9 +513,9 @@ Get a list of available providers:
     "Size": "52.7 GB",
     "Comments": "6",
     "Type": "Зарубежные сериалы",
-    "Seeds": "6",
-    "Peers": "1",
-    "Date": "20.04.2019 00:30"
+    "Seeds": "1",
+    "Peers": "0",
+    "Date": "20.04.2019 03:30"
   },
   {
     "Name": "Новичок / The Rookie (2018) WEB-DLRip (сезон 1, серии 1-20 из 20) LostFilm",
@@ -364,9 +525,9 @@ Get a list of available providers:
     "Size": "10.5 GB",
     "Comments": "31",
     "Type": "Зарубежные сериалы",
-    "Seeds": "10",
-    "Peers": "0",
-    "Date": "18.04.2019 22:55"
+    "Seeds": "6",
+    "Peers": "1",
+    "Date": "19.04.2019 01:55"
   },
   {
     "Name": "Новобранец / The Rookie (2018) WEB-DLRip [H.264/720p] (сезон 1, серия 1-8 из 20) LostFilm (обновляемая)",
@@ -378,7 +539,7 @@ Get a list of available providers:
     "Type": "Архив Сериалов и Архив Старого многосерийного кино до 90-х",
     "Seeds": "0",
     "Peers": "0",
-    "Date": "22.12.2018 04:00"
+    "Date": "22.12.2018 07:00"
   }
 ]
 ```
@@ -411,46 +572,47 @@ Get a list of available providers:
     "Description": "Начинать с чистого листа всегда нелегко, особенно для уроженца маленького городка Джона Нолана, который после перевернувшего его жизнь случая решил воплотить в жизнь давнюю мечту и вступить в ряды полиции Лос-Анджелеса. Возрастного новичка встречают с понятным скептицизмом, однако жизненный опыт, упорство и чувство юмора дают Джону преимущество.",
     "Quality": "WEB-DLRip",
     "Video": "XviD, 720x400 (16:9), 23.976 fps, 1600 Kbps",
+    "Poster": "https://i123.fastpic.org/big/2024/0222/44/9c2349f7a7b72e0b0bbcd69f3bf27b44.jpg",
     "Files": [
       {
         "Name": "The.Rookie.S06E01.WEB-DLRip.RGzsRutracker.avi",
-        "Size": "614.25 MB"
+        "Size": "644093952"
       },
       {
         "Name": "The.Rookie.S06E02.WEB-DLRip.RGzsRutracker.avi",
-        "Size": "615.56 MB"
+        "Size": "645470208"
       },
       {
         "Name": "The.Rookie.S06E03.WEB-DLRip.RGzsRutracker.avi",
-        "Size": "596.67 MB"
+        "Size": "625664000"
       },
       {
         "Name": "The.Rookie.S06E04.WEB-DLRip.RGzsRutracker.avi",
-        "Size": "614.88 MB"
+        "Size": "644755456"
       },
       {
         "Name": "The.Rookie.S06E05.WEB-DLRip.RGzsRutracker.avi",
-        "Size": "596.57 MB"
+        "Size": "625551360"
       },
       {
         "Name": "The.Rookie.S06E06.WEB-DLRip.RGzsRutracker.avi",
-        "Size": "614.89 MB"
+        "Size": "644759552"
       },
       {
         "Name": "The.Rookie.S06E07.WEB-DLRip.RGzsRutracker.avi",
-        "Size": "607.10 MB"
+        "Size": "636594176"
       },
       {
         "Name": "The.Rookie.S06E08.WEB-DLRip.RGzsRutracker.avi",
-        "Size": "610.67 MB"
+        "Size": "640335872"
       },
       {
         "Name": "The.Rookie.S06E09.WEB-DLRip.RGzsRutracker.avi",
-        "Size": "614.24 MB"
+        "Size": "644085760"
       },
       {
         "Name": "The.Rookie.S06E10.WEB-DLRip.RGzsRutracker.avi",
-        "Size": "611.32 MB"
+        "Size": "641015808"
       }
     ]
   }
@@ -469,6 +631,7 @@ Get a list of available providers:
     "Url": "https://kinozal.tv/details.php?id=2022944",
     "Hash": "3348D0A58DD8F5B251C7A361C9D235549260BA60",
     "Magnet": "magnet:?xt=urn:btih:3348D0A58DD8F5B251C7A361C9D235549260BA60&tr=http%3A%2F%2Fretracker.local%2Fannounce&tr=http%3A%2F%2Ftr0.torrent4me.com%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr1.torrent4me.com%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr2.torrent4me.com%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr3.torrent4me.com%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr4.torrent4me.com%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr5.torrent4me.com%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr0.tor4me.info%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr1.tor4me.info%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr2.tor4me.info%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr3.tor4me.info%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr4.tor4me.info%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr5.tor4me.info%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr0.tor2me.info%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr1.tor2me.info%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr2.tor2me.info%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr3.tor2me.info%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr4.tor2me.info%2Fann%3Fuk%3DkCm7WcIM00&tr=http%3A%2F%2Ftr5.tor2me.info%2Fann%3Fuk%3DkCm7WcIM00",
+    "Torrent": "https://dl.kinozal.tv/download.php?id=2022944",
     "IMDb_link": "https://www.imdb.com/title/tt7587890/",
     "Kinopoisk_link": "https://www.kinopoisk.ru/film/1142153",
     "IMDB_id": "7587890",
@@ -486,8 +649,8 @@ Get a list of available providers:
     "Duration": "10 x ~ 00:44:00",
     "Transcript": "Профессиональный многоголосый",
     "Seeds": "43",
-    "Peers": "12",
-    "Download_Count": "2058",
+    "Peers": "11",
+    "Download_Count": "2113",
     "Files_Count": "10",
     "Comments": "22",
     "IMDb_Rating": "8.0",
@@ -496,6 +659,15 @@ Get a list of available providers:
     "Votes": "35",
     "Added_Date": "23 февраля 2024 в 00:46",
     "Update_Date": "24 мая 2024 в 14:31",
+    "Poster": "https://kinozal.tv/i/poster/7/8/1655778.jpg",
+    "Posters": [
+      "https://fastpic.org/fullview/123/2024/0223/a85245e4e04e0de966819574d1532719.jpg",
+      "https://fastpic.org/fullview/123/2024/0223/f3308f31fde2c78ac77bd976a0ad7066.jpg",
+      "https://fastpic.org/fullview/123/2024/0223/99270276082060d8d267819594c880a2.jpg",
+      "https://fastpic.org/fullview/123/2024/0223/5845be1a7d7392a18fb1bc343cb0c1fc.jpg",
+      "https://fastpic.org/fullview/123/2024/0223/80aa1ffca3a4608a20f8bc63b214d587.jpg",
+      "https://fastpic.org/fullview/123/2024/0223/84dfb0a8f5613813362539fa9eb800ac.jpg"
+    ],
     "Files": [
       {
         "Name": "The.Rookie.S06E01.WEB-DLRip.RGzsRutracker.avi",
@@ -544,67 +716,68 @@ Get a list of available providers:
 
 #### RuTor
 
-🔹 `curl -s http://localhost:8443/api/search/id/rutor?query=970650`
+🔹 `curl -s http://localhost:8443/api/search/id/rutor?query=986185`
 
 ```json
 [
   {
-    "Name": "Новичок / Новобранец / The Rookie [S06] (2024) WEBRip от Kerob | L2",
-    "Url": "https://rutor.info/torrent/970650",
-    "Hash": "b7a46e99dd9164787baf77d4f98d84ceb5301ac0",
-    "Magnet": "magnet:?xt=urn:btih:b7a46e99dd9164787baf77d4f98d84ceb5301ac0&tr=http%3A%2F%2Fretracker.local%2Fannounce&tr=udp%3A%2F%2Fopentor.net%3A6969&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=http%3A%2F%2Ftracker.grepler.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.dler.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.bitsearch.to%3A1337%2Fannounce&tr=http%3A%2F%2Fh1.trakx.nibba.trade%3A80%2Fannounce&tr=http%3A%2F%2Fh2.trakx.nibba.trade%3A80%2Fannounce&tr=http%3A%2F%2Fh3.trakx.nibba.trade%3A80%2Fannounce&tr=http%3A%2F%2Fh4.trakx.nibba.trade%3A80%2Fannounce&tr=http%3A%2F%2Fh5.trakx.nibba.trade%3A80%2Fannounce",
-    "Torrent": "https://d.rutor.info/download/970650",
+    "Name": "Новичок / Новобранец / The Rookie [S06] (2024) WEB-DL 720p | LostFilm, TVShows, HDrezka Studio",
+    "Url": "https://rutor.info/torrent/986185",
+    "Hash": "6c3fa72ddc8f39afc7743f147e8ca3ee66ee99df",
+    "Magnet": "magnet:?xt=urn:btih:6c3fa72ddc8f39afc7743f147e8ca3ee66ee99df&tr=http%3A%2F%2Fretracker.local%2Fannounce&tr=udp%3A%2F%2Fopentor.net%3A6969&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=http%3A%2F%2Ftracker.grepler.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.dler.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.bitsearch.to%3A1337%2Fannounce&tr=http%3A%2F%2Fh1.trakx.nibba.trade%3A80%2Fannounce&tr=http%3A%2F%2Fh2.trakx.nibba.trade%3A80%2Fannounce&tr=http%3A%2F%2Fh3.trakx.nibba.trade%3A80%2Fannounce&tr=http%3A%2F%2Fh4.trakx.nibba.trade%3A80%2Fannounce&tr=http%3A%2F%2Fh5.trakx.nibba.trade%3A80%2Fannounce",
+    "Torrent": "https://d.rutor.info/download/986185",
     "IMDb_link": "http://www.imdb.com/title/tt7587890/",
     "Kinopoisk_link": "http://www.kinopoisk.ru/film/1142153/",
     "IMDb_id": "7587890",
     "Kinopoisk_id": "1142153",
-    "Rating": "10 из 10 (2 голосов, самая низкая оценка - 10, самая высокая - 10)",
+    "Rating": "Никто ещё не поставил оценку",
     "Category": "Зарубежные сериалы",
-    "Seeds": "6",
+    "Seeds": "3",
     "Peers": "2",
-    "Seed_Date": "30-07-2024 7:19:07 (54 минуты назад)",
-    "Add_Date": "22-05-2024 17:51:28  (2 месяца назад)",
-    "Size": "5.92 GB (6360685830 Bytes)",
+    "Seed_Date": "14-08-2024 8:19:07 (1 минуту назад)",
+    "Add_Date": "25-05-2024 14:55:05  (3 месяца назад)",
+    "Size": "18.33 GB (19685459294 Bytes)",
+    "Poster": "https://i123.fastpic.org/big/2024/0311/2f/5d19d67e60ba456eefdbbb59c5f4ce2f.png",
     "Files": [
       {
-        "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E01.400p.Kerob.avi",
-        "Size": "602.01 MB"
+        "Name": "The.Rookie.S06.WEBDL.720p/The.Rookie.S06E01.WEBDL.720p.RGzsRutracker.mkv",
+        "Size": "2.03 GB"
       },
       {
-        "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E02.400p.Kerob.avi",
-        "Size": "562.48 MB"
+        "Name": "The.Rookie.S06.WEBDL.720p/The.Rookie.S06E02.WEBDL.720p.RGzsRutracker.mkv",
+        "Size": "1.85 GB"
       },
       {
-        "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E03.400p.Kerob.avi",
-        "Size": "621.50 MB"
+        "Name": "The.Rookie.S06.WEBDL.720p/The.Rookie.S06E03.WEBDL.720p.RGzsRutracker.mkv",
+        "Size": "1.87 GB"
       },
       {
-        "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E04.400p.Kerob.avi",
-        "Size": "690.81 MB"
+        "Name": "The.Rookie.S06.WEBDL.720p/The.Rookie.S06E04.WEBDL.720p.RGzsRutracker.mkv",
+        "Size": "1.90 GB"
       },
       {
-        "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E05.400p.Kerob.avi",
-        "Size": "460.92 MB"
+        "Name": "The.Rookie.S06.WEBDL.720p/The.Rookie.S06E05.WEBDL.720p.RGzsRutracker.mkv",
+        "Size": "1.67 GB"
       },
       {
-        "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E06.400p.Kerob.avi",
-        "Size": "531.88 MB"
+        "Name": "The.Rookie.S06.WEBDL.720p/The.Rookie.S06E06.WEBDL.720p.RGzsRutracker.mkv",
+        "Size": "1.66 GB"
       },
       {
-        "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E07.400p.Kerob.avi",
-        "Size": "931.94 MB"
+        "Name": "The.Rookie.S06.WEBDL.720p/The.Rookie.S06E07.WEBDL.720p.RGzsRutracker.mkv",
+        "Size": "2.06 GB"
       },
       {
-        "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E08.400p.Kerob.avi",
-        "Size": "506.55 MB"
+        "Name": "The.Rookie.S06.WEBDL.720p/The.Rookie.S06E08.WEBDL.720p.RGzsRutracker.mkv",
+        "Size": "1.67 GB"
       },
       {
-        "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E09.400p.Kerob.avi",
-        "Size": "523.90 MB"
+        "Name": "The.Rookie.S06.WEBDL.720p/The.Rookie.S06E09.WEBDL.720p.RGzsRutracker.mkv",
+        "Size": "1.74 GB"
       },
       {
-        "Name": "The.Rookie.S06.400p.Kerob/The.Rookie.S06E10.400p.Kerob.avi",
-        "Size": "634.04 MB"
+        "Name": "The.Rookie.S06.WEBDL.720p/The.Rookie.S06E10.WEBDL.720p.RGzsRutracker.mkv",
+        "Size": "1.89 GB"
       }
     ]
   }
@@ -640,6 +813,7 @@ Get a list of available providers:
     "Rating": "4.6",
     "Votes": "59",
     "Size": "51.2 GB",
+    "Poster": "https://nnmstatic.win/forum/image.php?link=https://b.radikal.ru/b11/1811/92/f4ed86b7965f.jpg",
     "Files": [
       {
         "Name": "The.Rookie.S01.1080p.TVShows",
@@ -732,73 +906,140 @@ Get a list of available providers:
 
 ### Tests endpoints
 
-Example of building a Docker container via GitHub Actions:
+Local testing of all endpoints:
+
+🔹 `curl -s http://localhost:8443/api/provider/test?query=The+Rookie`
+
+```json
+[
+  {
+    "RSS": {
+      "RuTracker": true,
+      "Kinozal": true,
+      "RuTor": true,
+      "NoNameClub": true
+    },
+    "Title": {
+      "Status": {
+        "RuTracker": true,
+        "Kinozal": true,
+        "RuTor": true,
+        "NoNameClub": true
+      },
+      "Id": {
+        "RuTracker": 6489949,
+        "Kinozal": 2023066,
+        "RuTor": 986185,
+        "NoNameClub": 1679153
+      },
+      "RunTime": {
+        "RuTracker": 1.102,
+        "Kinozal": 0.354,
+        "RuTor": 0.98,
+        "NoNameClub": 0.416
+      }
+    },
+    "Id": {
+      "Status": {
+        "RuTracker": true,
+        "Kinozal": true,
+        "RuTor": true,
+        "NoNameClub": true
+      },
+      "Files": {
+        "RuTracker": true,
+        "Kinozal": true,
+        "RuTor": true,
+        "NoNameClub": true
+      },
+      "RunTime": {
+        "RuTracker": 0.678,
+        "Kinozal": 1.083,
+        "RuTor": 0.56,
+        "NoNameClub": 1.217
+      }
+    }
+  }
+]
+```
+
+Building a Docker container image and testing endpoints via GitHub Actions:
 
 ```shell
-- Checking the availability of data on the server:
+--- Checking the availability of data on the server:
 
 RuTracker data avaliable: false
 Kinozal data avaliable: true
 RuTor data avaliable: true
 NoNameClub data avaliable: true
 
-- Search by Title:
+--- Search by Title:
 
---- RuTracker:
-Response time (ms): 799
+----- RuTracker:
+Response time (ms): 973
 Status code: 200
 Check data: true
+Id: 6489949
+Url: https://rutracker.net/forum/viewtopic.php?t=6489949
 Data: Новичок / Новобранец / The Rookie / Сезон: 6 / Серии: 1-10 из 10 (Билл Роу, Майкл Гои) [2024, США, драма, комедия, криминал, WEB-DL 1080p] 3 x MVO (LostFilm, TVShows, HDrezka) + Original + Sub (Rus, Eng)
 
---- Kinozal:
+----- Kinozal:
 Response time (ms): 411
 Status code: 200
 Check data: true
+Id: 2023066
+Url: https://kinozal.tv/details.php?id=2023066
 Data: Новичок (Новобранец) (6 сезон: 1-10 серии из 10)
 
---- RuTor:
-Response time (ms): 706
+----- RuTor:
+Response time (ms): 868
 Status code: 200
 Check data: true
+Id: 986185
+Url: https://rutor.info/torrent/986185/novichok_novobranec_the-rookie-s06-2024-web-dl-720p-lostfilm-tvshows-hdrezka-studio
 Data: Новичок / Новобранец / The Rookie [S06] (2024) WEB-DL 720p | LostFilm, TVShows, HDrezka Studio
 
---- NoNameClub:
-Response time (ms): 105
+----- NoNameClub:
+Response time (ms): 592
 Status code: 200
 Check data: true
+Id: 1679153
+Url: https://nnmclub.to/forum/viewtopic.php?t=1679153
 Data: Агент Три нуля / Новички / Su ren te gong / The Rookies (2019) WEBRip [H.264/1080p]
 
-- Search by ID:
+--- Search by ID:
 
---- RuTracker:
-Response time (ms): 31022
-Status code: 400
-! Skip counter, data is not available on the server
-Check data: false
-! Skip counter, data is not available on the server
-Data: 
+----- RuTracker:
+Response time (ms): 551
+Status code: 200
+Check data: true
+Data: Новичок / Новобранец / The Rookie / Сезон: 6 / Серии: 1-10 из 10 (Билл Роу, Майкл Гои) [2024, США, драма, комедия, криминал, WEB-DL 1080p] 3 x MVO (LostFilm, TVShows, HDrezka) + Original + Sub (Rus, Eng)
+File: The.Rookie.S06E01.Strike.Back.1080p.AMZN.WEB-DL.H.264.RGzsRutracker.mkv
+Size: 3639743526
 
---- Kinozal:
-Response time (ms): 630
+----- Kinozal:
+Response time (ms): 769
 Status code: 200
 Check data: true
 Data: Новичок (Новобранец)
+File: The.Rookie.S06E01.Strike.Back.1080p.AMZN.WEB-DL.H.264.RGzsRutracker.mkv
+Size: 3.39 ГБ
 
---- RuTor:
-Response time (ms): 757
+----- RuTor:
+Response time (ms): 415
 Status code: 200
 Check data: true
-Data: Новичок / Новобранец / The Rookie [S06] (2024) WEBRip от Kerob | L2
+Data: Новичок / Новобранец / The Rookie [S06] (2024) WEB-DL 720p | LostFilm, TVShows, HDrezka Studio
+File: The.Rookie.S06.WEBDL.720p/The.Rookie.S06E01.WEBDL.720p.RGzsRutracker.mkv
+Size: 2.03 GB
 
---- NoNameClub:
-Response time (ms): 1354
+----- NoNameClub:
+Response time (ms): 1276
 Status code: 200
 Check data: true
-Data: Новичок / The Rookie (2018) WEB-DL [H.264/1080p-LQ] (сезон 1, серии 1-20 из 20) TVShows
-
-Number all tests: 16
-Number successful tests: 14
-Number failed tests: 0
+Data: Агент Три нуля / Новички / Su ren te gong / The Rookies (2019) WEBRip [H.264/1080p]
+File: Agent.Tri.nulya.2019.WEB-DL.1080p.ELEKTRI4KA.UNIONGANG.mkv
+Size: 5.49 GB
 ```
 
 ### Save torrent file

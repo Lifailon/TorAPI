@@ -28,7 +28,9 @@ Unofficial API (**backend**) for RuTracker, Kinozal, RuTor and NoNameClub for re
 
 This project is inspired by ✨ [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) for Russian-speaking torrent providers.
 
-👉 You can try the **open and free version**, which is published on 🔼 [Vercel](https://toruapi.vercel.app/api/provider/list). OpenAPI specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website. You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki/%F0%9F%93%9A-API-Static-Documentation) and [GitHub Page](https://lifailon.github.io/TorAPI).
+👉 You can try the **open and free version**, which is published on 🔼 [Vercel](https://toruapi.vercel.app/api/provider/list). OpenAPI specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
+
+You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki) and [GitHub Page](https://lifailon.github.io/TorAPI) (in ru lang).
 
 Implemented:
 
@@ -72,13 +74,13 @@ The project uses [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/a
 Upload the image and run the container from the [Docker Hub](https://hub.docker.com/repository/docker/lifailon/torapi/general):
 
 ```shell
-docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
+docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped lifailon/torapi:latest
 ```
 
 If you are using a proxy server:
 
 ```shell
-docker run -d --name TorAPI -p 8443:8443 \
+docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped \
   -e PROXY_ADDRESS="192.168.3.100" \
   -e PROXY_PORT="9090" \
   -e USERNAME="TorAPI" \
@@ -123,7 +125,7 @@ Build the image and run the container:
 
 ```shell
 docker build -t torapi .
-docker run -d --name TorAPI -p 8443:8443 torapi
+docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped torapi
 ```
 
 ## 🔨 Install
@@ -181,65 +183,12 @@ You can run testing to quickly check the health of all endpoints in the console:
 npm start -- --test
 ```
 
-To change the header parameter in a request:
+During testing, a local server is started, a request is made to the `/api/provider/test` endpoint, and the server terminates.
+
+Change header parameter in request:
 
 ```shell
 npm start -- --test --q "The Rookie"
-```
-
-Example output:
-
-```json
-[
-  {
-    "RSS": {
-      "RuTracker": true,
-      "Kinozal": true,
-      "RuTor": true,
-      "NoNameClub": true
-    },
-    "Title": {
-      "Status": {
-        "RuTracker": true,
-        "Kinozal": true,
-        "RuTor": true,
-        "NoNameClub": true
-      },
-      "Id": {
-        "RuTracker": 6489949,
-        "Kinozal": 2023066,
-        "RuTor": 986185,
-        "NoNameClub": 1679153
-      },
-      "RunTime": {
-        "RuTracker": 0.99,
-        "Kinozal": 0.347,
-        "RuTor": 1.206,
-        "NoNameClub": 0.182
-      }
-    },
-    "Id": {
-      "Status": {
-        "RuTracker": true,
-        "Kinozal": true,
-        "RuTor": true,
-        "NoNameClub": true
-      },
-      "Files": {
-        "RuTracker": true,
-        "Kinozal": true,
-        "RuTor": true,
-        "NoNameClub": true
-      },
-      "RunTime": {
-        "RuTracker": 0.552,
-        "Kinozal": 0.784,
-        "RuTor": 0.675,
-        "NoNameClub": 1.278
-      }
-    }
-  }
-]
 ```
 
 ---
