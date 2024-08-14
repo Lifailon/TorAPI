@@ -16,11 +16,11 @@ jobs:
     - name: Clone repository
       uses: actions/checkout@v2
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+    # - name: Login to Docker Hub
+    #   uses: docker/login-action@v3
+    #   with:
+    #     username: ${{ secrets.DOCKER_USERNAME }}
+    #     password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build docker image and run container 
       run: |
@@ -30,14 +30,14 @@ jobs:
     - name: Install jq
       run: |
         sudo apt-get install -y jq
-        echo "Check jq version: $(jq --version)"
+        echo "jq version: $(jq --version)"
     
     - name: Run API tests
       run: |
         set +e
 
         echo
-        echo "- Checking the availability of data on the server:"
+        echo "--- Checking the availability of data on the server:"
         echo
 
         rutracker=true
@@ -84,10 +84,10 @@ jobs:
         successful=0
         failed=0
 
-        echo "- Search by Title:"
+        echo "--- Search by Title:"
         echo
 
-        echo "--- RuTracker:"
+        echo "----- RuTracker:"
 
         ### Check Response Time
         startTime=$(date +%s%3N)
@@ -110,6 +110,8 @@ jobs:
         fi
 
         ### Check Data
+        RuTrackerId=$(jq -r '.[0].Id // empty' /tmp/response.json 2>/dev/null)
+        url=$(jq -r '.[0].Url // empty' /tmp/response.json 2>/dev/null)
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
           echo "Check data: true"
@@ -123,10 +125,12 @@ jobs:
           fi
         fi
         
+        echo "Id: $RuTrackerId"
+        echo "Url: $url"
         echo "Data: $data"
         echo
 
-        echo "--- Kinozal:"
+        echo "----- Kinozal:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/kinozal?query=the+rookie 2>/dev/null)
@@ -146,6 +150,8 @@ jobs:
           fi
         fi
 
+        KinozalId=$(jq -r '.[0].Id // empty' /tmp/response.json 2>/dev/null)
+        url=$(jq -r '.[0].Url // empty' /tmp/response.json 2>/dev/null)
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
           echo "Check data: true"
@@ -159,10 +165,12 @@ jobs:
           fi
         fi
 
+        echo "Id: $KinozalId"
+        echo "Url: $url"
         echo "Data: $data"
         echo
 
-        echo "--- RuTor:"
+        echo "----- RuTor:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/rutor?query=the+rookie 2>/dev/null)
@@ -182,6 +190,8 @@ jobs:
           fi
         fi
 
+        RuTorId=$(jq -r '.[0].Id // empty' /tmp/response.json 2>/dev/null)
+        url=$(jq -r '.[0].Url // empty' /tmp/response.json 2>/dev/null)
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
           echo "Check data: true"
@@ -195,10 +205,12 @@ jobs:
           fi
         fi
 
+        echo "Id: $RuTorId"
+        echo "Url: $url"
         echo "Data: $data"
         echo
 
-        echo "--- NoNameClub:"
+        echo "----- NoNameClub:"
 
         startTime=$(date +%s%3N)
         response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/nonameclub?query=the+rookie 2>/dev/null)
@@ -218,6 +230,8 @@ jobs:
           fi
         fi
 
+        NoNameClubId=$(jq -r '.[0].Id // empty' /tmp/response.json 2>/dev/null)
+        url=$(jq -r '.[0].Url // empty' /tmp/response.json 2>/dev/null)
         data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
         if [ -n "$data" ]; then
           echo "Check data: true"
@@ -231,16 +245,18 @@ jobs:
           fi
         fi
 
+        echo "Id: $NoNameClubId"
+        echo "Url: $url"
         echo "Data: $data"
         echo
 
-        echo "- Search by ID:"
+        echo "--- Search by ID:"
         echo
         
-        echo "--- RuTracker:"
+        echo "----- RuTracker:"
          
         startTime=$(date +%s%3N)
-        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/rutracker?query=6489937 2>/dev/null)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/RuTracker.json http://localhost:8443/api/search/id/rutracker?query=$RuTrackerId 2>/dev/null)
         endTime=$(date +%s%3N)
         responseTime=$((endTime - startTime))
         echo "Response time (ms): $responseTime"
@@ -257,7 +273,9 @@ jobs:
           fi
         fi
         
-        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        data=$(jq -r '.[].Name // empty' /tmp/RuTracker.json 2>/dev/null)
+        files=$(jq -r '.[].Files[0].Name // empty' /tmp/RuTracker.json 2>/dev/null)
+        size=$(jq -r '.[].Files[0].Size // empty' /tmp/RuTracker.json 2>/dev/null)
         if [ -n "$data" ]; then
           echo "Check data: true"
           successful=$((successful+1))
@@ -271,12 +289,14 @@ jobs:
         fi
 
         echo "Data: $data"
+        echo "File: $files"
+        echo "Size: $size"
         echo
 
-        echo "--- Kinozal:"
+        echo "----- Kinozal:"
 
         startTime=$(date +%s%3N)
-        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/kinozal?query=2022944 2>/dev/null)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/Kinozal.json http://localhost:8443/api/search/id/kinozal?query=$KinozalId 2>/dev/null)
         endTime=$(date +%s%3N)
         responseTime=$((endTime - startTime))
         echo "Response time (ms): $responseTime"
@@ -293,7 +313,9 @@ jobs:
           fi
         fi
 
-        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        data=$(jq -r '.[].Name // empty' /tmp/Kinozal.json 2>/dev/null)
+        files=$(jq -r '.[].Files[0].Name // empty' /tmp/Kinozal.json 2>/dev/null)
+        size=$(jq -r '.[].Files[0].Size // empty' /tmp/Kinozal.json 2>/dev/null)
         if [ -n "$data" ]; then
           echo "Check data: true"
           successful=$((successful+1))
@@ -307,12 +329,14 @@ jobs:
         fi
 
         echo "Data: $data"
+        echo "File: $files"
+        echo "Size: $size"
         echo
 
-        echo "--- RuTor:"
+        echo "----- RuTor:"
 
         startTime=$(date +%s%3N)
-        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/rutor?query=970650 2>/dev/null)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/RuTor.json http://localhost:8443/api/search/id/rutor?query=$RuTorId 2>/dev/null)
         endTime=$(date +%s%3N)
         responseTime=$((endTime - startTime))
         echo "Response time (ms): $responseTime"
@@ -329,7 +353,9 @@ jobs:
           fi
         fi
 
-        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        data=$(jq -r '.[].Name // empty' /tmp/RuTor.json 2>/dev/null)
+        files=$(jq -r '.[].Files[0].Name // empty' /tmp/RuTor.json 2>/dev/null)
+        size=$(jq -r '.[].Files[0].Size // empty' /tmp/RuTor.json 2>/dev/null)
         if [ -n "$data" ]; then
           echo "Check data: true"
           successful=$((successful+1))
@@ -343,12 +369,14 @@ jobs:
         fi
 
         echo "Data: $data"
+        echo "File: $files"
+        echo "Size: $size"
         echo
 
-        echo "--- NoNameClub:"
+        echo "----- NoNameClub:"
 
         startTime=$(date +%s%3N)
-        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/id/nonameclub?query=1259608 2>/dev/null)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/NoNameClub.json http://localhost:8443/api/search/id/nonameclub?query=$NoNameClubId 2>/dev/null)
         endTime=$(date +%s%3N)
         responseTime=$((endTime - startTime))
         echo "Response time (ms): $responseTime"
@@ -365,7 +393,9 @@ jobs:
           fi
         fi
 
-        data=$(jq -r '.[0].Name // empty' /tmp/response.json 2>/dev/null)
+        data=$(jq -r '.[].Name // empty' /tmp/NoNameClub.json 2>/dev/null)
+        files=$(jq -r '.[].Files[0].Name // empty' /tmp/NoNameClub.json 2>/dev/null)
+        size=$(jq -r '.[].Files[0].Size // empty' /tmp/NoNameClub.json 2>/dev/null)
         if [ -n "$data" ]; then
           echo "Check data: true"
           successful=$((successful+1))
@@ -379,20 +409,44 @@ jobs:
         fi
 
         echo "Data: $data"
+        echo "File: $files"
+        echo "Size: $size"
         echo
 
-        echo "Number all tests: $all"
-        echo "Number successful tests: $successful"
-        echo "Number failed tests: $failed"
-
+        echo "all=$all" >> $GITHUB_ENV
+        echo "successful=$successful" >> $GITHUB_ENV
         echo "failed=$failed" >> $GITHUB_ENV
+
+    - name: Check data
+      run: |
+        echo "----- RuTracker:"
+        echo
+        jq -r '.[] // empty' /tmp/RuTracker.json 2>/dev/null
+        echo
+        
+        echo "----- Kinozal:"
+        echo
+        jq -r '.[] // empty' /tmp/Kinozal.json 2>/dev/null
+        echo
+        
+        echo "----- RuTor:"
+        echo
+        jq -r '.[] // empty' /tmp/RuTor.json 2>/dev/null
+        echo
+        
+        echo "----- NoNameClub:"
+        echo
+        jq -r '.[] // empty' /tmp/NoNameClub.json 2>/dev/null
 
     - name: Server logs
       run: docker logs TorAPI
 
-    - name: Final
+    - name: Result
       run: |
+        echo "Number all tests: ${{ env.all }}"
+        echo "Number successful tests: ${{ env.successful }}"
         echo "Number failed tests: ${{ env.failed }}"
+
         if [ ${{ env.failed }} -ne 0 ]; then
           exit 1
         # else
