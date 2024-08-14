@@ -2,6 +2,20 @@ name: Docker Build and Tests
 
 on:
   workflow_dispatch:
+    inputs:
+      Query:
+        description: 'Query requset'
+        required: true
+        default: 'The+Rookie'
+        type: choice
+        options:
+          - 'The+Rookie'
+          - 'Castle'
+      Deploy:
+        description: 'Deploy the project'
+        required: false
+        default: false
+        type: boolean
   # push:
   #   branches:
   #     - main
@@ -91,7 +105,7 @@ jobs:
 
         ### Check Response Time
         startTime=$(date +%s%3N)
-        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/rutracker?query=the+rookie 2>/dev/null)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json "http://localhost:8443/api/search/title/rutracker?query=${{ github.event.inputs.Query }}" 2>/dev/null)
         endTime=$(date +%s%3N)
         responseTime=$((endTime - startTime))
         echo "Response time (ms): $responseTime"
@@ -133,7 +147,7 @@ jobs:
         echo "----- Kinozal:"
 
         startTime=$(date +%s%3N)
-        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/kinozal?query=the+rookie 2>/dev/null)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json "http://localhost:8443/api/search/title/kinozal?query=${{ github.event.inputs.Query }}" 2>/dev/null)
         endTime=$(date +%s%3N)
         responseTime=$((endTime - startTime))
         echo "Response time (ms): $responseTime"
@@ -173,7 +187,7 @@ jobs:
         echo "----- RuTor:"
 
         startTime=$(date +%s%3N)
-        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/rutor?query=the+rookie 2>/dev/null)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json "http://localhost:8443/api/search/title/rutor?query=${{ github.event.inputs.Query }}" 2>/dev/null)
         endTime=$(date +%s%3N)
         responseTime=$((endTime - startTime))
         echo "Response time (ms): $responseTime"
@@ -213,7 +227,7 @@ jobs:
         echo "----- NoNameClub:"
 
         startTime=$(date +%s%3N)
-        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json http://localhost:8443/api/search/title/nonameclub?query=the+rookie 2>/dev/null)
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json "http://localhost:8443/api/search/title/nonameclub?query=${{ github.event.inputs.Query }}" 2>/dev/null)
         endTime=$(date +%s%3N)
         responseTime=$((endTime - startTime))
         echo "Response time (ms): $responseTime"
