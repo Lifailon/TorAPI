@@ -7,10 +7,11 @@ on:
         description: 'Query requset'
         required: true
         default: 'The+Rookie'
-        type: choice
-        options:
-          - 'The+Rookie'
-          - 'Castle'
+        type: string
+        # type: choice
+        # options:
+        #   - 'The+Rookie'
+        #   - 'Castle'
       Deploy:
         description: 'Deploy the project'
         required: false
