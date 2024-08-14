@@ -95,9 +95,96 @@ jobs:
 
         echo
 
-        all=16
+        all=20
         successful=0
         failed=0
+
+        echo "--- RSS:"
+        echo
+
+        echo "----- RuTracker:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json https://toruapi.vercel.app/api/get/rss/rutracker -H 'accept: application/json' 2>/dev/null)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          if [ $rutracker == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
+        fi
+
+        url=$(jq -r '.[0].link // empty' /tmp/response.json 2>/dev/null)
+        data=$(jq -r '.[0].title // empty' /tmp/response.json 2>/dev/null)
+        echo "Title: $data"
+        echo "Url: $url"
+        echo
+
+        echo "----- Kinozal:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json https://toruapi.vercel.app/api/get/rss/kinozal -H 'accept: application/json' 2>/dev/null)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          if [ $kinozal == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
+        fi
+
+        url=$(jq -r '.[0].link // empty' /tmp/response.json 2>/dev/null)
+        data=$(jq -r '.[0].title // empty' /tmp/response.json 2>/dev/null)
+        echo "Title: $data"
+        echo "Url: $url"
+        echo
+
+        echo "----- RuTor:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json https://toruapi.vercel.app/api/get/rss/rutor -H 'accept: application/json' 2>/dev/null)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          if [ $Kinozal == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
+        fi
+
+        url=$(jq -r '.[0].link // empty' /tmp/response.json 2>/dev/null)
+        data=$(jq -r '.[0].title // empty' /tmp/response.json 2>/dev/null)
+        echo "Title: $data"
+        echo "Url: $url"
+        echo
+
+        echo "----- NoNameClub:"
+
+        response=$(curl --write-out "%{http_code}" --silent --output /tmp/response.json https://toruapi.vercel.app/api/get/rss/nonameclub -H 'accept: application/json' 2>/dev/null)
+        if [ $response -eq 200 ]; then
+          echo "Status code: $response"
+          successful=$((successful+1))
+        else
+          echo "Status code: $response"
+          if [ $nonameclub == false ]; then
+            echo "! Skip counter, data is not available on the server"
+          else
+            failed=$((failed+1))
+          fi
+        fi
+
+        url=$(jq -r '.[0].link // empty' /tmp/response.json 2>/dev/null)
+        data=$(jq -r '.[0].title // empty' /tmp/response.json 2>/dev/null)
+        echo "Title: $data"
+        echo "Url: $url"
+        echo
 
         echo "--- Search by Title:"
         echo
