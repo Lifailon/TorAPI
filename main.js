@@ -791,7 +791,12 @@ async function KinozalID(query) {
     let Poster = ''
     const posterElement = data('div.content > div.mn_wrap > div.mn1_menu > ul > li > a > img').attr('src')
     if (posterElement && posterElement.length) {
-        Poster = 'https://kinozal.tv' + posterElement
+        // Проверка на внешний или внутренний источник постера
+        if (posterElement.startsWith('http')) {
+            Poster = posterElement
+        } else {
+            Poster = 'https://kinozal.tv' + posterElement
+        }
     }
     // Массив из внешних постеров
     const url_posters = `https://kinozal.tv/get_srv_details.php?id=${query}&pagesd=2`
@@ -850,36 +855,36 @@ async function KinozalID(query) {
         'IMDB_id': imdb.replace(/[^0-9]/g, ''),
         'Kinopoisk_id': kp.replace(/[^0-9]/g, ''),
         // Находим нужный контейнер который содержит год выпуска и забираем текстовое значение следующего узла
-        'Year': data('div.mn1_content .bx1 b:contains("Год выпуска:")')[0].nextSibling.nodeValue.trim(),
-        'Type': data('div.mn1_content').find('.lnks_tobrs').eq(0).text().trim(),
-        'Release': data('div.mn1_content').find('.lnks_tobrs').eq(1).text().trim(),
-        'Directer': data('div.mn1_content').find('.lnks_toprs').eq(0).text().trim(),
-        'Actors': data('div.mn1_content').find('.lnks_toprs').eq(1).text().trim(),
+        'Year': data('div.mn1_content .bx1 b:contains("Год выпуска:")')[0]?.nextSibling?.nodeValue?.trim() || '',
+        'Type': data('div.mn1_content').find('.lnks_tobrs').eq(0)?.text()?.trim() || '',
+        'Release': data('div.mn1_content').find('.lnks_tobrs').eq(1)?.text()?.trim() || '',
+        'Directer': data('div.mn1_content').find('.lnks_toprs').eq(0)?.text()?.trim() || '',
+        'Actors': data('div.mn1_content').find('.lnks_toprs').eq(1)?.text()?.trim() || '',
         // 'Description': data('div.mn1_content').find('.bx1.justify:eq(2) p b').eq(0)[0].nextSibling.nodeValue.trim(),
         'Description': data('div#main div.content div.mn_wrap div.mn1_content div.bx1.justify p')
-            .clone()       // Клонируем элемент, чтобы не модифицировать исходный
-            .children('b') // Выбираем все дочерние элементы 'b'
-            .remove()      // Удаляем их
-            .end()         // Возвращаемся к исходному элементу
-            .text().trim(),
-        'Quality': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(0)[0].nextSibling.nodeValue.trim(),
-        'Video': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(1)[0].nextSibling.nodeValue.trim(),
-        'Audio': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(2)[0].nextSibling.nodeValue.trim(),
-        'Size': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(3)[0].nextSibling.nodeValue.trim(),
+            ?.clone()       // Клонируем элемент, чтобы не модифицировать исходный
+            ?.children('b') // Выбираем все дочерние элементы 'b'
+            ?.remove()      // Удаляем их
+            ?.end()         // Возвращаемся к исходному элементу
+            ?.text().trim() || '',
+        'Quality': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(0)[0]?.nextSibling?.nodeValue?.trim() || '',
+        'Video': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(1)[0]?.nextSibling?.nodeValue?.trim() || '',
+        'Audio': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(2)[0]?.nextSibling?.nodeValue?.trim() || '',
+        'Size': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(3)[0]?.nextSibling?.nodeValue?.trim() || '',
         // 'Size': data('div.mn1_menu').find('span.floatright.green.n').eq(0).text().replace(/\(.+/, '').trim(),
-        'Duration': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(4)[0].nextSibling.nodeValue.trim(),
-        'Transcript': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(5)[0].nextSibling.nodeValue.trim(),
-        'Seeds': data('div.mn1_menu').find('span.floatright').eq(0).text().trim(),
-        'Peers': data('div.mn1_menu').find('span.floatright').eq(1).text().trim(),
-        'Download_Count': data('div.mn1_menu').find('span.floatright').eq(2).text().trim(),
-        'Files_Count': data('div.mn1_menu').find('span.floatright').eq(3).text().trim(),
-        'Comments': data('div.mn1_menu').find('span.floatright').eq(4).text().trim(),
-        'IMDb_Rating': data('div.mn1_menu').find('span.floatright').eq(5).text().trim(),
-        'Kinopoisk_Rating': data('div.mn1_menu').find('span.floatright').eq(6).text().trim(),
-        'Kinozal_Rating': data('div.mn1_menu').find('span.floatright').eq(7).text().trim().replace(/\s.+/, ''),
-        'Votes': data('div.mn1_menu').find('span.floatright').eq(8).text().trim(),
-        'Added_Date': data('div.mn1_menu').find('span.floatright.green.n').eq(1).text().trim(),
-        'Update_Date': data('div.mn1_menu').find('span.floatright.green.n').eq(2).text().trim(),
+        'Duration': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(4)[0]?.nextSibling?.nodeValue?.trim() || '',
+        'Transcript': data('div.mn1_content').find('.justify.mn2.pad5x5 b').eq(5)[0]?.nextSibling?.nodeValue?.trim() || '',
+        'Seeds': data('div.mn1_menu').find('span.floatright').eq(0)?.text()?.trim() || '',
+        'Peers': data('div.mn1_menu').find('span.floatright').eq(1)?.text()?.trim() || '',
+        'Download_Count': data('div.mn1_menu').find('span.floatright').eq(2)?.text()?.trim() || '',
+        'Files_Count': data('div.mn1_menu').find('span.floatright').eq(3)?.text()?.trim() || '',
+        'Comments': data('div.mn1_menu').find('span.floatright').eq(4)?.text()?.trim() || '',
+        'IMDb_Rating': data('div.mn1_menu').find('span.floatright').eq(5)?.text()?.trim() || '',
+        'Kinopoisk_Rating': data('div.mn1_menu').find('span.floatright').eq(6)?.text()?.trim() || '',
+        'Kinozal_Rating': data('div.mn1_menu').find('span.floatright').eq(7)?.text()?.trim().replace(/\s.+/, '') || '',
+        'Votes': data('div.mn1_menu').find('span.floatright').eq(8)?.text()?.trim() || '',
+        'Added_Date': data('div.mn1_menu').find('span.floatright.green.n').eq(1)?.text()?.trim() || '',
+        'Update_Date': data('div.mn1_menu').find('span.floatright.green.n').eq(2)?.text()?.trim() || '',
         'Poster': Poster,
         'Posters': Posters,
         'Files': torrentFiles
