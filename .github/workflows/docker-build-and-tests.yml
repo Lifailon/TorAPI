@@ -101,6 +101,9 @@ jobs:
 
         echo "--- Search by Title:"
         echo
+        
+        echo "Query: ${{ github.event.inputs.Query }}"
+        echo
 
         echo "----- RuTracker:"
 
@@ -432,7 +435,7 @@ jobs:
         echo "successful=$successful" >> $GITHUB_ENV
         echo "failed=$failed" >> $GITHUB_ENV
 
-    - name: Check data
+    - name: View data
       run: |
         echo "----- RuTracker:"
         echo
@@ -469,8 +472,7 @@ jobs:
     - name: Image push to Docker Hub
       run: |
         if [ "${{ github.event.inputs.Deploy }}" = "true" ]; then
-          echo "Image push to Docker Hub: true"
           docker push lifailon/torapi:latest
         else
-          echo "Image push to Docker Hub: false"
+          echo Skip
         fi
