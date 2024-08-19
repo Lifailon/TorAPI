@@ -1853,18 +1853,18 @@ async function testEndpoints(query) {
 const web = express()
 
 // CORS (Cross-Origin Resource Sharing) для использования в расширение OpenKinopoisk (https://github.com/Lifailon/OpenKinopoisk) 
-// const corsOptions = {
-//     origin: '*', // Разрешает запросы с любого домена
-//     methods: 'GET', // Разрешенные методы
-//     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept' // Разрешенные заголовки
-// }
-// web.use(cors(corsOptions))
+const corsOptions = {
+    origin: '*', // Разрешает запросы с любого домена
+    methods: 'GET', // Разрешенные методы
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept' // Разрешенные заголовки
+}
+web.use(cors(corsOptions))
 
-web.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*") // Разрешает запросы с любого домена (*)
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-    return next()
-})
+// web.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", "*") // Разрешает запросы с любого домена (*)
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+//     return next()
+// })
 
 // Опции для Swagger
 const options = {
