@@ -1867,11 +1867,11 @@ web.use(cors(corsOptions))
 // })
 
 web.options('*', (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.sendStatus(200);
-});
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Methods", "GET")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    res.sendStatus(200)
+})
 
 // Опции для Swagger
 const options = {
