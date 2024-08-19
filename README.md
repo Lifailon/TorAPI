@@ -21,7 +21,6 @@
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/docker-build-and-tests.yml?logo=GitHub-Actions&label=CI+Docker"></a>
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/docker-build-and-tests.yml?logo=Vercel&label=CD+Vercel"></a>
     <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger"src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2FLifailon%2FTorAPI%2Fmain%2Fswagger%2Fswagger.yaml&logo=Swagger&label=Swagger"></a>
-    <a href="https://github.com/Lifailon/TorAPI/blob/main/LICENSE"><img title="License"src="https://img.shields.io/github/license/lifailon/TorAPI?logo=Readme&color=white&label=License"></a>
 </p>
 
 Unofficial API (**backend**) for RuTracker, Kinozal, RuTor and NoNameClub for receiving torrent files and detailed information about distribution by movie title, TV series or id, and also provides RSS news feed for all providers.
@@ -30,7 +29,7 @@ This project is inspired by ✨ [Torrents-Api](https://github.com/Ryuk-me/Torren
 
 👉 You can try the **open and free version**, which is published on 🔼 [Vercel](https://toruapi.vercel.app/api/provider/list). OpenAPI specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
 
-You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki) and [GitHub Page](https://lifailon.github.io/TorAPI) (in ru lang).
+A simple implementation of the interface (frontend) is implemented in the [OpenKinoposik extension](https://github.com/Lifailon/OpenKinopoisk) for Google Chrome.
 
 Implemented:
 
@@ -38,7 +37,12 @@ Implemented:
 - **Search by ID** of the specified provider to get additional information: hash for direct download via torrent-client, links to Kinopoisk and IMDb databases, detailed description of the movie or series, as well as the content of the torrent-distribution.
 - **Get RSS news feeds** from all used providers in `XML` and also `JSON` formats.
 
-📄 Released under the [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
+You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki). Documentation in Russian language is available on [GitHub Page](https://lifailon.github.io/TorAPI).
+
+<p align="center">
+    <a href="https://lifailon.github.io/TorAPI"><img title="Docker"src="https://img.shields.io/badge/ru_language_docs-%232C5263.svg?style=for-the-badge&logo=wikipedia&logoColor=white"></a>
+    <a href="https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE"><img title="Docker"src="https://img.shields.io/badge/LICENSE-MIT-%23ffffff.svg?style=for-the-badge&logo=readme&logoColor=white"></a>
+</p>
 
 ---
 
@@ -198,7 +202,5 @@ npm start -- --test --q "The Rookie"
 - 🧲 [Telegram bot for Kinozal](https://github.com/Lifailon/Kinozal-Bot) - that implements remote control of the qBittorrent and Transmission torrent client, interface for the Kinozal torrent tracker and synchronization of downloaded media content with Plex Media Server.
 
 - ❤️ [WebTorrent Desktop api](https://github.com/Lifailon/webtorrent-desktop-api) - branch (fork) of the original version of [WebTorrent Desktop](https://github.com/webtorrent/webtorrent-desktop), which add a remote control mechanism via the `REST API` on base [Express Framework](https://github.com/expressjs/express).
-
-- 🎞️ [Open Kinopoisk Chrome Extension](https://github.com/Lifailon/OpenKinopoisk) - adds buttons to the Kinopoisk website for searching for films and TV series in open sources.
 
 - 📡 [Reverse Proxy .NET](https://github.com/Lifailon/rpnet) - cross-platform command line utility for implementing a .NET-based reverse proxy. It is used to provide access to hosts from one network interface to remote applications via TCP, UDP or HTTP/HTTPS protocols accessible through another network interface without unnecessary settings and with authorization support.
