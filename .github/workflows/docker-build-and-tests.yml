@@ -12,8 +12,13 @@ on:
         # options:
         #   - 'The+Rookie'
         #   - 'Rocky'
-      Deploy:
+      Docker:
         description: 'Image push to Docker Hub'
+        required: false
+        default: false
+        type: boolean
+      Vercel:
+        description: 'Deploy to Vercel'
         required: false
         default: false
         type: boolean
@@ -558,8 +563,23 @@ jobs:
 
     - name: Image push to Docker Hub
       run: |
-        if [ "${{ github.event.inputs.Deploy }}" = "true" ]; then
+        if [ "${{ github.event.inputs.Docker }}" = "true" ]; then
           docker push lifailon/torapi:latest
+        else
+          echo Skip
+        fi
+
+    - name: Deploy to Vercel
+      run: |
+        if [ "${{ github.event.inputs.Vercel }}" = "true" ]; then
+          npm install
+          echo
+          npm install --global vercel@latest
+          echo
+          echo Vercel version:
+          vercel --version
+          echo
+          vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
         else
           echo Skip
         fi
