@@ -689,7 +689,8 @@ async function Kinozal(query, page, year) {
                 'Format': arrTitle[4],
                 'Url': "https://kinozal.tv" + torrentName.attr('href'),
                 'Torrent': "https://dl.kinozal.tv" + data(element).find('.nam a').attr('href').replace(/details/, 'download'),
-                'Size': s.eq(1).text().trim(),
+                // Обновить наименования едениц измерений на англ.
+                'Size': s.eq(1).text().trim().replace(/КБ/g, 'KB').replace(/ГБ/g, 'GB').replace(/МБ/g, 'MB'),
                 'Comments': s.eq(0).text().trim(),
                 // Раздает (Seeds)
                 'Seeds': data(element).find('.sl_s').text().trim(),
