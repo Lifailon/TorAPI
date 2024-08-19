@@ -973,10 +973,34 @@ Kinozal data avaliable: true
 RuTor data avaliable: true
 NoNameClub data avaliable: true
 
---- Search by Title:
+--- RSS:
 
 ----- RuTracker:
-Response time (ms): 973
+Status code: 200
+Title: [Udemy] Optimising a mobile game in Unity [2023, ENG, LQ] [821.2 MB]
+Url: https://rutracker.org/forum/viewtopic.php?t=6562325
+
+----- Kinozal:
+Status code: 200
+Title: Sarah King - The Masquerade Is Over / Jazz / 2024 / Hi-Res / FLAC / Lossless
+Url: https://kinozal.tv/details.php?id=20[489](https://github.com/Lifailon/TorAPI/actions/runs/10389495908/job/28767634074#step:6:490)31
+
+----- RuTor:
+Status code: 200
+Title: Резидент / Chief of Station (2024) BDRemux 1080p | D
+Url: https://rutor.info/torrent/997464/rezident_chief-of-station-2024-bdremux-1080p-d
+
+----- NoNameClub:
+Status code: 200
+Title: Людям с расстройством сексуального поведения могут запретить водить машину
+Url: https://nnmclub.to/forum/viewtopic.php?t=1742015
+
+--- Search by Title:
+
+Query: The+Rookie
+
+----- RuTracker:
+Response time (ms): 1100
 Status code: 200
 Check data: true
 Id: 6489949
@@ -984,15 +1008,15 @@ Url: https://rutracker.net/forum/viewtopic.php?t=6489949
 Data: Новичок / Новобранец / The Rookie / Сезон: 6 / Серии: 1-10 из 10 (Билл Роу, Майкл Гои) [2024, США, драма, комедия, криминал, WEB-DL 1080p] 3 x MVO (LostFilm, TVShows, HDrezka) + Original + Sub (Rus, Eng)
 
 ----- Kinozal:
-Response time (ms): 411
+Response time (ms): 396
 Status code: 200
 Check data: true
-Id: 2023066
-Url: https://kinozal.tv/details.php?id=2023066
-Data: Новичок (Новобранец) (6 сезон: 1-10 серии из 10)
+Id: 1953041
+Url: https://kinozal.tv/details.php?id=1953041
+Data: Новичок (Новобранец) (1-6 сезоны: 1-108 серии из 108)
 
 ----- RuTor:
-Response time (ms): 868
+Response time (ms): 1038
 Status code: 200
 Check data: true
 Id: 986185
@@ -1000,7 +1024,7 @@ Url: https://rutor.info/torrent/986185/novichok_novobranec_the-rookie-s06-2024-w
 Data: Новичок / Новобранец / The Rookie [S06] (2024) WEB-DL 720p | LostFilm, TVShows, HDrezka Studio
 
 ----- NoNameClub:
-Response time (ms): 592
+Response time (ms): 1013
 Status code: 200
 Check data: true
 Id: 1679153
@@ -1010,7 +1034,7 @@ Data: Агент Три нуля / Новички / Su ren te gong / The Rookies
 --- Search by ID:
 
 ----- RuTracker:
-Response time (ms): 551
+Response time (ms): 852
 Status code: 200
 Check data: true
 Data: Новичок / Новобранец / The Rookie / Сезон: 6 / Серии: 1-10 из 10 (Билл Роу, Майкл Гои) [2024, США, драма, комедия, криминал, WEB-DL 1080p] 3 x MVO (LostFilm, TVShows, HDrezka) + Original + Sub (Rus, Eng)
@@ -1018,15 +1042,15 @@ File: The.Rookie.S06E01.Strike.Back.1080p.AMZN.WEB-DL.H.264.RGzsRutracker.mkv
 Size: 3639743526
 
 ----- Kinozal:
-Response time (ms): 769
+Response time (ms): 1052
 Status code: 200
 Check data: true
 Data: Новичок (Новобранец)
-File: The.Rookie.S06E01.Strike.Back.1080p.AMZN.WEB-DL.H.264.RGzsRutracker.mkv
-Size: 3.39 ГБ
+File: 
+Size: 
 
 ----- RuTor:
-Response time (ms): 415
+Response time (ms): 527
 Status code: 200
 Check data: true
 Data: Новичок / Новобранец / The Rookie [S06] (2024) WEB-DL 720p | LostFilm, TVShows, HDrezka Studio
@@ -1034,7 +1058,7 @@ File: The.Rookie.S06.WEBDL.720p/The.Rookie.S06E01.WEBDL.720p.RGzsRutracker.mkv
 Size: 2.03 GB
 
 ----- NoNameClub:
-Response time (ms): 1276
+Response time (ms): 1[498](https://github.com/Lifailon/TorAPI/actions/runs/10389495908/job/28767634074#step:6:499)
 Status code: 200
 Check data: true
 Data: Агент Три нуля / Новички / Su ren te gong / The Rookies (2019) WEBRip [H.264/1080p]
