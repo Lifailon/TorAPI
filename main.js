@@ -136,12 +136,16 @@ function formatDate(dateString, type) {
         'Окт': '10',
         'Ноя': '11',
         'Дек': '12'
+    };
+    const parts = dateString.split(`${type}`);
+    let day = parts[0].trim();
+    const month = months[parts[1].trim()];
+    const year = '20' + parts[2].trim();
+    // Добавляем ведущий ноль к дню
+    if (day.length === 1) {
+        day = '0' + day;
     }
-    const parts = dateString.split(`${type}`)
-    const day = parts[0].trim()
-    const month = months[parts[1].trim()]
-    const year = '20' + parts[2].trim()
-    return `${day}.${month}.${year}`
+    return `${day}.${month}.${year}`;
 }
 
 // Функция преобразования времени из Unix Timestamp в 'dd.mm.yyyy HH:MM' (для NoNameClub)
