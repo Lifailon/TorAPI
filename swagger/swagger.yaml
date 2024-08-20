@@ -451,6 +451,8 @@ paths:
                   properties:
                     Name:
                       type: string
+                    Title:
+                      type: string
                     Id:
                       type: string
                     Original_Name:
@@ -658,6 +660,8 @@ paths:
                       type: object
                       properties:
                         Name:
+                          type: string
+                        Title:
                           type: string
                         Id:
                           type: string

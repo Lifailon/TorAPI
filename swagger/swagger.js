@@ -415,6 +415,8 @@
  *                 properties:
  *                   Name:
  *                     type: string
+ *                   Title:
+ *                     type: string
  *                   Id:
  *                     type: string
  *                   Original_Name:
@@ -619,6 +621,8 @@
  *                     type: object
  *                     properties:
  *                       Name:
+ *                         type: string
+ *                       Title:
  *                         type: string
  *                       Id:
  *                         type: string

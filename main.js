@@ -685,12 +685,13 @@ async function Kinozal(query, page, year) {
             // Заполняем новый временный массив
             const torrent = {
                 // Заполняем параметры из заголовка
-                'Name': arrTitle[0].trim(),
+                'Name': Title.trim(),
+                'Title': arrTitle[0].trim(),
                 'Id': torrentName.attr('href').replace(/.+id=/, ''),
-                'Original_Name': arrTitle[1].trim(),
-                'Year': arrTitle[2].trim(),
-                'Language': arrTitle[3].trim(),
-                'Format': arrTitle[4],
+                'Original_Name': arrTitle[1]?.trim() || '',
+                'Year': arrTitle[2]?.trim() || '',
+                'Language': arrTitle[3]?.trim() || '',
+                'Format': arrTitle[4]?.trim() || '',
                 'Url': "https://kinozal.tv" + torrentName.attr('href'),
                 'Torrent': "https://dl.kinozal.tv" + data(element).find('.nam a').attr('href').replace(/details/, 'download'),
                 // Обновить наименования едениц измерений на англ.
