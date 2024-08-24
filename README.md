@@ -23,13 +23,13 @@
     <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger"src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2FLifailon%2FTorAPI%2Fmain%2Fswagger%2Fswagger.yaml&logo=Swagger&label=Swagger"></a>
 </p>
 
-Unofficial API (**backend**) for RuTracker, Kinozal, RuTor and NoNameClub for receiving torrent files and detailed information about distribution by movie title, TV series or id, and also provides RSS news feed for all providers.
+Unofficial API (backend) for RuTracker, Kinozal, RuTor and NoNameClub for receiving torrent files and detailed information about distribution by movie title, TV series or id, and also provides RSS news feed for all providers.
 
 This project is inspired by ✨ [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) for Russian-speaking torrent providers.
 
-👉 You can try the **open and free version**, which is published on 🔼 [Vercel](https://toruapi.vercel.app/api/provider/list). OpenAPI specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
+You can try the **open and free version**, which is published on 🔼 [Vercel](https://torapi.vercel.app/api/provider/list). OpenAPI specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
 
-A simple implementation of the interface (frontend) is implemented in the [OpenKinoposik extension](https://github.com/Lifailon/OpenKinopoisk) for Google Chrome.
+A simple interface (frontend) is implemented in the [Libre Kinopoisk](https://github.com/Lifailon/LibreKinopoisk) extension for Google Chrome for simultaneous and fast search of distributions in torrent trackers.
 
 Implemented:
 
@@ -39,10 +39,7 @@ Implemented:
 
 You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki). Documentation in Russian language is available on [GitHub Page](https://lifailon.github.io/TorAPI).
 
-<p align="center">
-    <a href="https://lifailon.github.io/TorAPI"><img title="Docker"src="https://img.shields.io/badge/ru_language_docs-%232C5263.svg?style=for-the-badge&logo=wikipedia&logoColor=white"></a>
-    <a href="https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE"><img title="Docker"src="https://img.shields.io/badge/LICENSE-MIT-%23ffffff.svg?style=for-the-badge&logo=readme&logoColor=white"></a>
-</p>
+Released under [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
 
 ---
 
@@ -198,6 +195,8 @@ npm start -- --test --q "The Rookie"
 ---
 
 ## Other projects:
+
+- 🔎 [LibreKinopoisk Chrome Extension](https://github.com/Lifailon/LibreKinopoisk) - adds buttons to the Kinopoisk website and provides a TorAPI interface for quickly searching for movies and TV series in open sources.
 
 - 🧲 [Telegram bot for Kinozal](https://github.com/Lifailon/Kinozal-Bot) - that implements remote control of the qBittorrent and Transmission torrent client, interface for the Kinozal torrent tracker and synchronization of downloaded media content with Plex Media Server.
 

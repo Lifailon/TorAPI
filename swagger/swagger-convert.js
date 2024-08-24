@@ -20,12 +20,16 @@ const options = {
         },
         servers: [
             {
+                url: 'https://torapi.vercel.app',
+                description: 'Production server (main)'
+            },
+            {
                 url: 'https://toruapi.vercel.app',
-                description: 'Production server'
+                description: 'Production server (mirror)'
             },
             {
                 url: 'https://rutorapi.vercel.app',
-                description: 'Production server'
+                description: 'Production server (mirror)'
             }
         ]
     },
