@@ -12,6 +12,7 @@ const cors          = require('cors')
 
 // Параметры запуска
 const { hideBin } = require('yargs/helpers')
+const { timeout } = require('puppeteer')
 const argv = yargs(hideBin(process.argv))
     .option('port', {
         alias: 'p',
@@ -232,26 +233,29 @@ async function RuTracker(query, page) {
     const p = getPage(page)
     // Список все зеркальных URL провайдера для перебора в цикле в случае недоступности одного
     const urls = [
-        'https://rutracker.org/forum/tracker.php?nm=',
-        'https://rutracker.net/forum/tracker.php?nm=',
-        'https://rutracker.nl/forum/tracker.php?nm='
+        'https://rutracker.org',
+        'https://rutracker.net',
+        'https://rutracker.nl'
     ]
     // Переменная для отслеживания успешного выполнения запроса
     let checkUrl = false
     const torrents = []
     let html
+    let url
     for (let i = 0; i < urls.length; i++) {
-        const url = `${urls[i]}${query}&start=${p}`
+        url = urls[i]
+        urlQuery = `${urls[i]}/forum/tracker.php?nm=${query}&start=${p}`
         try {
-            const response = await axiosProxy.get(url, {
+            const response = await axiosProxy.get(urlQuery, {
+                timeout: 3000,
                 responseType: 'arraybuffer',
                 headers: headers_RuTracker
             })
             // Декодируем HTML-страницу в кодировку win-1251
             html = iconv.decode(response.data, 'win1251')
-            // Если удалось получить данные, выходим из цикла
+            // Если удалось получить данные, фиксируем успух, логируем и выходим из цикла
             checkUrl = true
-            console.log(`${getCurrentTime()} [Request] ${url}`)
+            console.log(`${getCurrentTime()} [Request] ${urlQuery}`)
             break
         } catch (error) {
             console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
@@ -267,8 +271,8 @@ async function RuTracker(query, page) {
             const torrent = {
                 'Name': data(element).find('.row4 .wbr .med').text().trim(),
                 'Id': data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g, ''),
-                'Url': "https://rutracker.net/forum/" + data(element).find('.row4 .wbr .med').attr('href'),
-                'Torrent': "https://rutracker.net/forum/dl.php?t=" + data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g, ''),
+                'Url': `${url}/forum/` + data(element).find('.row4 .wbr .med').attr('href'),
+                'Torrent': `${url}/forum/dl.php?t=` + data(element).find('.row4 .wbr .med').attr('href').replace(/.+t=/g, ''),
                 // Забираем первые два значения (размер и тип данных)
                 /// 'Size': data(element).find('.row4.small:eq(0)').text().trim().split(' ').slice(0,1).join(' '),
                 'Size': data(element).find('a.small.tr-dl.dl-stub').text().trim().split(' ').slice(0, 1).join(' '),
@@ -276,7 +280,7 @@ async function RuTracker(query, page) {
                 // Проверяем проверенный ли торрент и изменяем формат вывода
                 'Checked': data(element).find('td.row1.t-ico').text().trim() === '√' ? 'True' : 'False',
                 'Type': data(element).find('.row1 .f-name .gen').text().trim(),
-                'Type_Link': "https://rutracker.net/forum/" + data(element).find('.row1 .f-name .gen').attr('href'),
+                'Type_Link': `${url}/forum/` + data(element).find('.row1 .f-name .gen').attr('href'),
                 'Seeds': data(element).find('b.seedmed').text().trim(),
                 'Peers': data(element).find('td.row4.leechmed.bold').text().trim(),
                 // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
@@ -638,23 +642,26 @@ async function RuTrackerRSS(typeData) {
 // Kinozal
 async function Kinozal(query, page, year) {
     const urls = [
-        'https://kinozal.tv/browse.php?s=',
-        'https://kinozal.me/browse.php?s=',
-        'https://kinozal.guru/browse.php?s='
+        'https://kinozal.tv',
+        'https://kinozal.me',
+        'https://kinozal.guru'
     ]
     let checkUrl = false
     const torrents = []
     let html
+    let url
     for (const u of urls) {
-        const url = `${u}${query}&page=${page}&d=${year}`
+        url = u.replace('https://','')
+        const urlQuery = `${u}/browse.php?s=${query}&page=${page}&d=${year}`
         try {
-            const response = await axiosProxy.get(url, {
+            const response = await axiosProxy.get(urlQuery, {
+                timeout: 3000,
                 responseType: 'arraybuffer',
                 headers: headers
             })
             html = iconv.decode(response.data, 'win1251')
             checkUrl = true
-            console.log(`${getCurrentTime()} [Request] ${url}`)
+            console.log(`${getCurrentTime()} [Request] ${urlQuery}`)
             break
         } catch (error) {
             console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
@@ -692,8 +699,8 @@ async function Kinozal(query, page, year) {
                 'Year': arrTitle[2]?.trim() || '',
                 'Language': arrTitle[3]?.trim() || '',
                 'Format': arrTitle[4]?.trim() || '',
-                'Url': "https://kinozal.tv" + torrentName.attr('href'),
-                'Torrent': "https://dl.kinozal.tv" + data(element).find('.nam a').attr('href').replace(/details/, 'download'),
+                'Url': `https://${url}` + torrentName.attr('href'),
+                'Torrent': `https://dl.${url}` + data(element).find('.nam a').attr('href').replace(/details/, 'download'),
                 // Обновить наименования едениц измерений на англ.
                 'Size': s.eq(1).text().trim().replace(/КБ/g, 'KB').replace(/ГБ/g, 'GB').replace(/МБ/g, 'MB'),
                 'Comments': s.eq(0).text().trim(),
@@ -939,24 +946,27 @@ async function KinozalRSS(typeData) {
 // RuTor
 async function RuTor(query, page) {
     const urls = [
-        'https://rutor.info/search/',
-        'https://rutor.is/search/',
-        // 'https://rutor.org/search/'
+        'https://rutor.i1nfo',
+        'https://rutor.is',
+        //'https://rutor.org/search/'
     ]
     let checkUrl = false
     const torrents = []
     let html
+    let url
     for (const u of urls) {
-        const url = `${u}${page}/0/300/0/${query}`
+        url = u
+        const urlQuery = `${u}/search/${page}/0/300/0/${query}`
         try {
-            const response = await axiosProxy.get(url, {
+            const response = await axiosProxy.get(urlQuery, {
+                timeout: 3000,
                 responseType: 'arraybuffer',
                 headers: headers
             })
             // Декодируем HTML-страницу в кодировку UTF-8
             html = iconv.decode(response.data, 'utf8')
             checkUrl = true
-            console.log(`${getCurrentTime()} [Request] ${url}`)
+            console.log(`${getCurrentTime()} [Request] ${urlQuery}`)
             break
         } catch (error) {
             console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
@@ -978,7 +988,7 @@ async function RuTor(query, page) {
             const torrent = {
                 'Name': data(element).find('a:eq(2)').text().trim(),
                 'Id': data(element).find('a:eq(2)').attr('href').replace(/\/torrent\//g, "").replace(/\/.+/g, ""),
-                'Url': "https://rutor.info" + data(element).find('a:eq(2)').attr('href'),
+                'Url': url + data(element).find('a:eq(2)').attr('href'),
                 'Torrent': "https:" + data(element).find('a:eq(0)').attr('href'),
                 'Hash': data(element).find('a:eq(1)').attr('href').replace(/.+btih:|&.+/g, ''),
                 'Size': data(element).find(`td:eq(${sizeIndex})`).text().trim(),
