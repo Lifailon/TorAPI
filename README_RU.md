@@ -110,12 +110,24 @@ curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/.env.yml
 docker-compose up -d
 ```
 
-### Image
+### Local image
 
-В файлах к [релизу](https://github.com/Lifailon/TorAPI/releases) вы можете скачать подготовленный образ и загрузить его на своей машине:
+Вы можете сохранить образ, загруженный из Docker Hub, что бы передать ее на машину, у которой нет доступа к Docker Hub:
 
 ```shell
-docker load -i torapi-0.4.tar
+docker save -o TorAPI-Docker-Image.tar lifailon/torapi
+```
+
+В [файлах к релизу](https://github.com/Lifailon/TorAPI/releases) вы можете скачать подготовленный образ и загрузить его на своей машине:
+
+```shell
+docker load -i TorAPI-Docker-Image.tar
+```
+
+Запустите контейнер из загруженного локального образа:
+
+```shell
+docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped lifailon/torapi:latest
 ```
 
 ### Dockerfile

@@ -110,12 +110,24 @@ Edit the environment variables in the [.env](.env) file (required if using a pro
 docker-compose up -d
 ```
 
-### Image
+### Local image
 
-In the release files you can download the prepared image and boot it on your machine:
+You can save an image downloaded from Docker Hub to transfer it to a machine that does not have Docker Hub access:
 
 ```shell
-docker load -i torapi-0.4.tar
+docker save -o TorAPI-Docker-Image.tar lifailon/torapi
+```
+
+In the [release files](https://github.com/Lifailon/TorAPI/releases) you can download the prepared image and boot it on your machine:
+
+```shell
+docker load -i TorAPI-Docker-Image.tar
+```
+
+Run the container from the downloaded local image:
+
+```shell
+docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped lifailon/torapi:latest
 ```
 
 ### Dockerfile
