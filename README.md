@@ -23,21 +23,25 @@
     <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger"src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2FLifailon%2FTorAPI%2Fmain%2Fswagger%2Fswagger.yaml&logo=Swagger&label=Swagger"></a>
 </p>
 
-Unofficial API (backend) for RuTracker, Kinozal, RuTor and NoNameClub for receiving torrent files and detailed information about distribution by movie title, TV series or id, and also provides RSS news feed for all providers.
+<h4 align="center">
+<strong>English</strong> | <a href="README_RU.md">Русский</a>
+</h4>
 
-This project is inspired by ✨ [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api) for Russian-speaking torrent providers.
+Unofficial API (backend) of torrent trackers RuTracker, Kinozal, RuTor and NoNameClub for quick search of distributions, as well as receiving torrent files, magnet link, info hash and detailed information about distribution by movie name, TV series or id, and also provides RSS news feed for all providers.
 
-You can try the **open and free version**, which is published on 🔼 [Vercel](https://torapi.vercel.app/api/provider/list). OpenAPI specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
+Project is inspired by ✨ [Torrent-Api-py](https://github.com/Ryuk-me/Torrent-Api-py) (previously [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api)) for Russian-speaking torrent providers.
 
-A simple interface (frontend) is implemented in the [Libre Kinopoisk](https://github.com/Lifailon/LibreKinopoisk) extension for Google Chrome for simultaneous and fast search of distributions in torrent trackers.
+You can try the **public and free version**, which is published on 🔼 [Vercel](https://torapi.vercel.app/api/provider/list) or [deploy](#Deploy) it yourself. OpenAPI specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
+
+The implementation of a simple interface (**frontend**) is available in the Google Chrome extension 🍿 [Libre Kinopoisk](https://github.com/Lifailon/LibreKinopoisk) for simultaneous and fast search of distributions in all available torrent trackers.
 
 Implemented:
 
-- **Search by title** to get all available distributions from a specified torrent tracker (its ID and brief information with a link to download the torrent file) or from **all** trackers at once.
-- **Search by ID** of the specified provider to get additional information: hash for direct download via torrent-client, links to Kinopoisk and IMDb databases, detailed description of the movie or series, as well as the content of the torrent-distribution.
+- **Search by Title** to get all available distributions from the specified torrent tracker or from **all** trackers simultaneously. Each distribution has its unique identifier (used for searching by **id**), brief information and a link to download the torrent file.
+- **Search by ID** of the specified provider to get additional information: magnet link and hash sum for direct download via any torrent client, links to the cinema databases Kinopoisk and IMDb, detailed description of the film or TV series, information about the distribution and the contents of the distribution (list of files and their size).
 - **Get RSS news feeds** from all used providers in `XML` and also `JSON` formats.
 
-You can see examples of requests and responses in the **static documentation** posted on [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki). Documentation in Russian language is available on [GitHub Page](https://lifailon.github.io/TorAPI).
+Examples of requests and responses are available in the static documentation hosted on the [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki).
 
 Released under [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
 
@@ -52,7 +56,7 @@ Released under [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE
 | [RuTor](https://rutor.info)         | 2       | No           | Yes          | *Custom* |
 | [NoNameClub](https://nnmclub.to)    | 1       | No           | Yes          | Native   |
 
-**\*** Registration is required only when downloading a torrent file via a direct link. All distributions when searching by ID contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to download the contents of the distribution or generate a torrent file using any torrent client after downloading the metadata.
+**\*** Registration is required only when downloading a torrent file via a direct link. All distributions when searching by **id** contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to immediately start downloading contents or generate a torrent file using any torrent client after downloading the metadata.
 
 The RSS feed is accessed by redirecting the original feed. For providers that do not support RSS by default, a custom news feed has been implemented from the main page.
 
@@ -68,7 +72,7 @@ You can deploy your own public API to Vercel from this repository, just click th
 
 ### Docker Hub
 
-The project uses [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/actions) to build the Docker container and automatically test the functionality of all endpoints.
+                        The project uses [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/actions) to build the Docker container and automatically test the functionality of all endpoints.
 
 #### Run
 
@@ -89,6 +93,8 @@ docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped \
   lifailon/torapi:latest
 ```
 
+Replace the contents of the variables for connecting to the Proxy server with your own. If you do not use authorization on the proxy server, simply do not specify these parameters when starting the container.
+
 #### Compose
 
 You can download and use the [docker-compose](docker-compose.yml) file to build the container from Docker Hub:
@@ -98,7 +104,7 @@ curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/docker-compose.y
 curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/.env.yml
 ```
 
-Edit the environment variables file [.env](.env) and build the container:
+Edit the environment variables in the [.env](.env) file (required if using a proxy server) and start the container:
 
 ```shell
 docker-compose up -d
@@ -106,14 +112,16 @@ docker-compose up -d
 
 ### Dockerfile
 
-You can use project files to build from [dockerfile](dockerfile):
+You can build the image yourself from the project's source files using [dockerfile](dockerfile).
+
+Clone this repository:
 
 ```shell
 git clone https://github.com/Lifailon/TorAPI
 cd TorAPI
 ```
 
-When using a proxy, edit the variables in dockerfile:
+Edit variables or other settings in the `dockerfile` if necessary:
 
 ```shell
 ENV PROXY_ADDRESS="192.168.3.100"
@@ -184,7 +192,7 @@ You can run testing to quickly check the health of all endpoints in the console:
 npm start -- --test
 ```
 
-During testing, a local server is started, a request is made to the `/api/provider/test` endpoint, and the server terminates.
+During testing, a local server is started, a request is made to the `/api/provider/test` endpoint, and terminates.
 
 Change header parameter in request:
 
@@ -196,9 +204,9 @@ npm start -- --test --q "The Rookie"
 
 ## Other projects:
 
-- 🔎 [LibreKinopoisk Chrome Extension](https://github.com/Lifailon/LibreKinopoisk) - adds buttons to the Kinopoisk website and provides a TorAPI interface for quickly searching for movies and TV series in open sources.
+- 🔎 [LibreKinopoisk Chrome Extension](https://github.com/Lifailon/LibreKinopoisk) - adds buttons to the Kinopoisk website and provides a **TorAPI** interface for quickly searching for movies and TV series in open sources.
 
-- 🧲 [Telegram bot for Kinozal](https://github.com/Lifailon/Kinozal-Bot) - that implements remote control of the qBittorrent and Transmission torrent client, interface for the Kinozal torrent tracker and synchronization of downloaded media content with Plex Media Server.
+- 🧲 [Telegram bot for Kinozal](https://github.com/Lifailon/Kinozal-Bot) - allows you to automate the process of delivering content to your TV using only phone, providing a convenient and user-friendly interface for interacting with the torrent tracker [Kinozal](https://kinozal.tv), as well as the ability to manage the torrent client [qBittorrent](https://github.com/qbittorrent/qBittorrent) or [Transmission](https://github.com/transmission/transmission) on your computer and synchronization with the [Plex Media Server](https://www.plex.tv/personal-media-server), located remotely from home.
 
 - ❤️ [WebTorrent Desktop api](https://github.com/Lifailon/webtorrent-desktop-api) - branch (fork) of the original version of [WebTorrent Desktop](https://github.com/webtorrent/webtorrent-desktop), which add a remote control mechanism via the `REST API` on base [Express Framework](https://github.com/expressjs/express).
 
