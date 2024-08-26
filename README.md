@@ -27,7 +27,7 @@
 <strong>English</strong> | <a href="README_RU.md">Русский</a>
 </h4>
 
-Unofficial API (backend) of torrent trackers RuTracker, Kinozal, RuTor and NoNameClub for quick search of distributions, as well as receiving torrent files, magnet link, info hash and detailed information about distribution by movie name, TV series or id, and also provides RSS news feed for all providers.
+Unofficial API (**backend**) for torrent trackers RuTracker, Kinozal, RuTor and NoNameClub. Used for quick search of distributions, as well as obtaining torrent files, magnet links and detailed information about distribution by movie title, TV series or distribution ID, and also provides RSS news feed for all providers.
 
 Project is inspired by ✨ [Torrent-Api-py](https://github.com/Ryuk-me/Torrent-Api-py) (previously [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api)) for Russian-speaking torrent providers.
 
@@ -72,7 +72,7 @@ You can deploy your own public API to Vercel from this repository, just click th
 
 ### Docker Hub
 
-                        The project uses [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/actions) to build the Docker container and automatically test the functionality of all endpoints.
+The project uses [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/actions) to build the Docker container and automatically test the functionality of all endpoints.
 
 #### Run
 
@@ -108,6 +108,14 @@ Edit the environment variables in the [.env](.env) file (required if using a pro
 
 ```shell
 docker-compose up -d
+```
+
+### Image
+
+In the release files you can download the prepared image and boot it on your machine:
+
+```shell
+docker load -i torapi-0.4.tar
 ```
 
 ### Dockerfile
@@ -156,13 +164,15 @@ You can specify a different port:
 npm start -- --port 2024
 ```
 
-To dev, use run in **nodemon** mode:
+For development, use **nodemon** mode (restarts the server when the contents of files change):
 
 ```
 npm run dev
 ```
 
-📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs`
+### OpenAPI
+
+📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs` через модуль [swagger-ui-express](https://github.com/scottie1984/swagger-ui-express). The documentation is described through the [swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc) library.
 
 To create up-to-date or update Swagger documentation files in `JSON` and `YAML` format, use the command:
 
@@ -192,7 +202,7 @@ You can run testing to quickly check the health of all endpoints in the console:
 npm start -- --test
 ```
 
-During testing, a local server is started, a request is made to the `/api/provider/test` endpoint, and terminates.
+During testing, the local server is started, a request is made to the endpoint `/api/provider/test`, the output is logged in JSON format and the server exits.
 
 Change header parameter in request:
 
