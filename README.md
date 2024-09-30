@@ -24,7 +24,7 @@
 </p>
 
 <h4 align="center">
-<strong>English</strong> | <a href="README_RU.md">Русский</a>
+    <strong>English</strong> | <a href="README_RU.md">Русский</a>
 </h4>
 
 Unofficial API (**backend**) for torrent trackers RuTracker, Kinozal, RuTor and NoNameClub. Used for quick search of distributions, as well as obtaining torrent files, magnet links and detailed information about distribution by movie title, TV series or distribution ID, and also provides RSS news feed for all providers.
@@ -38,7 +38,7 @@ The implementation of a simple interface (**frontend**) is available in the Goog
 Implemented:
 
 - **Search by Title** to get all available distributions from the specified torrent tracker or from **all** trackers simultaneously. Each distribution has its unique identifier (used for searching by **id**), brief information and a link to download the torrent file.
-- **Search by ID** of the specified provider to get additional information: magnet link and hash sum for direct download via any torrent client, links to the cinema databases Kinopoisk and IMDb, detailed description of the film or TV series, information about the distribution and the contents of the distribution (list of files and their size).
+- **Search by ID** of the specified provider to get additional information: magnet link and hash sum for direct download via any torrent client, links to the cinema databases Kinopoisk and IMDb, detailed description of the film or TV series, links to posters, information about the distribution and the contents of the distribution (list of files and their size).
 - **Get RSS news feeds** from all used providers in `XML` and also `JSON` formats.
 
 Examples of requests and responses are available in the static documentation hosted on the [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki).
@@ -157,7 +157,7 @@ docker build -t torapi .
 docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped torapi
 ```
 
-## 🔨 Install
+## 🔨 Build
 
 Clone the repository, install dependencies and start the server:
 
@@ -184,7 +184,7 @@ npm run dev
 
 ### OpenAPI
 
-📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs` через модуль [swagger-ui-express](https://github.com/scottie1984/swagger-ui-express). The documentation is described through the [swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc) library.
+📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs` via module [swagger-ui-express](https://github.com/scottie1984/swagger-ui-express). The documentation is described through the [swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc) library.
 
 To create up-to-date or update Swagger documentation files in `JSON` and `YAML` format, use the command:
 
@@ -226,10 +226,10 @@ npm start -- --test --q "The Rookie"
 
 ## Other projects:
 
-- 🔎 [LibreKinopoisk Chrome Extension](https://github.com/Lifailon/LibreKinopoisk) - adds buttons to the Kinopoisk website and provides a **TorAPI** interface for quickly searching for movies and TV series in open sources.
+- 🔎 [LibreKinopoisk](https://github.com/Lifailon/LibreKinopoisk) - Google Chrome extension that adds buttons to the Kinopoisk website and provides a **TorAPI** interface in the [Jackett](https://github.com/Jackett/Jackett) style (without the need to install a server part and use a VPN) for quickly searching for movies and series in open sources.
 
-- 🧲 [Telegram bot for Kinozal](https://github.com/Lifailon/Kinozal-Bot) - allows you to automate the process of delivering content to your TV using only phone, providing a convenient and user-friendly interface for interacting with the torrent tracker [Kinozal](https://kinozal.tv), as well as the ability to manage the torrent client [qBittorrent](https://github.com/qbittorrent/qBittorrent) or [Transmission](https://github.com/transmission/transmission) on your computer and synchronization with the [Plex Media Server](https://www.plex.tv/personal-media-server), located remotely from home.
+- 🧲 [Kinozal bot](https://github.com/Lifailon/Kinozal-Bot) - Telegram bot that allows you to automate the process of delivering content to your TV using only your phone. Provides a convenient interface for interacting with the torrent tracker [Kinozal](https://kinozal.tv) and the database [TMDB](https://www.themoviedb.org) to track the release date of episodes, seasons and search for actors for each episode , as well as the ability to manage the torrent client [qBittorrent](https://github.com/qbittorrent/qBittorrent) or [Transmission](https://github.com/transmission/transmission) on your computer, being remote from home and from single interface.
 
-- ❤️ [WebTorrent Desktop api](https://github.com/Lifailon/webtorrent-desktop-api) - branch (fork) of the original version of [WebTorrent Desktop](https://github.com/webtorrent/webtorrent-desktop), which add a remote control mechanism via the `REST API` on base [Express Framework](https://github.com/expressjs/express).
+- ❤️ [WebTorrent Desktop api](https://github.com/Lifailon/webtorrent-desktop-api) - fork of the [WebTorrent Desktop] client (https://github.com/webtorrent/webtorrent-desktop), which added a remote control mechanism via the `REST API` based on [Express Framework](https://github.com/expressjs/express).
 
-- 📡 [Reverse Proxy .NET](https://github.com/Lifailon/rpnet) - cross-platform command line utility for implementing a .NET-based reverse proxy. It is used to provide access to hosts from one network interface to remote applications via TCP, UDP or HTTP/HTTPS protocols accessible through another network interface without unnecessary settings and with authorization support.
+- 📡 [Reverse Proxy .NET](https://github.com/Lifailon/rpnet) - cross-platform command-line utility for implementing a **.NET** based reverse proxy server. It is used to provide access to hosts on the network from one network interface to remote applications via **TCP**, **UDP** or **HTTP/HTTPS** protocols (`GET` and `POST` requests are supported to access external resources over the Internet) available via another network interface (e.g. via **VPN**) on your host without unnecessary configuration and with authorization support.
