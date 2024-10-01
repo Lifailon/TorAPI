@@ -1,0 +1,40 @@
+name: Local Build and Postman Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      Query:
+        description: 'Parameter for API request'
+        required: true
+        default: 'The+Rookie'
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v2
+
+    - name: Install npm
+      run: |
+        sudo apt update
+        sudo apt install -y curl
+        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+        sudo apt install -y nodejs
+        echo "node version: $(node --version)"
+        echo "npm version: $(npm --version)"
+
+    - name: Install dependencies
+      run: |
+        npm install
+
+    - name: Install newman
+      run: |
+        npm install -g newman
+        echo "newman version: $(newman --version)"
+    
+    - name: Run postman tests
+      run: |
+        newman run .\postman-collection-tests.json --env-var "query=${{ github.event.inputs.Query }}"
