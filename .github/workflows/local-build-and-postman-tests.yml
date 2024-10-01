@@ -23,8 +23,6 @@ jobs:
         sudo apt install -y curl
         curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
         sudo apt install -y nodejs
-        echo "node version: $(node --version)"
-        echo "npm version: $(npm --version)"
 
     - name: Install dependencies
       run: |
@@ -33,8 +31,13 @@ jobs:
     - name: Install newman
       run: |
         npm install -g newman
+
+    - name: Packet check
+      run: |
+        echo "node version: $(node --version)"
+        echo "npm version: $(npm --version)"
         echo "newman version: $(newman --version)"
-    
+
     - name: Run postman tests
       run: |
-        newman run .\postman-collection-tests.json --env-var "query=${{ github.event.inputs.Query }}"
+        newman run postman-tests.json --iteration-count 1 --env-var "query=${{ github.event.inputs.Query }}"
