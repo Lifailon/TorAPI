@@ -19,8 +19,14 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Install Vercel CLI
-      run: npm install --global vercel@latest
+    # - name: Install Vercel CLI
+    #   run: npm install --global vercel@latest
 
-    - name: Deploy to Vercel
-      run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
+    # - name: Deploy to Vercel
+    #   run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
+
+    - uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        # vercel-org-id: ${{ secrets.ORG_ID}}
+        # vercel-project-id: ${{ secrets.PROJECT_ID}}
