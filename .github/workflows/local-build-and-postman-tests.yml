@@ -17,12 +17,24 @@ jobs:
     - name: Clone repository
       uses: actions/checkout@v2
 
-    - name: Install npm
-      run: |
-        sudo apt update
-        sudo apt install -y curl
-        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-        sudo apt install -y nodejs
+    # - name: Install Node.js
+    #   run: |
+    #     sudo apt update
+    #     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
+    #     sudo apt-get install -y nodejs
+    
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Cache npm dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
     - name: Install dependencies
       run: |
@@ -40,4 +52,11 @@ jobs:
 
     - name: Run postman tests
       run: |
-        newman run postman-tests.json --iteration-count 1 --env-var "query=${{ github.event.inputs.Query }}"
+        newman run postman-tests.json --iteration-count 1 --env-var "query=${{ github.event.inputs.Query }}" \
+        --reporters cli,junit --reporter-junit-export newman-results.xml
+
+    - name: Upload Newman Test Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: newman-results
+        path: newman-results.xml
