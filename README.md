@@ -5,22 +5,20 @@
 ---
 
 <p align="center">
-    <a href="https://github.com/nodejs/node"><img title="Node" src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white"></a>
-    <a href="https://github.com/expressjs/express"><img title="Express" src="https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB"></a>
-</p>
-
-<p align="center">
     <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"></a>
+    <a href="https://www.npmjs.com/package/torapi"><img title="NPM" src="https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white"></a>
     <a href="https://vercel.com/torapi/torapi"><img title="Vercel" src="https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white"></a>
     <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"></a>
+    <a href="https://documenter.getpostman.com/view/37302476/2sAXqzYeRj"><img title="Postman" src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white"></a>
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions" src="https://img.shields.io/badge/Actions-%230075A8.svg?style=for-the-badge&logo=githubactions&logoColor=white"></a>
-</p>
-
-<p align="center">
-    <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker"src="https://img.shields.io/docker/image-size/lifailon/torapi?&color=blue&logo=Docker&label=Docker+Image"></a>
+    <br>
+    <br>
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/docker-build-and-tests.yml?logo=GitHub-Actions&label=CI+Docker"></a>
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/docker-build-and-tests.yml?logo=Vercel&label=CD+Vercel"></a>
     <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger"src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2FLifailon%2FTorAPI%2Fmain%2Fswagger%2Fswagger.yaml&logo=Swagger&label=Swagger"></a>
+    <br>
+    <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker"src="https://img.shields.io/docker/image-size/lifailon/torapi?&color=blue&logo=Docker&label=Docker+Image"></a>
+    <a href="https://www.npmjs.com/package/torapi"><img title="GitHub License"src="https://img.shields.io/npm/v/torapi?logo=npm&logoColor=red"></a>
 </p>
 
 <h4 align="center">
@@ -31,7 +29,7 @@ Unofficial API (**backend**) for torrent trackers RuTracker, Kinozal, RuTor and 
 
 Project is inspired by ✨ [Torrent-Api-py](https://github.com/Ryuk-me/Torrent-Api-py) (previously [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api)) for Russian-speaking torrent providers.
 
-You can try the **public and free version**, which is published on 🔼 [Vercel](https://torapi.vercel.app/api/provider/list) or [deploy](#Deploy) it yourself. OpenAPI specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
+You can try the **public and free version**, which is published on 🔼 [Vercel](https://torapi.vercel.app/api/provider/list) or [Deploy](#Deploy) it yourself. OpenAPI specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
 
 The implementation of a simple interface (**frontend**) is available in the Google Chrome extension 🍿 [Libre Kinopoisk](https://github.com/Lifailon/LibreKinopoisk) for simultaneous and fast search of distributions in all available torrent trackers.
 
@@ -157,6 +155,14 @@ docker build -t torapi .
 docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped torapi
 ```
 
+## 📦 Install
+
+To install the project and all dependencies, you can use the package manager [npm](https://www.npmjs.com/package/torapi):
+
+```shell
+npm install -g torapi
+```
+
 ## 🔨 Build
 
 Clone the repository, install dependencies and start the server:
@@ -182,16 +188,6 @@ For development, use **nodemon** mode (restarts the server when the contents of 
 npm run dev
 ```
 
-### OpenAPI
-
-📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs` via module [swagger-ui-express](https://github.com/scottie1984/swagger-ui-express). The documentation is described through the [swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc) library.
-
-To create up-to-date or update Swagger documentation files in `JSON` and `YAML` format, use the command:
-
-```shell
-npm run docs
-```
-
 ### Proxy
 
 Use a proxy for all requests:
@@ -206,7 +202,17 @@ If authorization on a proxy server is required:
 npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090 --username TorAPI --password TorAPI
 ```
 
-### 🧪 Tests
+### OpenAPI
+
+📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs` via module [swagger-ui-express](https://github.com/scottie1984/swagger-ui-express). The documentation is described through the [swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc) library.
+
+To create up-to-date or update Swagger documentation files in `JSON` and `YAML` format, use the command:
+
+```shell
+npm run docs
+```
+
+## 🧪 Tests
 
 You can run testing to quickly check the health of all endpoints in the console:
 
@@ -220,6 +226,33 @@ Change header parameter in request:
 
 ```shell
 npm start -- --test --q "The Rookie"
+```
+
+Parameterized tests are also available through [GitHub Actions](/.github/workflows/docker-build-and-tests.yml) using `curl` or [Postman](/postman-tests.json) via [newman](https://github.com/postmanlabs/newman):
+
+```shell
+npm install -g newman
+newman run .\postman-tests.json --iteration-count 1 --env-var "query=The Rookie"
+...
+┌─────────────────────────┬─────────────────────┬─────────────────────┐
+│                         │            executed │              failed │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│              iterations │                   1 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│                requests │                  20 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│            test-scripts │                  48 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│      prerequest-scripts │                  42 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│              assertions │                 105 │                   0 │
+├─────────────────────────┴─────────────────────┴─────────────────────┤
+│ total run duration: 25.3s                                           │
+├─────────────────────────────────────────────────────────────────────┤
+│ total data received: 667.37kB (approx)                              │
+├─────────────────────────────────────────────────────────────────────┤
+│ average response time: 1176ms [min: 334ms, max: 6.4s, s.d.: 1305ms] │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
