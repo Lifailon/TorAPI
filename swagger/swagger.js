@@ -648,7 +648,7 @@
  *                         type: string
  *                       Date:
  *                         type: string
- *                 RoTor:
+ *                 RuTor:
  *                   type: array
  *                   items:
  *                     type: object

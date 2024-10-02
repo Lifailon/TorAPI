@@ -1045,7 +1045,7 @@
                         }
                       }
                     },
-                    "RoTor": {
+                    "RuTor": {
                       "type": "array",
                       "items": {
                         "type": "object",
