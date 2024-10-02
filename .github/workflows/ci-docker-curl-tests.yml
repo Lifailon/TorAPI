@@ -1,4 +1,4 @@
-name: Docker Build and Tests
+name: Docker Build and Curl Tests
 
 on:
   workflow_dispatch:

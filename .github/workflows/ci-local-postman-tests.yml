@@ -65,13 +65,6 @@ jobs:
         --reporter-html-export postman-report.html \
         --reporter-junit-export postman-results.xml
 
-    # - name: Upload Newman Test Results
-    #   uses: actions/upload-artifact@v4
-    #   if: success() || failure()
-    #   with:
-    #     name: newman-results
-    #     path: newman-results.xml
-
     - name: Upload Newman HTML Report
       uses: actions/upload-artifact@v4
       if: success() || failure()
