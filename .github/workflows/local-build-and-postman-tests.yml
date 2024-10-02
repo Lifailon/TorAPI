@@ -48,6 +48,7 @@ jobs:
     - name: Install newman
       run: |
         npm install -g newman
+        npm install -g newman-reporter-html
 
     - name: Packet check
       run: |
@@ -57,8 +58,12 @@ jobs:
 
     - name: Run postman tests
       run: |
-        newman run postman-tests.json --iteration-count ${{ github.event.inputs.Iterations }} --env-var "query=${{ github.event.inputs.Query }}" \
-        --reporters cli,junit --reporter-junit-export newman-results.xml
+        newman run postman-tests.json \
+        --iteration-count ${{ github.event.inputs.Iterations }} \
+        --env-var "query=${{ github.event.inputs.Query }}" \
+        --reporters cli,junit,html \
+        --reporter-html-export newman-report.html \
+        --reporter-junit-export newman-results.xml
 
     - name: Upload Newman Test Results
       uses: actions/upload-artifact@v4
@@ -66,6 +71,13 @@ jobs:
       with:
         name: newman-results
         path: newman-results.xml
+
+    - name: Upload Newman HTML Report
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: newman-html-report
+        path: newman-report.html
 
     - name: Publish JUnit Test Results
       uses: mikepenz/action-junit-report@v4
