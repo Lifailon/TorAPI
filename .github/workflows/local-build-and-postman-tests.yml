@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Clone repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     # - name: Install Node.js
     #   run: |
@@ -24,12 +24,12 @@ jobs:
     #     sudo apt-get install -y nodejs
     
     - name: Install Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '20'
 
     - name: Cache npm dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.npm
         key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
@@ -56,7 +56,13 @@ jobs:
         --reporters cli,junit --reporter-junit-export newman-results.xml
 
     - name: Upload Newman Test Results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: newman-results
         path: newman-results.xml
+
+    - name: Publish JUnit Test Results
+      uses: mikepenz/action-junit-report@v4
+      if: success() || failure()
+      with:
+        report_paths: '**/newman-results.xml'
