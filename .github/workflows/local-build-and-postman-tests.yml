@@ -8,6 +8,11 @@ on:
         required: true
         default: 'The+Rookie'
         type: string
+      Iterations:
+        description: 'Iteration count for tests'
+        required: true
+        default: 1
+        type: number
 
 jobs:
   build:
@@ -52,11 +57,12 @@ jobs:
 
     - name: Run postman tests
       run: |
-        newman run postman-tests.json --iteration-count 1 --env-var "query=${{ github.event.inputs.Query }}" \
+        newman run postman-tests.json --iteration-count ${{ github.event.inputs.Iterations }} --env-var "query=${{ github.event.inputs.Query }}" \
         --reporters cli,junit --reporter-junit-export newman-results.xml
 
     - name: Upload Newman Test Results
       uses: actions/upload-artifact@v4
+      if: success() || failure()
       with:
         name: newman-results
         path: newman-results.xml

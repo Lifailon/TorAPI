@@ -228,7 +228,7 @@ npm start -- --test
 npm start -- --test --q "The Rookie"
 ```
 
-Также доступны параметризированные тесты через [GitHub Actions](/.github/workflows/docker-build-and-tests.yml) с использованием `curl` или [Postman](/postman-tests.json) через [newman](https://github.com/postmanlabs/newman):
+Также доступны параметризированные тесты через [GitHub Actions](/.github/workflows/docker-build-and-tests.yml) с использованием `curl` и [Postman](/postman-tests.json) через [newman](https://github.com/postmanlabs/newman) в формате `JUnit`:
 
 ```shell
 npm install -g newman

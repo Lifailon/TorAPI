@@ -228,7 +228,7 @@ Change header parameter in request:
 npm start -- --test --q "The Rookie"
 ```
 
-Parameterized tests are also available through [GitHub Actions](/.github/workflows/docker-build-and-tests.yml) using `curl` or [Postman](/postman-tests.json) via [newman](https://github.com/postmanlabs/newman):
+Parameterized tests are also available through [GitHub Actions](/.github/workflows/docker-build-and-tests.yml) using `curl` and [Postman](/postman-tests.json) via [newman](https://github.com/postmanlabs/newman) in `JUnit` format:
 
 ```shell
 npm install -g newman
