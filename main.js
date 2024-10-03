@@ -137,16 +137,16 @@ function formatDate(dateString, type) {
         'Окт': '10',
         'Ноя': '11',
         'Дек': '12'
-    };
-    const parts = dateString.split(`${type}`);
-    let day = parts[0].trim();
-    const month = months[parts[1].trim()];
-    const year = '20' + parts[2].trim();
+    }
+    const parts = dateString.split(`${type}`)
+    let day = parts[0].trim()
+    const month = months[parts[1].trim()]
+    const year = '20' + parts[2].trim()
     // Добавляем ведущий ноль к дню
     if (day.length === 1) {
-        day = '0' + day;
+        day = '0' + day
     }
-    return `${day}.${month}.${year}`;
+    return `${day}.${month}.${year}`
 }
 
 // Функция преобразования времени из Unix Timestamp в 'dd.mm.yyyy HH:MM' (для NoNameClub)
@@ -297,6 +297,26 @@ async function RuTracker(query, page) {
     } else {
         return torrents
     }
+}
+
+// RuTracker All Page
+async function RuTrackerAllPage(query) {
+    let result = []
+    page = 0
+    while (true) {
+        let currentResult = await RuTracker(query, page)
+        currentResult.forEach(element => {
+            result.push(element)
+        })
+        // Максимум 10 страниц
+        if (currentResult.length === 50 && page < 9) {
+            page++
+        }
+        else {
+            break
+        }
+    }
+    return result
 }
 
 // RuTracker ID
@@ -720,6 +740,25 @@ async function Kinozal(query, page, year) {
     }
 }
 
+// Kinozal All Page
+async function KinozalAllPage(query, year) {
+    let result = []
+    page = 0
+    while (true) {
+        let currentResult = await Kinozal(query, page, year)
+        currentResult.forEach(element => {
+            result.push(element)
+        })
+        if (currentResult.length === 50 && page < 19) {
+            page++
+        }
+        else {
+            break
+        }
+    }
+    return result
+}
+
 // Kinozal ID
 async function KinozalID(query) {
     const url = `https://kinozal.tv/details.php?id=${query}`
@@ -946,9 +985,9 @@ async function KinozalRSS(typeData) {
 // RuTor
 async function RuTor(query, page) {
     const urls = [
-        'https://rutor.i1nfo',
+        'https://rutor.info',
         'https://rutor.is',
-        //'https://rutor.org/search/'
+        // 'https://rutor.org/search/'
     ]
     let checkUrl = false
     const torrents = []
@@ -1010,6 +1049,26 @@ async function RuTor(query, page) {
     } else {
         return torrents
     }
+}
+
+// RuTor All Page
+async function RuTorAllPage(query) {
+    let result = []
+    page = 0
+    while (true) {
+        let currentResult = await RuTor(query, page)
+        currentResult.forEach(element => {
+            result.push(element)
+        })
+        // Максимум 20 страниц (20 по 100 = 2000 результатов)
+        if (currentResult.length === 100 && page < 9) {
+            page++
+        }
+        else {
+            break
+        }
+    }
+    return result
 }
 
 // RuTor ID
@@ -1380,6 +1439,26 @@ async function NoNameClub(query, page) {
     } else {
         return torrents
     }
+}
+
+// NoNameClub All Page
+async function NoNameClubAllPage(query) {
+    let result = []
+    page = 0
+    while (true) {
+        let currentResult = await NoNameClub(query, page)
+        currentResult.forEach(element => {
+            result.push(element)
+        })
+        // Максимум 4 страницы
+        if (currentResult.length === 50 && page < 3) {
+            page++
+        }
+        else {
+            break
+        }
+    }
+    return result
 }
 
 // NoNameClub ID
@@ -1948,11 +2027,11 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     const headerAccept = req.get('Accept')
     // Кодируем запрос в формат URL (заменяется последовательностью процентов и двумя шестнадцатеричными числами, представляющими ASCII-код символа в кодировке UTF-8)
     query = encodeURIComponent(query)
-    // Если необязательные параметры не были передан, присваиваем им значения по умолчанию
-    if (page === undefined) {
+    // Если необязательные параметры не были передан или заданы неверно, присваиваем им значения по умолчанию
+    if (!page || (page !== 'all' && isNaN(page))) {
         page = 0
     }
-    if (year === undefined) {
+    if (!year || !/^[0-9]{4}$/.test(year)) {
         year = 0
     }
     // Обработка path-параметров
@@ -2038,19 +2117,38 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     // ALL
     if (type === 'title' && provider === 'all') {
         try {
-            // Параллельное выполнение:
-            const [RuTrackerResult, KinozalResult, RuTorResult, NoNameClubResult] = await Promise.all([
-                RuTracker(query, page),
-                Kinozal(query, page),
-                RuTor(query, page),
-                NoNameClub(query, page)
-            ])
-            // Объединяем результаты в один массив
-            const Results = {
-                RuTracker: RuTrackerResult,
-                Kinozal: KinozalResult,
-                RuTor: RuTorResult,
-                NoNameClub: NoNameClubResult
+            let Results
+            if (page === 'all') {
+                // Параллельное выполнение:
+                const [RuTrackerResult, KinozalResult, RuTorResult, NoNameClubResult] = await Promise.all([
+                    RuTrackerAllPage(query),
+                    KinozalAllPage(query, year),
+                    RuTorAllPage(query),
+                    NoNameClubAllPage(query)
+                ])
+                // Объединяем результаты в один массив
+                Results = {
+                    RuTracker: RuTrackerResult,
+                    Kinozal: KinozalResult,
+                    RuTor: RuTorResult,
+                    NoNameClub: NoNameClubResult
+                }
+            }
+            else {
+                // Параллельное выполнение:
+                const [RuTrackerResult, KinozalResult, RuTorResult, NoNameClubResult] = await Promise.all([
+                    RuTracker(query, page),
+                    Kinozal(query, page, year),
+                    RuTor(query, page),
+                    NoNameClub(query, page)
+                ])
+                // Объединяем результаты в один массив
+                Results = {
+                    RuTracker: RuTrackerResult,
+                    Kinozal: KinozalResult,
+                    RuTor: RuTorResult,
+                    NoNameClub: NoNameClubResult
+                }
             }
             return res.json(Results)
         } catch (error) {
@@ -2061,7 +2159,13 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     // RuTracker Title
     else if (type === 'title' && provider === 'rutracker') {
         try {
-            const result = await RuTracker(query, page)
+            let result
+            if (page === 'all') {
+                result = await RuTrackerAllPage(query)
+            }
+            else {
+                result = await RuTracker(query, page)
+            }
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)
@@ -2105,7 +2209,13 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     // Kinozal Title
     else if (type === 'title' && provider === 'kinozal') {
         try {
-            const result = await Kinozal(query, page, year)
+            let result
+            if (page === 'all') {
+                result = await KinozalAllPage(query, year)
+            }
+            else {
+                result = await Kinozal(query, page, year)
+            }
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)
@@ -2149,7 +2259,13 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     // RuTor Title
     else if (type === 'title' && provider === 'rutor') {
         try {
-            const result = await RuTor(query, page)
+            let result
+            if (page === 'all') {
+                result = await RuTorAllPage(query)
+            }
+            else {
+                result = await RuTor(query, page)
+            }
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)
@@ -2195,7 +2311,13 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     // NoNameClub Title
     else if (type === 'title' && provider === 'nonameclub') {
         try {
-            const result = await NoNameClub(query, page)
+            let result
+            if (page === 'all') {
+                result = await NoNameClubAllPage(query)
+            }
+            else {
+                result = await NoNameClub(query, page)
+            }
             return res.json(result)
         } catch (error) {
             console.error("Error:", error)
