@@ -8,6 +8,16 @@ on:
         required: true
         default: 'The+Rookie'
         type: string
+      Url:
+        description: 'Parameter for API request'
+        required: false
+        default: 'http://127.0.0.1:8443'
+        type: choice
+        options:
+          - 'http://127.0.0.1:8443'
+          - 'https://torapi.vercel.app'
+          - 'https://toruapi.vercel.app'
+          - 'https://rutorapi.vercel.app'
       Iterations:
         description: 'Iteration count for tests'
         required: true
@@ -41,10 +51,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - name: Install dependencies
-      run: |
-        npm install
-
     - name: Install newman
       run: |
         npm install -g newman
@@ -56,14 +62,27 @@ jobs:
         echo "npm version: $(npm --version)"
         echo "newman version: $(newman --version)"
 
+    - name: Install dependencies
+      run: |
+        npm install
+
+    - name: Start local server
+      run: |
+        npm start > torapi.log &
+
     - name: Run postman tests
       run: |
         newman run postman-tests.json \
-        --iteration-count ${{ github.event.inputs.Iterations }} \
         --env-var "query=${{ github.event.inputs.Query }}" \
+        --env-var "baseUrl=${{ github.event.inputs.Url }}" \
+        --iteration-count ${{ github.event.inputs.Iterations }} \
         --reporters cli,junit,html \
         --reporter-html-export postman-report.html \
         --reporter-junit-export postman-results.xml
+
+    - name: View log
+      run: |
+        cat torapi.log
 
     - name: Upload Newman HTML Report
       uses: actions/upload-artifact@v4
