@@ -229,30 +229,32 @@ Change header parameter in request:
 npm start -- --test --q "The Rookie"
 ```
 
-Parameterized tests are also available through [GitHub Actions](/.github/workflows/docker-build-and-tests.yml) using `curl` and [Postman](/postman-tests.json) via [newman](https://github.com/postmanlabs/newman) in `JUnit` format:
+Parameterized tests are also available through [GitHub Actions](/.github/workflows/ci-postman-tests.yml) using [Postman](/postman-tests.json) via [newman](https://github.com/postmanlabs/newman) in `JUnit` format:
+
+To run tests locally:
 
 ```shell
 npm install -g newman
-newman run .\postman-tests.json --iteration-count 1 --env-var "query=The Rookie"
+newman run .\postman-tests.json --iteration-count 1 --env-var "query=The Rookie" --env-var "queryAllPage=test" --env-var "baseUrl=http://localhost:8443"
 ...
 ┌─────────────────────────┬────────────────────┬────────────────────┐
 │                         │           executed │             failed │
 ├─────────────────────────┼────────────────────┼────────────────────┤
 │              iterations │                  1 │                  0 │
 ├─────────────────────────┼────────────────────┼────────────────────┤
-│                requests │                 20 │                  0 │
+│                requests │                 29 │                  0 │
 ├─────────────────────────┼────────────────────┼────────────────────┤
-│            test-scripts │                 48 │                  0 │
+│            test-scripts │                 75 │                  0 │
 ├─────────────────────────┼────────────────────┼────────────────────┤
-│      prerequest-scripts │                 42 │                  0 │
+│      prerequest-scripts │                 62 │                  0 │
 ├─────────────────────────┼────────────────────┼────────────────────┤
-│              assertions │                105 │                  0 │
+│              assertions │                133 │                  0 │
 ├─────────────────────────┴────────────────────┴────────────────────┤
-│ total run duration: 18.4s                                         │
+│ total run duration: 42.5s                                         │
 ├───────────────────────────────────────────────────────────────────┤
-│ total data received: 634.14kB (approx)                            │
+│ total data received: 1.59MB (approx)                              │
 ├───────────────────────────────────────────────────────────────────┤
-│ average response time: 880ms [min: 91ms, max: 6.4s, s.d.: 1382ms] │
+│ average response time: 1418ms [min: 2ms, max: 7.7s, s.d.: 1968ms] │
 └───────────────────────────────────────────────────────────────────┘
 ```
 
