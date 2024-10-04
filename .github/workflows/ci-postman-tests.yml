@@ -3,16 +3,21 @@ name: Build and Postman Tests
 on:
   workflow_dispatch:
     inputs:
-      Query:
-        description: 'Parameter for API request'
-        required: true
-        default: 'The Rookie'
-        type: string
       Iterations:
         description: 'Iteration count for tests'
         required: false
         default: 1
         type: number
+      Query:
+        description: 'Search parameter for all API request'
+        required: true
+        default: 'The Rookie'
+        type: string
+      QueryAllPage:
+        description: 'Parameter for search on all pages'
+        required: true
+        default: 'test'
+        type: string
       Url:
         description: 'Local or Publish server'
         required: false
@@ -66,8 +71,8 @@ jobs:
       run: |
         docker build -t lifailon/torapi:latest .
         docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
-        for i in {1..30 }; do
-          response_code=$(curl -o /dev/null -s -w '%{http_code}' http://localhost:8443/api/provider/list 2> /dev/null || echo "404") 
+        for i in {1..30}; do
+          response_code=$(curl -o /dev/null -s -w '%{http_code}' http://localhost:8443/api/provider/list 2> /dev/null || echo "404")
           if [ "$response_code" -eq 200 ]; then
             echo "Server is up: status code 200"
             break

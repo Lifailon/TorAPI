@@ -310,9 +310,14 @@ async function RuTrackerAllPage(query) {
     page = 0
     while (true) {
         let currentResult = await RuTracker(query, page)
-        currentResult.forEach(element => {
-            result.push(element)
-        })
+        if (Array.isArray(currentResult)) {
+            currentResult.forEach(element => {
+                result.push(element)
+            })
+        } else {
+            result = [{ 'Result': 'No matches were found for your title' }]
+            break
+        }
         // Максимум 10 страниц
         if (currentResult.length === 50 && page < 9) {
             page++
@@ -751,9 +756,14 @@ async function KinozalAllPage(query, year) {
     page = 0
     while (true) {
         let currentResult = await Kinozal(query, page, year)
-        currentResult.forEach(element => {
-            result.push(element)
-        })
+        if (Array.isArray(currentResult)) {
+            currentResult.forEach(element => {
+                result.push(element)
+            })
+        } else {
+            result = [{ 'Result': 'No matches were found for your title' }]
+            break
+        }
         // Максимум 100 страниц
         if (currentResult.length === 50 && page < 99) {
             page++
@@ -1063,9 +1073,14 @@ async function RuTorAllPage(query) {
     page = 0
     while (true) {
         let currentResult = await RuTor(query, page)
-        currentResult.forEach(element => {
-            result.push(element)
-        })
+        if (Array.isArray(currentResult)) {
+            currentResult.forEach(element => {
+                result.push(element)
+            })
+        } else {
+            result = [{ 'Result': 'No matches were found for your title' }]
+            break
+        }
         // Максимум 20 страниц (20 по 100 = 2000 результатов)
         if (currentResult.length === 100 && page < 9) {
             page++
@@ -1453,9 +1468,14 @@ async function NoNameClubAllPage(query) {
     page = 0
     while (true) {
         let currentResult = await NoNameClub(query, page)
-        currentResult.forEach(element => {
-            result.push(element)
-        })
+        if (Array.isArray(currentResult)) {
+            currentResult.forEach(element => {
+                result.push(element)
+            })
+        } else {
+            result = [{ 'Result': 'No matches were found for your title' }]
+            break
+        }
         // Максимум 4 страницы
         if (currentResult.length === 50 && page < 3) {
             page++
@@ -2154,20 +2174,6 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
                 // ] = await Promise.allSettled([
                 //     RuTrackerAllPage(query),
                 //     KinozalAllPage(query, year),
-                //     RuTorAllPage(query),
-                //     NoNameClubAllPage(query)
-                // ])
-                // const [
-                //     RuTrackerResult,
-                //     KinozalResult
-                // ] = await Promise.allSettled([
-                //     RuTrackerAllPage(query),
-                //     KinozalAllPage(query, year)
-                // ])
-                // const [
-                //     RuTorResult,
-                //     NoNameClubResult
-                // ] = await Promise.allSettled([
                 //     RuTorAllPage(query),
                 //     NoNameClubAllPage(query)
                 // ])
