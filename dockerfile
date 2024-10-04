@@ -18,6 +18,7 @@ COPY --from=build /torapi/node_modules ./node_modules
 COPY --from=build /torapi/package.json ./package.json
 COPY --from=build /torapi/main.js ./main.js
 COPY --from=build /torapi/swagger/swagger.js ./swagger/swagger.js
+COPY --from=build /torapi/category.json ./category.json
 
 ENV PORT=8443
 EXPOSE 8443
