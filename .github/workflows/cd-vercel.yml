@@ -30,4 +30,6 @@ jobs:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         # vercel-org-id: ${{ secrets.ORG_ID}}
         # vercel-project-id: ${{ secrets.PROJECT_ID}}
-        vercel-args: '--prod --yes'
+        vercel-args: '--prod'
+      env:
+        VERCEL_FORCE: true
