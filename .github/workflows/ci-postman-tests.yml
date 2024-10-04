@@ -1,4 +1,4 @@
-name: Local Build and Postman Tests
+name: Build and Postman Tests
 
 on:
   workflow_dispatch:

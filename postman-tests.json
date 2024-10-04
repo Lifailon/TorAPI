@@ -2087,7 +2087,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{baseUrl}}/api/search/title/rutracker?query=тор&page=all",
+											"raw": "{{baseUrl}}/api/search/title/rutracker?query=${{queryAllPage}}&page=all",
 											"host": [
 												"{{baseUrl}}"
 											],
@@ -2100,7 +2100,7 @@
 											"query": [
 												{
 													"key": "query",
-													"value": "тор",
+													"value": "${{queryAllPage}}",
 													"description": "(Required) Query parameter"
 												},
 												{
@@ -2221,7 +2221,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{baseUrl}}/api/search/title/kinozal?query=тор&page=all&year=0",
+											"raw": "{{baseUrl}}/api/search/title/kinozal?query=${{queryAllPage}}&page=all&year=0",
 											"host": [
 												"{{baseUrl}}"
 											],
@@ -2234,7 +2234,7 @@
 											"query": [
 												{
 													"key": "query",
-													"value": "тор",
+													"value": "${{queryAllPage}}",
 													"description": "(Required) Query parameter"
 												},
 												{
@@ -2355,7 +2355,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{baseUrl}}/api/search/title/rutor?query=тор&page=all",
+											"raw": "{{baseUrl}}/api/search/title/rutor?query=${{queryAllPage}}&page=all",
 											"host": [
 												"{{baseUrl}}"
 											],
@@ -2368,7 +2368,7 @@
 											"query": [
 												{
 													"key": "query",
-													"value": "тор",
+													"value": "${{queryAllPage}}",
 													"description": "(Required) Query parameter"
 												},
 												{
@@ -2479,7 +2479,7 @@
 											}
 										],
 										"url": {
-											"raw": "{{baseUrl}}/api/search/title/nonameclub?query=тор&page=all",
+											"raw": "{{baseUrl}}/api/search/title/nonameclub?query=${{queryAllPage}}&page=all",
 											"host": [
 												"{{baseUrl}}"
 											],
@@ -2492,7 +2492,7 @@
 											"query": [
 												{
 													"key": "query",
-													"value": "тор",
+													"value": "${{queryAllPage}}",
 													"description": "(Required) Query parameter"
 												},
 												{
@@ -3252,6 +3252,11 @@
 		{
 			"key": "query",
 			"value": "The Rookie"
+		},
+		{
+			"key": "queryAllPage",
+			"value": "тор",
+			"type": "string"
 		},
 		{
 			"key": "RuTrackerTestId",
