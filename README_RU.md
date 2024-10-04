@@ -71,7 +71,7 @@
 
 ### Docker Hub
 
-Проект использует [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/actions) для сборки контейнера Docker и автоматического тестирования функциональности всех конечных точек.
+Проект использует [GitHub Actions](https://github.com/Lifailon/TorAPI/actions) для сборки контейнера Docker и автоматического тестирования функциональности всех конечных точек.
 
 #### Run
 
@@ -103,7 +103,7 @@ curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/docker-compose.y
 curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/.env.yml
 ```
 
-Отредактируйте переменные окружения в файле `.env` (необходимо для использования прокси сервера), и запустите контейнер:
+Отредактируйте переменные окружения в файле [.env](.env) (необходимо для использования прокси сервера), и запустите контейнер:
 
 ```shell
 docker-compose up -d

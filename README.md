@@ -71,7 +71,7 @@ You can deploy your own public API to Vercel from this repository, just click th
 
 ### Docker Hub
 
-The project uses [GitHub Actions workflows](https://github.com/Lifailon/TorAPI/actions) to build the Docker container and automatically test the functionality of all endpoints.
+The project uses [GitHub Actions](https://github.com/Lifailon/TorAPI/actions) to build the Docker container and automatically test the functionality of all endpoints.
 
 #### Run
 

@@ -61,14 +61,14 @@ jobs:
         echo "npm version: $(npm --version)"
         echo "newman version: $(newman --version)"
 
-    - name: Build docker image and run container 
-      if: ${{ github.event.inputs.Url == 'http://localhost:8443' && github.event.inputs.Docker == true }}
+    - name: Build docker image and run container
+      if: ${{ github.event.inputs.Url == 'http://localhost:8443' && github.event.inputs.Docker == 'true' }}
       run: |
         docker build -t lifailon/torapi:latest .
         docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
 
     - name: Install dependencies and start local server
-      if: ${{ github.event.inputs.Url == 'http://localhost:8443' && github.event.inputs.Docker == false }}
+      if: ${{ github.event.inputs.Url == 'http://localhost:8443' && github.event.inputs.Docker == 'false' }}
       run: |
         npm install
         npm start > torapi.log &
