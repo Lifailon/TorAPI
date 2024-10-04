@@ -235,7 +235,11 @@ To run tests locally:
 
 ```shell
 npm install -g newman
-newman run .\postman-tests.json --iteration-count 1 --env-var "query=The Rookie" --env-var "queryAllPage=test" --env-var "baseUrl=http://localhost:8443"
+newman run postman-tests.json \
+    --iteration-count 1 \
+    --env-var "query=The Rookie" \
+    --env-var "queryAllPage=test" \
+    --env-var "baseUrl=http://localhost:8443"
 ...
 ┌─────────────────────────┬────────────────────┬────────────────────┐
 │                         │           executed │             failed │

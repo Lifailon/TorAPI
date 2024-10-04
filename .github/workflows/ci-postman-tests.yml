@@ -94,13 +94,13 @@ jobs:
     - name: Run postman tests
       run: |
         newman run postman-tests.json \
-        --iteration-count ${{ github.event.inputs.Iterations }} \
-        --env-var "query=${{ github.event.inputs.Query }}" \
-        --env-var "queryAllPage=${{ github.event.inputs.queryAllPage }}" \
-        --env-var "baseUrl=${{ github.event.inputs.Url }}" \
-        --reporters cli,junit,html \
-        --reporter-html-export postman-report.html \
-        --reporter-junit-export postman-results.xml
+          --iteration-count ${{ github.event.inputs.Iterations }} \
+          --env-var "query=${{ github.event.inputs.Query }}" \
+          --env-var "queryAllPage=${{ github.event.inputs.queryAllPage }}" \
+          --env-var "baseUrl=${{ github.event.inputs.Url }}" \
+          --reporters cli,junit,html \
+          --reporter-html-export postman-report.html \
+          --reporter-junit-export postman-results.xml
 
     - name: View local server logs
       if: ${{ github.event.inputs.Url == 'http://localhost:8443' && (success() || failure()) }}
