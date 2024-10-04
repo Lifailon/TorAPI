@@ -21,9 +21,9 @@
  *                     items:
  *                       type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
  * /api/provider/check:
  *   get:
  *     tags: [Providers]
@@ -47,9 +47,9 @@
  *                   NoNameClub:
  *                     type: boolean
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
  * /api/provider/test:
  *   get:
  *     tags: [Providers]
@@ -156,12 +156,92 @@
  *                           NoNameClub:
  *                             type: number
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
+ * /api/category/rutracker:
+ *   get:
+ *     tags: [Category]
+ *     description: Get a static list of categories for content filtering for the RuTracker provider
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   num:
+ *                     type: string
+ *       400:
+ *         description: No data
+ *       404:
+ *         description: Endpoint not found
+ * /api/category/kinozal:
+ *   get:
+ *     tags: [Category]
+ *     description: Get a static list of categories for content filtering for the Kinozal provider
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   num:
+ *                     type: string
+ *       400:
+ *         description: No data
+ *       404:
+ *         description: Endpoint not found
+ * /api/category/rutor:
+ *   get:
+ *     tags: [Category]
+ *     description: Get a static list of categories for content filtering for the RuTor provider
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   num:
+ *                     type: string
+ *       400:
+ *         description: No data
+ *       404:
+ *         description: Endpoint not found
+ * /api/category/nonameclub:
+ *   get:
+ *     tags: [Category]
+ *     description: Get a static list of categories for content filtering for the NoNameClub provider
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   num:
+ *                     type: string
+ *       400:
+ *         description: No data
+ *       404:
+ *         description: Endpoint not found
  * /api/get/rss/rutracker:
  *   get:
- *     tags: [Get RSS feed]
+ *     tags: [RSS]
  *     description: Get native RSS news feed from RuTracker provider in XML or JSON format. To get the answer in the required format, use the parameter in the answer block.
  *     responses:
  *       200:
@@ -197,7 +277,7 @@
  *                     type: string
  * /api/get/rss/kinozal:
  *   get:
- *     tags: [Get RSS feed]
+ *     tags: [RSS]
  *     description: Get native RSS news feed from Kinozal provider in XML or JSON format. To get the answer in the required format, use the parameter in the answer block.
  *     responses:
  *       200:
@@ -228,12 +308,12 @@
  *                   pubDate:
  *                     type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
  * /api/get/rss/rutor:
  *   get:
- *     tags: [Get RSS feed]
+ *     tags: [RSS]
  *     description: Get custom RSS news feed from RuTor provider in XML or JSON format. To get the answer in the required format, use the parameter in the answer block.
  *     responses:
  *       200:
@@ -272,12 +352,12 @@
  *                   peers:
  *                     type: integer
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
  * /api/get/rss/nonameclub:
  *   get:
- *     tags: [Get RSS feed]
+ *     tags: [RSS]
  *     description: Get native RSS news feed from NoNameClub provider in XML or JSON format. To get the answer in the required format, use the parameter in the answer block.
  *     responses:
  *       200:
@@ -316,9 +396,9 @@
  *                   "comments":
  *                     type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
  * /api/search/title/rutracker:
  *   get:
  *     tags: [Search by Title]
@@ -333,11 +413,22 @@
  *           example: "The Rookie"
  *       - name: page
  *         in: query
- *         description: Page number
+ *         description: Page number (10 max) or all
  *         schema:
- *           type: integer
+ *           type: string
+ *           enum:
+ *             - 0
+ *             - 1
+ *             - 2
+ *             - 3
+ *             - 4
+ *             - 5
+ *             - 6
+ *             - 7
+ *             - 8
+ *             - 9
+ *             - all
  *           default: 0
- *           minimum: 0
  *     responses:
  *       '200':
  *         description: Successful response
@@ -373,9 +464,9 @@
  *                   Date:
  *                     type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
  * /api/search/title/kinozal:
  *   get:
  *     tags: [Search by Title]
@@ -390,11 +481,32 @@
  *           example: "The Rookie"
  *       - name: page
  *         in: query
- *         description: Page number
+ *         description: Page number (100 max) or all
  *         schema:
- *           type: integer
+ *           type: string
+ *           enum:
+ *             - 0
+ *             - 1
+ *             - 2
+ *             - 3
+ *             - 4
+ *             - 5
+ *             - 6
+ *             - 7
+ *             - 8
+ *             - 9
+ *             - 10
+ *             - 11
+ *             - 12
+ *             - 13
+ *             - 14
+ *             - 15
+ *             - 16
+ *             - 17
+ *             - 18
+ *             - 19
+ *             - all
  *           default: 0
- *           minimum: 0
  *       - name: year
  *         in: query
  *         description: Year release
@@ -442,9 +554,9 @@
  *                   Date:
  *                     type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
  * /api/search/title/rutor:
  *   get:
  *     tags: [Search by Title]
@@ -459,11 +571,32 @@
  *           example: "The Rookie"
  *       - name: page
  *         in: query
- *         description: Page number
+ *         description: Page number (20 max) or all
  *         schema:
- *           type: integer
+ *           type: string
+ *           enum:
+ *             - 0
+ *             - 1
+ *             - 2
+ *             - 3
+ *             - 4
+ *             - 5
+ *             - 6
+ *             - 7
+ *             - 8
+ *             - 9
+ *             - 10
+ *             - 11
+ *             - 12
+ *             - 13
+ *             - 14
+ *             - 15
+ *             - 16
+ *             - 17
+ *             - 18
+ *             - 19
+ *             - all
  *           default: 0
- *           minimum: 0
  *     responses:
  *       '200':
  *         description: Successful response
@@ -495,9 +628,9 @@
  *                   Date:
  *                     type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
  * /api/search/title/nonameclub:
  *   get:
  *     tags: [Search by Title]
@@ -512,11 +645,16 @@
  *           example: "The Rookie"
  *       - name: page
  *         in: query
- *         description: Page number
+ *         description: Page number (4 max) or all
  *         schema:
- *           type: integer
+ *           type: string
+ *           enum:
+ *             - 0
+ *             - 1
+ *             - 2
+ *             - 3
+ *             - all
  *           default: 0
- *           minimum: 0
  *     responses:
  *       '200':
  *         description: Successful response
@@ -548,9 +686,9 @@
  *                   Date:
  *                     type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
  * /api/search/title/all:
  *   get:
  *     tags: [Search by Title]
@@ -565,11 +703,22 @@
  *           example: "The Rookie"
  *       - name: page
  *         in: query
- *         description: Page number
+ *         description: Page number or all
  *         schema:
- *           type: integer
+ *           type: string
+ *           enum:
+ *             - 0
+ *             - 1
+ *             - 2
+ *             - 3
+ *             - 4
+ *             - 5
+ *             - 6
+ *             - 7
+ *             - 8
+ *             - 9
+ *             - all
  *           default: 0
- *           minimum: 0
  *       - name: year
  *         in: query
  *         description: Year release
@@ -699,9 +848,9 @@
  *                       Date:
  *                         type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
  * /api/search/id/rutracker:
  *   get:
  *     tags: [Search by ID]
@@ -774,9 +923,9 @@
  *                         Size:
  *                           type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found 
+ *         description: Endpoint not found 
  * /api/search/id/kinozal:
  *   get:
  *     tags: [Search by ID]
@@ -881,9 +1030,9 @@
  *                         Size:
  *                           type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found 
+ *         description: Endpoint not found 
  * /api/search/id/rutor:
  *   get:
  *     tags: [Search by ID]
@@ -950,9 +1099,9 @@
  *                         Size:
  *                           type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found 
+ *         description: Endpoint not found 
  * /api/search/id/nonameclub:
  *   get:
  *     tags: [Search by ID]
@@ -1031,7 +1180,7 @@
  *                         Size:
  *                           type: string
  *       400:
- *         description: Bad request
+ *         description: No data
  *       404:
- *         description: Not found
+ *         description: Endpoint not found
 */
