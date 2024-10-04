@@ -9,6 +9,11 @@ const proxy         = require('https-proxy-agent')
 const iconv         = require('iconv-lite')
 const xml2js        = require('xml2js')
 const cors          = require('cors')
+const path          = require('path')
+const fs            = require('fs')
+
+// Прочитать содержимое файла с категориями
+const categoryList = JSON.parse(fs.readFileSync(path.join(__dirname, 'category.json'), 'utf-8'))
 
 // Параметры запуска
 const { hideBin } = require('yargs/helpers')
@@ -749,7 +754,8 @@ async function KinozalAllPage(query, year) {
         currentResult.forEach(element => {
             result.push(element)
         })
-        if (currentResult.length === 50 && page < 19) {
+        // Максимум 100 страниц
+        if (currentResult.length === 50 && page < 99) {
             page++
         }
         else {
@@ -1967,7 +1973,7 @@ const options = {
         openapi: '3.0.0',
         info: {
             title: 'TorAPI',
-            version: '0.4.0',
+            version: '0.5.0',
             description: 'Unofficial API (backend) for RuTracker, Kinozal, RuTor and NoNameClub',
             contact: {
                 name: "© Lifailon (Alex Kup)",
@@ -2039,12 +2045,12 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     // Проверяем стартовую конечную точку
     if (endpoint !== 'api') {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
-        return res.status(404).send(`Endpoint not found`)
+        return res.status(404).send('Endpoint not found')
     }
     // Второй обязательный path-параметр: search/provider
     let category = req.params.category
     if (category === undefined) {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Endpoint not found. Endpoint: ${req.path}`)
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
     }
     // Опускаем регистр
@@ -2052,7 +2058,7 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     let type = req.params.type
     // Проверяем третий path-параметр (title/id for search or list for provider)
     if (type === undefined) {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Endpoint not found. Endpoint: ${req.path}`)
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
     }
     // Конечная точка, возвращающая список провайдеров
@@ -2060,12 +2066,11 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
         return res.json(providerList)
     }
-    // Конечная точка проверки доступности провайдеров (только Title)
+    // Конечная точка для проверки доступности провайдеров (только поиск по Title)
     if (category === "provider" && type === "check") {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
         const testQuery = "The Rookie"
         try {
-            // Проверяем поиск по Title
             const RuTrackerResult = await RuTracker(testQuery, 0)
             const RuTrackerCheck = Array.isArray(RuTrackerResult) && RuTrackerResult.length > 0 && RuTrackerResult[0].Name && RuTrackerResult[0].Id && RuTrackerResult[0].Url
             const KinozalResult = await Kinozal(testQuery, 0, 0)
@@ -2088,7 +2093,7 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
             return res.status(400).json({ Result: 'No data' })
         }
     }
-    // Конечная точка проверки доступности всех конечных точек
+    // Конечная точка проверки доступности всех конечных точек (RSS, поиск по Title и ID)
     if (category === "provider" && type === "test") {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
         try {
@@ -2101,14 +2106,34 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
             )
         }
     }
+    // Возвращаем список категорий
+    if (category === "category") {
+        if (type === "rutracker") {
+            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
+            return res.json([categoryList.RuTracker])
+        }
+        else if (type === "kinozal") {
+            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
+            return res.json([categoryList.Kinozal])
+        }
+        else if (type === "rutor") {
+            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
+            return res.json([categoryList.RuTor])
+        }
+        else if (type === "nonameclub") {
+            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
+            return res.json([categoryList.NoNameClub])
+        }
+    }
+    // Отвечаем, если 3-й параметр type не валидный, что бы пропустить к основным маршрутам поиска
     if (type !== "title" && type !== "id" && type !== "rss") {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Endpoint not found. Endpoint: ${req.path}`)
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
     }
     // Проверяем последний обязательный параметр имени провайдера
     let provider = req.params.provider
     if (provider === undefined) {
-        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [400] Endpoint not found. Endpoint: ${req.path}`)
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
     }
     // Логируем запросы
@@ -2119,13 +2144,43 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         try {
             let Results
             if (page === 'all') {
-                // Параллельное выполнение:
-                const [RuTrackerResult, KinozalResult, RuTorResult, NoNameClubResult] = await Promise.all([
-                    RuTrackerAllPage(query),
-                    KinozalAllPage(query, year),
-                    RuTorAllPage(query),
-                    NoNameClubAllPage(query)
-                ])
+                // Параллельное выполнение
+                // const [
+                //     RuTrackerResult,
+                //     KinozalResult,
+                //     RuTorResult,
+                //     NoNameClubResult
+                // ] = await Promise.allSettled([
+                //     RuTrackerAllPage(query),
+                //     KinozalAllPage(query, year),
+                //     RuTorAllPage(query),
+                //     NoNameClubAllPage(query)
+                // ])
+                // const [
+                //     RuTrackerResult,
+                //     KinozalResult
+                // ] = await Promise.allSettled([
+                //     RuTrackerAllPage(query),
+                //     KinozalAllPage(query, year)
+                // ])
+                // const [
+                //     RuTorResult,
+                //     NoNameClubResult
+                // ] = await Promise.allSettled([
+                //     RuTorAllPage(query),
+                //     NoNameClubAllPage(query)
+                // ])
+                // Results = {
+                //     RuTracker: RuTrackerResult.value,
+                //     Kinozal: KinozalResult.value,
+                //     RuTor: RuTorResult.value,
+                //     NoNameClub: NoNameClubResult.value
+                // }
+                // Синхронное выполнение
+                const RuTrackerResult = await RuTrackerAllPage(query)
+                const KinozalResult = await KinozalAllPage(query, year)
+                const RuTorResult = await RuTorAllPage(query)
+                const NoNameClubResult = await NoNameClubAllPage(query)
                 // Объединяем результаты в один массив
                 Results = {
                     RuTracker: RuTrackerResult,
@@ -2135,14 +2190,17 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
                 }
             }
             else {
-                // Параллельное выполнение:
-                const [RuTrackerResult, KinozalResult, RuTorResult, NoNameClubResult] = await Promise.all([
+                const [
+                    RuTrackerResult,
+                    KinozalResult,
+                    RuTorResult,
+                    NoNameClubResult
+                ] = await Promise.all([
                     RuTracker(query, page),
                     Kinozal(query, page, year),
                     RuTor(query, page),
                     NoNameClub(query, page)
                 ])
-                // Объединяем результаты в один массив
                 Results = {
                     RuTracker: RuTrackerResult,
                     Kinozal: KinozalResult,
