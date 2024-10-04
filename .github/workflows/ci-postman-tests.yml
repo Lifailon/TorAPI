@@ -66,16 +66,19 @@ jobs:
       run: |
         docker build -t lifailon/torapi:latest .
         docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
-        for i in {1..10}; do
+        for i in {1..30 }; do
           response_code=$(curl -o /dev/null -s -w '%{http_code}' http://localhost:8443/api/provider/list 2> /dev/null || echo "404") 
           if [ "$response_code" -eq 200 ]; then
-            echo "Server is up (status code 200)"
+            echo "Server is up: status code 200"
             break
           else
-            echo "Waiting for the server to start: $(($i*5)) seconds..."
-            sleep 5
+            echo "Waiting for the server to start: $(($i*2)) seconds..."
+            sleep 2
           fi
         done
+        if [ "$response_code" -ne 200 ]; then
+          exit 1
+        fi
 
     - name: Install dependencies and start local server
       if: ${{ github.event.inputs.Url == 'http://localhost:8443' && github.event.inputs.Docker == 'false' }}
