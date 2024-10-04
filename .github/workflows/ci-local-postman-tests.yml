@@ -8,21 +8,26 @@ on:
         required: true
         default: 'The+Rookie'
         type: string
-      Url:
-        description: 'Parameter for API request'
+      Iterations:
+        description: 'Iteration count for tests'
         required: false
-        default: 'http://127.0.0.1:8443'
+        default: 1
+        type: number
+      Url:
+        description: 'Local or Publish server'
+        required: false
+        default: 'http://localhost:8443'
         type: choice
         options:
-          - 'http://127.0.0.1:8443'
+          - 'http://localhost:8443'
           - 'https://torapi.vercel.app'
           - 'https://toruapi.vercel.app'
           - 'https://rutorapi.vercel.app'
-      Iterations:
-        description: 'Iteration count for tests'
-        required: true
-        default: 1
-        type: number
+      Docker:
+        description: 'Build docker image'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build:
@@ -32,12 +37,6 @@ jobs:
     - name: Clone repository
       uses: actions/checkout@v4
 
-    # - name: Install Node.js
-    #   run: |
-    #     sudo apt update
-    #     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
-    #     sudo apt-get install -y nodejs
-    
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
@@ -62,13 +61,16 @@ jobs:
         echo "npm version: $(npm --version)"
         echo "newman version: $(newman --version)"
 
-    - name: Install dependencies
+    - name: Build docker image and run container 
+      if: ${{ github.event.inputs.Url == 'http://localhost:8443' && github.event.inputs.Docker == true }}
+      run: |
+        docker build -t lifailon/torapi:latest .
+        docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
+
+    - name: Install dependencies and start local server
+      if: ${{ github.event.inputs.Url == 'http://localhost:8443' && github.event.inputs.Docker == false }}
       run: |
         npm install
-
-    - name: Start local server
-      if: ${{ github.event.inputs.Url == 'http://127.0.0.1:8443' }}
-      run: |
         npm start > torapi.log &
 
     - name: Run postman tests
@@ -81,10 +83,14 @@ jobs:
         --reporter-html-export postman-report.html \
         --reporter-junit-export postman-results.xml
 
-    - name: View log
-      if: ${{ github.event.inputs.Url == 'http://127.0.0.1:8443' && (success() || failure()) }}
+    - name: View local server logs
+      if: ${{ github.event.inputs.Url == 'http://localhost:8443' && (success() || failure()) }}
       run: |
-        cat torapi.log
+        if [ "${{ github.event.inputs.Docker }}" = "false" ]; then
+          cat torapi.log
+        else
+          docker logs TorAPI
+        fi
 
     - name: Upload Newman HTML Report
       uses: actions/upload-artifact@v4

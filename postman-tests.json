@@ -24,22 +24,14 @@
 											"    pm.response.to.have.status(200)\r",
 											"})\r",
 											"\r",
-											"pm.test(\"Response time is less than 5 seconds\", function () {\r",
-											"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
-											"    pm.expect(pm.response.responseTime).to.be.below(5000)\r",
+											"pm.test(\"Response time is less than 4 seconds\", function () {\r",
+											"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(4000)\r",
 											"})\r",
 											"\r",
 											"pm.test(\"Checking CORS Headers is present: Access-Control-Allow-Origin\", function () {\r",
 											"    pm.response.to.have.header(\"Access-Control-Allow-Origin\")\r",
-											"})\r",
-											"\r",
-											"// pm.test(\"Checking CORS Headers is present: Access-Control-Allow-Origin\", function () {\r",
-											"//     pm.response.to.have.header(\"Access-Control-Allow-Methods\")\r",
-											"// })\r",
-											"\r",
-											"// pm.test(\"Checking CORS Headers is present: Access-Control-Allow-Headers\", function () {\r",
-											"//     pm.response.to.have.header(\"Access-Control-Allow-Headers\")\r",
-											"// })"
+											"})"
 										],
 										"type": "text/javascript",
 										"packages": {}
@@ -122,7 +114,7 @@
 											"})\r",
 											"\r",
 											"pm.test(\"Response time is less than 5 seconds\", function () {\r",
-											"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
+											"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
 											"    pm.expect(pm.response.responseTime).to.be.below(5000)\r",
 											"})\r",
 											"\r",
@@ -225,7 +217,7 @@
 											"})\r",
 											"\r",
 											"pm.test(\"Response time is less than 10 seconds\", function () {\r",
-											"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
+											"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
 											"    pm.expect(pm.response.responseTime).to.be.below(10000)\r",
 											"})\r",
 											"\r",
@@ -259,8 +251,7 @@
 											"    pm.expect(responseJSON[0].Id.Files.Kinozal).to.eql(true)\r",
 											"    pm.expect(responseJSON[0].Id.Files.RuTor).to.eql(true)\r",
 											"    pm.expect(responseJSON[0].Id.Files.NoNameClub).to.eql(true)\r",
-											"})\r",
-											""
+											"})"
 										],
 										"type": "text/javascript",
 										"packages": {}
@@ -361,9 +352,9 @@
 											"    pm.response.to.have.status(200)\r",
 											"})\r",
 											"\r",
-											"pm.test(\"Response time is less than 5 seconds\", function () {\r",
-											"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
-											"    pm.expect(pm.response.responseTime).to.be.below(5000)\r",
+											"pm.test(\"Response time is less than 1 seconds\", function () {\r",
+											"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
 											"})"
 										],
 										"type": "text/javascript",
@@ -422,9 +413,9 @@
 											"    pm.response.to.have.status(200)\r",
 											"})\r",
 											"\r",
-											"pm.test(\"Response time is less than 5 seconds\", function () {\r",
-											"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
-											"    pm.expect(pm.response.responseTime).to.be.below(5000)\r",
+											"pm.test(\"Response time is less than 1 seconds\", function () {\r",
+											"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
 											"})"
 										],
 										"type": "text/javascript",
@@ -483,9 +474,9 @@
 											"    pm.response.to.have.status(200)\r",
 											"})\r",
 											"\r",
-											"pm.test(\"Response time is less than 5 seconds\", function () {\r",
-											"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
-											"    pm.expect(pm.response.responseTime).to.be.below(5000)\r",
+											"pm.test(\"Response time is less than 1 seconds\", function () {\r",
+											"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
 											"})"
 										],
 										"type": "text/javascript",
@@ -544,9 +535,9 @@
 											"    pm.response.to.have.status(200)\r",
 											"})\r",
 											"\r",
-											"pm.test(\"Response time is less than 5 seconds\", function () {\r",
-											"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
-											"    pm.expect(pm.response.responseTime).to.be.below(5000)\r",
+											"pm.test(\"Response time is less than 1 seconds\", function () {\r",
+											"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
 											"})"
 										],
 										"type": "text/javascript",
@@ -600,7 +591,7 @@
 					"name": "Get",
 					"item": [
 						{
-							"name": "rss",
+							"name": "RSS",
 							"item": [
 								{
 									"name": "RuTracker",
@@ -613,9 +604,9 @@
 													"    pm.response.to.have.status(200)\r",
 													"})\r",
 													"\r",
-													"pm.test(\"Response time is less than 3 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
-													"    pm.expect(pm.response.responseTime).to.be.below(3000)\r",
+													"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
 													"})\r",
 													"\r",
 													"pm.test(\"Body matches string\", function () {\r",
@@ -704,9 +695,9 @@
 													"    pm.response.to.have.status(200)\r",
 													"})\r",
 													"\r",
-													"pm.test(\"Response time is less than 3 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
-													"    pm.expect(pm.response.responseTime).to.be.below(3000)\r",
+													"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
 													"})\r",
 													"\r",
 													"pm.test(\"Body matches string\", function () {\r",
@@ -795,9 +786,9 @@
 													"    pm.response.to.have.status(200)\r",
 													"})\r",
 													"\r",
-													"pm.test(\"Response time is less than 3 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
-													"    pm.expect(pm.response.responseTime).to.be.below(3000)\r",
+													"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
 													"})\r",
 													"\r",
 													"pm.test(\"Body matches string\", function () {\r",
@@ -896,9 +887,9 @@
 													"    pm.response.to.have.status(200)\r",
 													"})\r",
 													"\r",
-													"pm.test(\"Response time is less than 3 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
-													"    pm.expect(pm.response.responseTime).to.be.below(3000)\r",
+													"pm.test(\"Response time is less than 2 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
 													"})\r",
 													"\r",
 													"pm.test(\"Body matches string\", function () {\r",
@@ -994,7 +985,7 @@
 					"name": "Search",
 					"item": [
 						{
-							"name": "title",
+							"name": "Title",
 							"item": [
 								{
 									"name": "RuTracker",
@@ -1008,7 +999,7 @@
 													"})\r",
 													"\r",
 													"pm.test(\"Response time is less than 2 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
 													"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
 													"})\r",
 													"\r",
@@ -1218,7 +1209,7 @@
 													"})\r",
 													"\r",
 													"pm.test(\"Response time is less than 2 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
 													"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
 													"})\r",
 													"\r",
@@ -1454,7 +1445,7 @@
 													"})\r",
 													"\r",
 													"pm.test(\"Response time is less than 2 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
 													"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
 													"})\r",
 													"\r",
@@ -1636,7 +1627,7 @@
 													"})\r",
 													"\r",
 													"pm.test(\"Response time is less than 2 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
 													"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
 													"})\r",
 													"\r",
@@ -1818,7 +1809,7 @@
 													"})\r",
 													"\r",
 													"pm.test(\"Response time is less than 3 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
 													"    pm.expect(pm.response.responseTime).to.be.below(3000)\r",
 													"})\r",
 													"\r",
@@ -2035,7 +2026,538 @@
 							]
 						},
 						{
-							"name": "id",
+							"name": "All Page",
+							"item": [
+								{
+									"name": "RuTracker",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Response time is less than 8 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(8000)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Name is in not null\", function () {\r",
+													"    const responseData = pm.response.json()\r",
+													"    responseData.forEach(item => {\r",
+													"        pm.expect(item.Name).to.not.be.null\r",
+													"        pm.expect(item.Name).to.not.be.undefined\r",
+													"        pm.expect(item.Name).to.not.equal('')\r",
+													"    })\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Number of results > or = 450\", function () {\r",
+													"    const responseData = pm.response.json()\r",
+													"    const numberResults = responseData.length\r",
+													"    console.log(`Number of results: ${numberResults}`)\r",
+													"    pm.expect(numberResults).to.be.at.least(450)\r",
+													"})"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/search/title/rutracker?query=тор&page=all",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"search",
+												"title",
+												"rutracker"
+											],
+											"query": [
+												{
+													"key": "query",
+													"value": "тор",
+													"description": "(Required) Query parameter"
+												},
+												{
+													"key": "page",
+													"value": "all",
+													"description": "Page number"
+												}
+											]
+										},
+										"description": "Search for a movie or TV series in torrent tracker RuTracker"
+									},
+									"response": [
+										{
+											"name": "Successful response",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/search/title/rutracker?query=<string>&page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"search",
+														"title",
+														"rutracker"
+													],
+													"query": [
+														{
+															"key": "query",
+															"value": "<string>",
+															"description": "(Required) Query parameter"
+														},
+														{
+															"key": "page",
+															"value": "0",
+															"description": "Page number"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "[\n  {\n    \"Name\": \"<string>\",\n    \"Id\": \"<string>\",\n    \"Url\": \"<string>\",\n    \"Torrent\": \"<string>\",\n    \"Size\": \"<string>\",\n    \"Download_Count\": \"<string>\",\n    \"Checked\": \"<string>\",\n    \"Type\": \"<string>\",\n    \"Type_Link\": \"<string>\",\n    \"Seeds\": \"<string>\",\n    \"Peers\": \"<string>\",\n    \"Date\": \"<string>\"\n  }\n]"
+										}
+									]
+								},
+								{
+									"name": "Kinozal",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Response time is less than 8 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(8000)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Name is in not null\", function () {\r",
+													"    const responseData = pm.response.json()\r",
+													"    responseData.forEach(item => {\r",
+													"        pm.expect(item.Name).to.not.be.null\r",
+													"        pm.expect(item.Name).to.not.be.undefined\r",
+													"        pm.expect(item.Name).to.not.equal('')\r",
+													"    })\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Number of results > or = 200\", function () {\r",
+													"    const responseData = pm.response.json()\r",
+													"    const numberResults = responseData.length\r",
+													"    console.log(`Number of results: ${numberResults}`)\r",
+													"    pm.expect(numberResults).to.be.at.least(200)\r",
+													"})"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/search/title/kinozal?query=тор&page=all&year=0",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"search",
+												"title",
+												"kinozal"
+											],
+											"query": [
+												{
+													"key": "query",
+													"value": "тор",
+													"description": "(Required) Query parameter"
+												},
+												{
+													"key": "page",
+													"value": "all",
+													"description": "Page number"
+												},
+												{
+													"key": "year",
+													"value": "0",
+													"description": "Year release"
+												}
+											]
+										},
+										"description": "Search for a movie or TV series in torrent tracker Kinozal"
+									},
+									"response": [
+										{
+											"name": "Successful response",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/search/title/kinozal?query=<string>&page=0&year=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"search",
+														"title",
+														"kinozal"
+													],
+													"query": [
+														{
+															"key": "query",
+															"value": "<string>",
+															"description": "(Required) Query parameter"
+														},
+														{
+															"key": "page",
+															"value": "0",
+															"description": "Page number"
+														},
+														{
+															"key": "year",
+															"value": "0",
+															"description": "Year release"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "[\n  {\n    \"Name\": \"<string>\",\n    \"Title\": \"<string>\",\n    \"Id\": \"<string>\",\n    \"Original_Name\": \"<string>\",\n    \"Year\": \"<string>\",\n    \"Language\": \"<string>\",\n    \"Format\": \"<string>\",\n    \"Url\": \"<string>\",\n    \"Torrent\": \"<string>\",\n    \"Size\": \"<string>\",\n    \"Comments\": \"<string>\",\n    \"Seeds\": \"<string>\",\n    \"Peers\": \"<string>\",\n    \"Date\": \"<string>\"\n  }\n]"
+										}
+									]
+								},
+								{
+									"name": "RuTor",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Response time is less than 8 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(8000)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Name is in not null\", function () {\r",
+													"    const responseData = pm.response.json()\r",
+													"    responseData.forEach(item => {\r",
+													"        pm.expect(item.Name).to.not.be.null\r",
+													"        pm.expect(item.Name).to.not.be.undefined\r",
+													"        pm.expect(item.Name).to.not.equal('')\r",
+													"    })\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Number of results > or = 300\", function () {\r",
+													"    const responseData = pm.response.json()\r",
+													"    const numberResults = responseData.length\r",
+													"    console.log(`Number of results: ${numberResults}`)\r",
+													"    pm.expect(numberResults).to.be.at.least(300)\r",
+													"})"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/search/title/rutor?query=тор&page=all",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"search",
+												"title",
+												"rutor"
+											],
+											"query": [
+												{
+													"key": "query",
+													"value": "тор",
+													"description": "(Required) Query parameter"
+												},
+												{
+													"key": "page",
+													"value": "all",
+													"description": "Page number"
+												}
+											]
+										},
+										"description": "Search for a movie or TV series in torrent tracker RuTor"
+									},
+									"response": [
+										{
+											"name": "Successful response",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/search/title/rutor?query=<string>&page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"search",
+														"title",
+														"rutor"
+													],
+													"query": [
+														{
+															"key": "query",
+															"value": "<string>",
+															"description": "(Required) Query parameter"
+														},
+														{
+															"key": "page",
+															"value": "0",
+															"description": "Page number"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "[\n  {\n    \"Name\": \"<string>\",\n    \"Id\": \"<string>\",\n    \"Url\": \"<string>\",\n    \"Torrent\": \"<string>\",\n    \"Hash\": \"<string>\",\n    \"Size\": \"<string>\",\n    \"Comments\": \"<string>\",\n    \"Seeds\": \"<string>\",\n    \"Peers\": \"<string>\",\n    \"Date\": \"<string>\"\n  }\n]"
+										}
+									]
+								},
+								{
+									"name": "NoNameClub",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Response time is less than 8 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(8000)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Name is in not null\", function () {\r",
+													"    const responseData = pm.response.json()\r",
+													"    responseData.forEach(item => {\r",
+													"        pm.expect(item.Name).to.not.be.null\r",
+													"        pm.expect(item.Name).to.not.be.undefined\r",
+													"        pm.expect(item.Name).to.not.equal('')\r",
+													"    })\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Number of results > or = 200\", function () {\r",
+													"    const responseData = pm.response.json()\r",
+													"    const numberResults = responseData.length\r",
+													"    console.log(`Number of results: ${numberResults}`)\r",
+													"    pm.expect(numberResults).to.be.at.least(200)\r",
+													"})"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/search/title/nonameclub?query=тор&page=all",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"search",
+												"title",
+												"nonameclub"
+											],
+											"query": [
+												{
+													"key": "query",
+													"value": "тор",
+													"description": "(Required) Query parameter"
+												},
+												{
+													"key": "page",
+													"value": "all",
+													"description": "Page number"
+												}
+											]
+										},
+										"description": "Search for a movie or TV series in torrent tracker NoNameClub"
+									},
+									"response": [
+										{
+											"name": "Successful response",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/search/title/nonameclub?query=<string>&page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"search",
+														"title",
+														"nonameclub"
+													],
+													"query": [
+														{
+															"key": "query",
+															"value": "<string>",
+															"description": "(Required) Query parameter"
+														},
+														{
+															"key": "page",
+															"value": "0",
+															"description": "Page number"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "[\n  {\n    \"Name\": \"<string>\",\n    \"Id\": \"<string>\",\n    \"Url\": \"<string>\",\n    \"Torrent\": \"<string>\",\n    \"Size\": \"<string>\",\n    \"Comments\": \"<string>\",\n    \"Type\": \"<string>\",\n    \"Seeds\": \"<string>\",\n    \"Peers\": \"<string>\",\n    \"Date\": \"<string>\"\n  }\n]"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "ID",
 							"item": [
 								{
 									"name": "RuTracker",
@@ -2079,7 +2601,7 @@
 													"})\r",
 													"\r",
 													"pm.test(\"Response time is less than 3 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
 													"    pm.expect(pm.response.responseTime).to.be.below(3000)\r",
 													"})\r",
 													"\r",
@@ -2223,8 +2745,8 @@
 													"    const responseData = response.json()\r",
 													"    // console.log(responseData)\r",
 													"    if (Array.isArray(responseData) && responseData.length > 0) {\r",
-													"        console.log(responseData[2].Id)\r",
-													"        const id = responseData[2].Id\r",
+													"        console.log(responseData[0].Id)\r",
+													"        const id = responseData[0].Id\r",
 													"        pm.collectionVariables.set(\"KinozalTestId\", id)\r",
 													"    } else {\r",
 													"        console.error(\"Unexpected response structure or empty array.\")\r",
@@ -2244,7 +2766,7 @@
 													"})\r",
 													"\r",
 													"pm.test(\"Response time is less than 3 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
 													"    pm.expect(pm.response.responseTime).to.be.below(3000)\r",
 													"})\r",
 													"\r",
@@ -2366,7 +2888,7 @@
 													"})\r",
 													"\r",
 													"pm.test(\"Response time is less than 3 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
 													"    pm.expect(pm.response.responseTime).to.be.below(3000)\r",
 													"})\r",
 													"\r",
@@ -2548,7 +3070,7 @@
 													"})\r",
 													"\r",
 													"pm.test(\"Response time is less than 3 seconds\", function () {\r",
-													"    console.log(`$Response time ${pm.response.responseTime} ms`)\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
 													"    pm.expect(pm.response.responseTime).to.be.below(3000)\r",
 													"})\r",
 													"\r",
