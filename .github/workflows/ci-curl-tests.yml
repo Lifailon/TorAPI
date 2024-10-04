@@ -8,10 +8,6 @@ on:
         required: true
         default: 'The+Rookie'
         type: string
-        # type: choice
-        # options:
-        #   - 'The+Rookie'
-        #   - 'Rocky'
       Docker:
         description: 'Image push to Docker Hub'
         required: false
