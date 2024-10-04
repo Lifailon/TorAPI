@@ -6,7 +6,7 @@ on:
       Query:
         description: 'Parameter for API request'
         required: true
-        default: 'The+Rookie'
+        default: 'The Rookie'
         type: string
       Iterations:
         description: 'Iteration count for tests'
@@ -66,6 +66,16 @@ jobs:
       run: |
         docker build -t lifailon/torapi:latest .
         docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
+        for i in {1..10}; do
+          response_code=$(curl -o /dev/null -s -w '%{http_code}' http://localhost:8443/api/provider/list)
+          if [ "$response_code" -eq 200 ]; then
+            echo "Server is up (status code 200)"
+            break
+          else
+            echo "Waiting for the server to start: $(($i*5)) seconds..."
+            sleep 5
+          fi
+        done
 
     - name: Install dependencies and start local server
       if: ${{ github.event.inputs.Url == 'http://localhost:8443' && github.event.inputs.Docker == 'false' }}
