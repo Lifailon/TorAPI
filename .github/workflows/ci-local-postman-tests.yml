@@ -67,7 +67,7 @@ jobs:
         docker build -t lifailon/torapi:latest .
         docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
         for i in {1..10}; do
-          response_code=$(curl -o /dev/null -s -w '%{http_code}' http://localhost:8443/api/provider/list)
+          response_code=$(curl -o /dev/null -s -w '%{http_code}' http://localhost:8443/api/provider/list 2> /dev/null || echo "404") 
           if [ "$response_code" -eq 200 ]; then
             echo "Server is up (status code 200)"
             break
