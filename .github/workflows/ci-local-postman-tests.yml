@@ -67,6 +67,7 @@ jobs:
         npm install
 
     - name: Start local server
+      if: ${{ github.event.inputs.Url == 'http://127.0.0.1:8443' }}
       run: |
         npm start > torapi.log &
 
@@ -81,6 +82,7 @@ jobs:
         --reporter-junit-export postman-results.xml
 
     - name: View log
+      if: ${{ github.event.inputs.Url == 'http://127.0.0.1:8443' && (success() || failure()) }}
       run: |
         cat torapi.log
 

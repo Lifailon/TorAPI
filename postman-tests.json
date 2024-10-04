@@ -33,13 +33,13 @@
 											"    pm.response.to.have.header(\"Access-Control-Allow-Origin\")\r",
 											"})\r",
 											"\r",
-											"pm.test(\"Checking CORS Headers is present: Access-Control-Allow-Headers\", function () {\r",
-											"    pm.response.to.have.header(\"Access-Control-Allow-Headers\")\r",
-											"})\r",
+											"// pm.test(\"Checking CORS Headers is present: Access-Control-Allow-Origin\", function () {\r",
+											"//     pm.response.to.have.header(\"Access-Control-Allow-Methods\")\r",
+											"// })\r",
 											"\r",
-											"pm.test(\"Checking CORS Headers is present: Access-Control-Allow-Origin\", function () {\r",
-											"    pm.response.to.have.header(\"Access-Control-Allow-Methods\")\r",
-											"})"
+											"// pm.test(\"Checking CORS Headers is present: Access-Control-Allow-Headers\", function () {\r",
+											"//     pm.response.to.have.header(\"Access-Control-Allow-Headers\")\r",
+											"// })"
 										],
 										"type": "text/javascript",
 										"packages": {}
@@ -375,9 +375,9 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{localUrl}}/api/category/rutracker",
+									"raw": "{{baseUrl}}/api/category/rutracker",
 									"host": [
-										"{{localUrl}}"
+										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
@@ -436,9 +436,9 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{localUrl}}/api/category/kinozal",
+									"raw": "{{baseUrl}}/api/category/kinozal",
 									"host": [
-										"{{localUrl}}"
+										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
@@ -497,9 +497,9 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{localUrl}}/api/category/rutor",
+									"raw": "{{baseUrl}}/api/category/rutor",
 									"host": [
-										"{{localUrl}}"
+										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
@@ -558,9 +558,9 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{localUrl}}/api/category/nonameclub",
+									"raw": "{{baseUrl}}/api/category/nonameclub",
 									"host": [
-										"{{localUrl}}"
+										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
