@@ -31,6 +31,14 @@
 											"\r",
 											"pm.test(\"Checking CORS Headers is present: Access-Control-Allow-Origin\", function () {\r",
 											"    pm.response.to.have.header(\"Access-Control-Allow-Origin\")\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Checking CORS Headers is present: Access-Control-Allow-Methods\", function () {\r",
+											"    pm.response.to.have.header(\"Access-Control-Allow-Methods\")\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Checking CORS Headers is present: Access-Control-Allow-Headers\", function () {\r",
+											"    pm.response.to.have.header(\"Access-Control-Allow-Headers\")\r",
 											"})"
 										],
 										"type": "text/javascript",
@@ -339,257 +347,261 @@
 					]
 				},
 				{
-					"name": "Category",
-					"item": [
-						{
-							"name": "RuTracker",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200)\r",
-											"})\r",
-											"\r",
-											"pm.test(\"Response time is less than 1 seconds\", function () {\r",
-											"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
-											"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
-											"})"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/category/rutracker",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"category",
-										"rutracker"
-									]
-								}
-							},
-							"response": [
-								{
-									"name": "Get a list of categories for content filtering through the RuTracker provider",
-									"originalRequest": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{localUrl}}/api/category/rutracker",
-											"host": [
-												"{{localUrl}}"
-											],
-											"path": [
-												"api",
-												"category",
-												"rutracker"
-											]
-										}
-									},
-									"_postman_previewlanguage": null,
-									"header": null,
-									"cookie": [],
-									"body": "[\r\n  {\r\n    \"num\": \"string\"\r\n  }\r\n]"
-								}
-							]
-						},
-						{
-							"name": "Kinozal",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200)\r",
-											"})\r",
-											"\r",
-											"pm.test(\"Response time is less than 1 seconds\", function () {\r",
-											"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
-											"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
-											"})"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/category/kinozal",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"category",
-										"kinozal"
-									]
-								}
-							},
-							"response": [
-								{
-									"name": "Get a list of categories for content filtering through the RuTracker provider",
-									"originalRequest": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{localUrl}}/api/category/rutracker",
-											"host": [
-												"{{localUrl}}"
-											],
-											"path": [
-												"api",
-												"category",
-												"rutracker"
-											]
-										}
-									},
-									"_postman_previewlanguage": null,
-									"header": null,
-									"cookie": [],
-									"body": "[\r\n  {\r\n    \"num\": \"string\"\r\n  }\r\n]"
-								}
-							]
-						},
-						{
-							"name": "RuTor",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200)\r",
-											"})\r",
-											"\r",
-											"pm.test(\"Response time is less than 1 seconds\", function () {\r",
-											"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
-											"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
-											"})"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/category/rutor",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"category",
-										"rutor"
-									]
-								}
-							},
-							"response": [
-								{
-									"name": "Get a list of categories for content filtering through the RuTracker provider",
-									"originalRequest": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{localUrl}}/api/category/rutracker",
-											"host": [
-												"{{localUrl}}"
-											],
-											"path": [
-												"api",
-												"category",
-												"rutracker"
-											]
-										}
-									},
-									"_postman_previewlanguage": null,
-									"header": null,
-									"cookie": [],
-									"body": "[\r\n  {\r\n    \"num\": \"string\"\r\n  }\r\n]"
-								}
-							]
-						},
-						{
-							"name": "NoNameClub",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200)\r",
-											"})\r",
-											"\r",
-											"pm.test(\"Response time is less than 1 seconds\", function () {\r",
-											"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
-											"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
-											"})"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/category/nonameclub",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"category",
-										"nonameclub"
-									]
-								}
-							},
-							"response": [
-								{
-									"name": "Get a list of categories for content filtering through the RuTracker provider",
-									"originalRequest": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{localUrl}}/api/category/rutracker",
-											"host": [
-												"{{localUrl}}"
-											],
-											"path": [
-												"api",
-												"category",
-												"rutracker"
-											]
-										}
-									},
-									"_postman_previewlanguage": null,
-									"header": null,
-									"cookie": [],
-									"body": "[\r\n  {\r\n    \"num\": \"string\"\r\n  }\r\n]"
-								}
-							]
-						}
-					]
-				},
-				{
 					"name": "Get",
 					"item": [
+						{
+							"name": "Category",
+							"item": [
+								{
+									"name": "RuTracker",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Response time is less than 1 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
+													"})"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/get/category/rutracker",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"get",
+												"category",
+												"rutracker"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Get a list of categories for content filtering through the RuTracker provider",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{localUrl}}/api/category/rutracker",
+													"host": [
+														"{{localUrl}}"
+													],
+													"path": [
+														"api",
+														"category",
+														"rutracker"
+													]
+												}
+											},
+											"_postman_previewlanguage": null,
+											"header": null,
+											"cookie": [],
+											"body": "[\r\n  {\r\n    \"num\": \"string\"\r\n  }\r\n]"
+										}
+									]
+								},
+								{
+									"name": "Kinozal",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Response time is less than 1 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
+													"})"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/get/category/kinozal",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"get",
+												"category",
+												"kinozal"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Get a list of categories for content filtering through the RuTracker provider",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{localUrl}}/api/category/rutracker",
+													"host": [
+														"{{localUrl}}"
+													],
+													"path": [
+														"api",
+														"category",
+														"rutracker"
+													]
+												}
+											},
+											"_postman_previewlanguage": null,
+											"header": null,
+											"cookie": [],
+											"body": "[\r\n  {\r\n    \"num\": \"string\"\r\n  }\r\n]"
+										}
+									]
+								},
+								{
+									"name": "RuTor",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Response time is less than 1 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
+													"})"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/get/category/rutor",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"get",
+												"category",
+												"rutor"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Get a list of categories for content filtering through the RuTracker provider",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{localUrl}}/api/category/rutracker",
+													"host": [
+														"{{localUrl}}"
+													],
+													"path": [
+														"api",
+														"category",
+														"rutracker"
+													]
+												}
+											},
+											"_postman_previewlanguage": null,
+											"header": null,
+											"cookie": [],
+											"body": "[\r\n  {\r\n    \"num\": \"string\"\r\n  }\r\n]"
+										}
+									]
+								},
+								{
+									"name": "NoNameClub",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200)\r",
+													"})\r",
+													"\r",
+													"pm.test(\"Response time is less than 1 seconds\", function () {\r",
+													"    console.log(`Response time ${pm.response.responseTime} ms`)\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
+													"})"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/get/category/nonameclub",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"get",
+												"category",
+												"nonameclub"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Get a list of categories for content filtering through the RuTracker provider",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{localUrl}}/api/category/rutracker",
+													"host": [
+														"{{localUrl}}"
+													],
+													"path": [
+														"api",
+														"category",
+														"rutracker"
+													]
+												}
+											},
+											"_postman_previewlanguage": null,
+											"header": null,
+											"cookie": [],
+											"body": "[\r\n  {\r\n    \"num\": \"string\"\r\n  }\r\n]"
+										}
+									]
+								}
+							]
+						},
 						{
 							"name": "RSS",
 							"item": [

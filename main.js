@@ -4,11 +4,9 @@ const swaggerUi     = require('swagger-ui-express')
 const yargs         = require('yargs')
 const axios         = require('axios')
 const cheerio       = require('cheerio')
-const puppeteer     = require('puppeteer')
 const proxy         = require('https-proxy-agent')
 const iconv         = require('iconv-lite')
 const xml2js        = require('xml2js')
-const cors          = require('cors')
 const path          = require('path')
 const fs            = require('fs')
 
@@ -17,7 +15,6 @@ const categoryList = JSON.parse(fs.readFileSync(path.join(__dirname, 'category.j
 
 // Параметры запуска
 const { hideBin } = require('yargs/helpers')
-const { timeout } = require('puppeteer')
 const argv = yargs(hideBin(process.argv))
     .option('port', {
         alias: 'p',
@@ -56,8 +53,9 @@ const argv = yargs(hideBin(process.argv))
     .argv
 
 // Использовать Puppeteer для получения списка файлов
-const RuTrackerPuppeteer = false
-const RuTorPuppeteer     = false
+// const puppeteer          = require('puppeteer')
+// const RuTrackerPuppeteer = false
+// const RuTorPuppeteer     = false
 
 // Создание экземпляра Axios с использованием конфигурации Proxy
 const createAxiosProxy = () => {
@@ -1973,20 +1971,21 @@ async function testEndpoints(query) {
 // Создание экземпляра Express
 const web = express()
 
-// CORS (Cross-Origin Resource Sharing) для использования в расширение OpenKinopoisk (https://github.com/Lifailon/OpenKinopoisk) 
-const corsOptions = {
-    origin: '*', // Разрешает запросы с любого домена (*)
-    methods: 'GET', // Разрешенные методы
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept' // Разрешенные заголовки
-}
-web.use(cors(corsOptions))
+// CORS (Cross-Origin Resource Sharing) для использования в расширение OpenKinopoisk (https://github.com/Lifailon/OpenKinopoisk)
+// const cors = require('cors')
+// const corsOptions = {
+//     origin: '*', // Разрешает запросы с любого домена (*)
+//     methods: 'GET', // Разрешенные методы
+//     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept' // Разрешенные заголовки
+// }
+// web.use(cors(corsOptions))
 
-// web.use((req, res, next) => {
-//     res.header("Access-Control-Allow-Origin", "*")
-//     res.header("Access-Control-Allow-Methods", "GET")
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-//     return next()
-// })
+web.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Methods", "GET")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    return next()
+})
 
 // Опции для Swagger
 const options = {
@@ -2054,7 +2053,7 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     const headerAccept = req.get('Accept')
     // Кодируем запрос в формат URL (заменяется последовательностью процентов и двумя шестнадцатеричными числами, представляющими ASCII-код символа в кодировке UTF-8)
     query = encodeURIComponent(query)
-    // Если необязательные параметры не были передан или заданы неверно, присваиваем им значения по умолчанию
+    // Если необязательные параметры не были переданы или заданы неверно, присваиваем им значения по умолчанию
     if (!page || (page !== 'all' && isNaN(page))) {
         page = 0
     }
@@ -2068,16 +2067,14 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
     }
-    // Второй обязательный path-параметр: search/provider
-    let category = req.params.category
-    if (category === undefined) {
+    // Проверяем второй обязательный path-параметр: provider, get или search
+    let category = req.params.category?.toLowerCase()
+    if (category !== 'provider' && category !== 'get' && category !== 'search') {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
     }
-    // Опускаем регистр
-    category = category.toLowerCase()
+    // Проверяем третий path-параметр (list/check/test для provider, category/rss для get, title/id для search)
     let type = req.params.type
-    // Проверяем третий path-параметр (title/id for search or list for provider)
     if (type === undefined) {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
@@ -2127,27 +2124,8 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
             )
         }
     }
-    // Возвращаем список категорий
-    if (category === "category") {
-        if (type === "rutracker") {
-            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
-            return res.json([categoryList.RuTracker])
-        }
-        else if (type === "kinozal") {
-            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
-            return res.json([categoryList.Kinozal])
-        }
-        else if (type === "rutor") {
-            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
-            return res.json([categoryList.RuTor])
-        }
-        else if (type === "nonameclub") {
-            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
-            return res.json([categoryList.NoNameClub])
-        }
-    }
-    // Отвечаем, если 3-й параметр type не валидный, что бы пропустить к основным маршрутам поиска
-    if (type !== "title" && type !== "id" && type !== "rss") {
+    // Отвечаем, если 3-й параметр type не валидный, что бы пропустить к основным маршрутам
+    if (type !== "title" && type !== "id" && type !== "rss" && type !== "category") {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
     }
@@ -2219,6 +2197,28 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         } catch (error) {
             console.error("Error:", error)
             return res.status(400).json({ Result: 'No data' })
+        }
+    }
+    // Возвращаем список категорий
+    else if (category === 'get' && type === 'category') {
+        if (provider === "rutracker") {
+            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
+            return res.json([categoryList.RuTracker])
+        }
+        else if (provider === "kinozal") {
+            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
+            return res.json([categoryList.Kinozal])
+        }
+        else if (provider === "rutor") {
+            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
+            return res.json([categoryList.RuTor])
+        }
+        else if (provider === "nonameclub") {
+            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
+            return res.json([categoryList.NoNameClub])
+        } else {
+            console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Provider ${provider} not found`)
+            return res.status(404).send(`Provider ${provider} not found`)
         }
     }
     // RuTracker Title
@@ -2437,7 +2437,8 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     }
     // Отвечаем, если провайдер не найден 
     else {
-        return res.status(400).send(`Provider ${provider} not found`)
+        console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Provider ${provider} not found`)
+        return res.status(404).send(`Provider ${provider} not found`)
     }
 })
 

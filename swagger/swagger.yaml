@@ -179,7 +179,7 @@ paths:
           description: No data
         '404':
           description: Endpoint not found
-  /api/category/rutracker:
+  /api/get/category/rutracker:
     get:
       tags:
         - Category
@@ -198,11 +198,9 @@ paths:
                   properties:
                     num:
                       type: string
-        '400':
-          description: No data
         '404':
-          description: Endpoint not found
-  /api/category/kinozal:
+          description: Provider not found
+  /api/get/category/kinozal:
     get:
       tags:
         - Category
@@ -221,11 +219,9 @@ paths:
                   properties:
                     num:
                       type: string
-        '400':
-          description: No data
         '404':
-          description: Endpoint not found
-  /api/category/rutor:
+          description: Provider not found
+  /api/get/category/rutor:
     get:
       tags:
         - Category
@@ -244,11 +240,9 @@ paths:
                   properties:
                     num:
                       type: string
-        '400':
-          description: No data
         '404':
-          description: Endpoint not found
-  /api/category/nonameclub:
+          description: Provider not found
+  /api/get/category/nonameclub:
     get:
       tags:
         - Category
@@ -267,10 +261,8 @@ paths:
                   properties:
                     num:
                       type: string
-        '400':
-          description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/get/rss/rutracker:
     get:
       tags:
@@ -311,6 +303,10 @@ paths:
                       type: string
                     categoryLable:
                       type: string
+        '400':
+          description: No data
+        '404':
+          description: Provider not found
   /api/get/rss/kinozal:
     get:
       tags:
@@ -350,7 +346,7 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/get/rss/rutor:
     get:
       tags:
@@ -398,7 +394,7 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/get/rss/nonameclub:
     get:
       tags:
@@ -446,7 +442,7 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/search/title/rutracker:
     get:
       tags:
@@ -466,18 +462,18 @@ paths:
           schema:
             type: string
             enum:
-              - 0
-              - 1
-              - 2
-              - 3
-              - 4
-              - 5
-              - 6
-              - 7
-              - 8
-              - 9
+              - '0'
+              - '1'
+              - '2'
+              - '3'
+              - '4'
+              - '5'
+              - '6'
+              - '7'
+              - '8'
+              - '9'
               - all
-            default: 0
+            default: '0'
       responses:
         '200':
           description: Successful response
@@ -515,7 +511,7 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/search/title/kinozal:
     get:
       tags:
@@ -535,28 +531,28 @@ paths:
           schema:
             type: string
             enum:
-              - 0
-              - 1
-              - 2
-              - 3
-              - 4
-              - 5
-              - 6
-              - 7
-              - 8
-              - 9
-              - 10
-              - 11
-              - 12
-              - 13
-              - 14
-              - 15
-              - 16
-              - 17
-              - 18
-              - 19
+              - '0'
+              - '1'
+              - '2'
+              - '3'
+              - '4'
+              - '5'
+              - '6'
+              - '7'
+              - '8'
+              - '9'
+              - '10'
+              - '11'
+              - '12'
+              - '13'
+              - '14'
+              - '15'
+              - '16'
+              - '17'
+              - '18'
+              - '19'
               - all
-            default: 0
+            default: '0'
         - name: year
           in: query
           description: Year release
@@ -606,7 +602,7 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/search/title/rutor:
     get:
       tags:
@@ -626,28 +622,28 @@ paths:
           schema:
             type: string
             enum:
-              - 0
-              - 1
-              - 2
-              - 3
-              - 4
-              - 5
-              - 6
-              - 7
-              - 8
-              - 9
-              - 10
-              - 11
-              - 12
-              - 13
-              - 14
-              - 15
-              - 16
-              - 17
-              - 18
-              - 19
+              - '0'
+              - '1'
+              - '2'
+              - '3'
+              - '4'
+              - '5'
+              - '6'
+              - '7'
+              - '8'
+              - '9'
+              - '10'
+              - '11'
+              - '12'
+              - '13'
+              - '14'
+              - '15'
+              - '16'
+              - '17'
+              - '18'
+              - '19'
               - all
-            default: 0
+            default: '0'
       responses:
         '200':
           description: Successful response
@@ -681,7 +677,7 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/search/title/nonameclub:
     get:
       tags:
@@ -701,12 +697,12 @@ paths:
           schema:
             type: string
             enum:
-              - 0
-              - 1
-              - 2
-              - 3
+              - '0'
+              - '1'
+              - '2'
+              - '3'
               - all
-            default: 0
+            default: '0'
       responses:
         '200':
           description: Successful response
@@ -740,7 +736,7 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/search/title/all:
     get:
       tags:
@@ -760,18 +756,18 @@ paths:
           schema:
             type: string
             enum:
-              - 0
-              - 1
-              - 2
-              - 3
-              - 4
-              - 5
-              - 6
-              - 7
-              - 8
-              - 9
+              - '0'
+              - '1'
+              - '2'
+              - '3'
+              - '4'
+              - '5'
+              - '6'
+              - '7'
+              - '8'
+              - '9'
               - all
-            default: 0
+            default: '0'
         - name: year
           in: query
           description: Year release
@@ -903,7 +899,7 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/search/id/rutracker:
     get:
       tags:
@@ -979,7 +975,7 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/search/id/kinozal:
     get:
       tags:
@@ -1087,7 +1083,7 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/search/id/rutor:
     get:
       tags:
@@ -1157,7 +1153,7 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
   /api/search/id/nonameclub:
     get:
       tags:
@@ -1239,6 +1235,6 @@ paths:
         '400':
           description: No data
         '404':
-          description: Endpoint not found
+          description: Provider not found
 components: {}
 tags: []

@@ -283,7 +283,7 @@
         }
       }
     },
-    "/api/category/rutracker": {
+    "/api/get/category/rutracker": {
       "get": {
         "tags": [
           "Category"
@@ -308,16 +308,13 @@
               }
             }
           },
-          "400": {
-            "description": "No data"
-          },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
     },
-    "/api/category/kinozal": {
+    "/api/get/category/kinozal": {
       "get": {
         "tags": [
           "Category"
@@ -342,16 +339,13 @@
               }
             }
           },
-          "400": {
-            "description": "No data"
-          },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
     },
-    "/api/category/rutor": {
+    "/api/get/category/rutor": {
       "get": {
         "tags": [
           "Category"
@@ -376,16 +370,13 @@
               }
             }
           },
-          "400": {
-            "description": "No data"
-          },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
     },
-    "/api/category/nonameclub": {
+    "/api/get/category/nonameclub": {
       "get": {
         "tags": [
           "Category"
@@ -410,11 +401,8 @@
               }
             }
           },
-          "400": {
-            "description": "No data"
-          },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -474,6 +462,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "No data"
+          },
+          "404": {
+            "description": "Provider not found"
           }
         }
       }
@@ -532,7 +526,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -603,7 +597,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -674,7 +668,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -703,19 +697,19 @@
             "schema": {
               "type": "string",
               "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
                 "all"
               ],
-              "default": 0
+              "default": "0"
             }
           }
         ],
@@ -775,7 +769,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -804,29 +798,29 @@
             "schema": {
               "type": "string",
               "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                12,
-                13,
-                14,
-                15,
-                16,
-                17,
-                18,
-                19,
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "15",
+                "16",
+                "17",
+                "18",
+                "19",
                 "all"
               ],
-              "default": 0
+              "default": "0"
             }
           },
           {
@@ -903,7 +897,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -932,29 +926,29 @@
             "schema": {
               "type": "string",
               "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                12,
-                13,
-                14,
-                15,
-                16,
-                17,
-                18,
-                19,
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "15",
+                "16",
+                "17",
+                "18",
+                "19",
                 "all"
               ],
-              "default": 0
+              "default": "0"
             }
           }
         ],
@@ -1008,7 +1002,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -1037,13 +1031,13 @@
             "schema": {
               "type": "string",
               "enum": [
-                0,
-                1,
-                2,
-                3,
+                "0",
+                "1",
+                "2",
+                "3",
                 "all"
               ],
-              "default": 0
+              "default": "0"
             }
           }
         ],
@@ -1097,7 +1091,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -1126,19 +1120,19 @@
             "schema": {
               "type": "string",
               "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
                 "all"
               ],
-              "default": 0
+              "default": "0"
             }
           },
           {
@@ -1340,7 +1334,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -1457,7 +1451,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -1622,7 +1616,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -1730,7 +1724,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
@@ -1856,7 +1850,7 @@
             "description": "No data"
           },
           "404": {
-            "description": "Endpoint not found"
+            "description": "Provider not found"
           }
         }
       }
