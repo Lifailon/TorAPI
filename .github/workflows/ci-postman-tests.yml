@@ -37,11 +37,16 @@ on:
           - 'not'
           - 'GitHub'
           - 'DockerHub'
-      # Docker:
-      #   description: 'Build docker image from GitHub'
-      #   required: false
-      #   default: false
-      #   type: boolean
+      DeployDocker:
+        description: 'Deploy to Docker Hub'
+        required: false
+        default: false
+        type: boolean
+      DeployVercel:
+        description: 'Deploy to Vercel'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build:
@@ -138,3 +143,29 @@ jobs:
       if: success() || failure()
       with:
         report_paths: '**/postman-results.xml'
+
+    - name: Login to Docker Hub
+      if: ${{ github.event.inputs.DeployDocker == 'true' && success() }}
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Deploy to Docker Hub
+      if: ${{ github.event.inputs.DeployDocker == 'true' && success() }}
+      run: |
+        docker build -t lifailon/torapi:latest .
+        docker push lifailon/torapi:latest
+
+    - name: Install dependencies for deploy to Vercel
+      if: ${{ github.event.inputs.DeployVercel == 'true' && success() }}
+      run: npm install
+
+    - name: Deploy to Vercel
+      if: ${{ github.event.inputs.DeployVercel == 'true' && success() }}
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        vercel-args: '--prod'

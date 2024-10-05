@@ -19,7 +19,8 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - uses: amondnet/vercel-action@v25
+    - name: Deploy to Vercel
+      uses: amondnet/vercel-action@v25
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
