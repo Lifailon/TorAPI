@@ -53,9 +53,9 @@ const argv = yargs(hideBin(process.argv))
     .argv
 
 // Использовать Puppeteer для получения списка файлов
-// const puppeteer          = require('puppeteer')
-// const RuTrackerPuppeteer = false
-// const RuTorPuppeteer     = false
+// const puppeteer       = require('puppeteer')
+const RuTrackerPuppeteer = false
+const RuTorPuppeteer     = false
 
 // Создание экземпляра Axios с использованием конфигурации Proxy
 const createAxiosProxy = () => {
