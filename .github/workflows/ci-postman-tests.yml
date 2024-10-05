@@ -4,22 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       Iterations:
-        description: 'Iteration count for tests'
+        description: 'Iteration count for tests:'
         required: false
         default: 1
         type: number
       Query:
-        description: 'Search parameter for all API request'
+        description: 'Search parameter for all API request:'
         required: true
         default: 'The Rookie'
         type: string
       QueryAllPage:
-        description: 'Parameter for search on all pages'
+        description: 'Parameter for search on all pages:'
         required: true
         default: 'test'
         type: string
       Url:
-        description: 'Local or Publish server'
+        description: 'Local or Publish server:'
         required: false
         default: 'http://localhost:8443'
         type: choice
@@ -29,7 +29,7 @@ on:
           - 'https://toruapi.vercel.app'
           - 'https://rutorapi.vercel.app'
       Docker:
-        description: 'Local or Publish server'
+        description: 'Build Docker image from:'
         required: false
         default: 'not'
         type: choice
@@ -79,9 +79,11 @@ jobs:
       if: ${{ github.event.inputs.Url == 'http://localhost:8443' && github.event.inputs.Docker != 'not' }}
       run: |
         if [ "${{ github.event.inputs.Docker }}" == "GitHub" ]; then
+          echo "Docker build from GitHub"
           docker build -t lifailon/torapi:latest .
           docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
         elif [ "${{ github.event.inputs.Docker }}" == "DockerHub" ]; then
+          echo "Docker build from Docker Hub"
           docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped lifailon/torapi:latest
         fi
         for i in {1..30}; do
