@@ -231,7 +231,10 @@ function addTrackerList(infoHash, tracker) {
 }
 
 // RuTracker
-async function RuTracker(query, page) {
+async function RuTracker(query, categoryId, page) {
+    if (query === 'undefined') {
+        query = ''
+    }
     // Получаем кастомный номер страницы через функцию (кратный 50)
     const p = getPage(page)
     // Список все зеркальных URL провайдера для перебора в цикле в случае недоступности одного
@@ -247,7 +250,7 @@ async function RuTracker(query, page) {
     let url
     for (let i = 0; i < urls.length; i++) {
         url = urls[i]
-        urlQuery = `${urls[i]}/forum/tracker.php?nm=${query}&start=${p}`
+        urlQuery = `${urls[i]}/forum/tracker.php?nm=${query}&f=${categoryId}&start=${p}`
         try {
             const response = await axiosProxy.get(urlQuery, {
                 timeout: 3000,
@@ -282,8 +285,8 @@ async function RuTracker(query, page) {
                 'Download_Count': data(element).find('td.row4.small.number-format').text().trim(),
                 // Проверяем проверенный ли торрент и изменяем формат вывода
                 'Checked': data(element).find('td.row1.t-ico').text().trim() === '√' ? 'True' : 'False',
-                'Type': data(element).find('.row1 .f-name .gen').text().trim(),
-                'Type_Link': `${url}/forum/` + data(element).find('.row1 .f-name .gen').attr('href'),
+                // 'Type_Link': `${url}/forum/` + data(element).find('.row1 .f-name .gen').attr('href'),
+                'Category': data(element).find('.row1 .f-name .gen').text().trim(),
                 'Seeds': data(element).find('b.seedmed').text().trim(),
                 'Peers': data(element).find('td.row4.leechmed.bold').text().trim(),
                 // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
@@ -303,11 +306,11 @@ async function RuTracker(query, page) {
 }
 
 // RuTracker All Page
-async function RuTrackerAllPage(query) {
+async function RuTrackerAllPage(query, categoryId) {
     let result = []
     page = 0
     while (true) {
-        let currentResult = await RuTracker(query, page)
+        let currentResult = await RuTracker(query, categoryId, page)
         if (Array.isArray(currentResult)) {
             currentResult.forEach(element => {
                 result.push(element)
@@ -668,7 +671,10 @@ async function RuTrackerRSS(typeData) {
 }
 
 // Kinozal
-async function Kinozal(query, page, year) {
+async function Kinozal(query, categoryId, page, year, format) {
+    if (query === 'undefined') {
+        query = ''
+    }
     const urls = [
         'https://kinozal.tv',
         'https://kinozal.me',
@@ -680,7 +686,7 @@ async function Kinozal(query, page, year) {
     let url
     for (const u of urls) {
         url = u.replace('https://','')
-        const urlQuery = `${u}/browse.php?s=${query}&page=${page}&d=${year}`
+        const urlQuery = `${u}/browse.php?s=${query}&page=${page}&c=${categoryId}&d=${year}&v=${format}`
         try {
             const response = await axiosProxy.get(urlQuery, {
                 timeout: 3000,
@@ -717,6 +723,10 @@ async function Kinozal(query, page, year) {
             const s = data(element).find('.s')
             // Разбиваем дату из 3-его элемента массива 's'
             const date = s.eq(2).text().trim().split(" ")
+            // Получем жанр по type id
+            const categoryGetId = data(element).find("td.bt img")?.attr("onclick")?.match(/\d+/)[0]
+            // Получаем название жанра по id через индекс массива
+            const category = categoryList.Kinozal[categoryGetId]
             // Заполняем новый временный массив
             const torrent = {
                 // Заполняем параметры из заголовка
@@ -732,9 +742,8 @@ async function Kinozal(query, page, year) {
                 // Обновить наименования едениц измерений на англ.
                 'Size': s.eq(1).text().trim().replace(/КБ/g, 'KB').replace(/ГБ/g, 'GB').replace(/МБ/g, 'MB'),
                 'Comments': s.eq(0).text().trim(),
-                // Раздает (Seeds)
+                'Category': category,
                 'Seeds': data(element).find('.sl_s').text().trim(),
-                // Качает (Peers)
                 'Peers': data(element).find('.sl_p').text().trim(),
                 'Date': `${date[0]} ${date[2]}`
             }
@@ -749,11 +758,11 @@ async function Kinozal(query, page, year) {
 }
 
 // Kinozal All Page
-async function KinozalAllPage(query, year) {
+async function KinozalAllPage(query, categoryId, year, format) {
     let result = []
     page = 0
     while (true) {
-        let currentResult = await Kinozal(query, page, year)
+        let currentResult = await Kinozal(query, categoryId, page, year, format)
         if (Array.isArray(currentResult)) {
             currentResult.forEach(element => {
                 result.push(element)
@@ -997,7 +1006,10 @@ async function KinozalRSS(typeData) {
 }
 
 // RuTor
-async function RuTor(query, page) {
+async function RuTor(query, categoryId, page) {
+    if (query === 'undefined') {
+        query = ''
+    }
     const urls = [
         'https://rutor.info',
         'https://rutor.is',
@@ -1009,7 +1021,7 @@ async function RuTor(query, page) {
     let url
     for (const u of urls) {
         url = u
-        const urlQuery = `${u}/search/${page}/0/300/0/${query}`
+        const urlQuery = `${u}/search/${page}/${categoryId}/300/0/${query}`
         try {
             const response = await axiosProxy.get(urlQuery, {
                 timeout: 3000,
@@ -1066,11 +1078,11 @@ async function RuTor(query, page) {
 }
 
 // RuTor All Page
-async function RuTorAllPage(query) {
+async function RuTorAllPage(query, categoryId) {
     let result = []
     page = 0
     while (true) {
-        let currentResult = await RuTor(query, page)
+        let currentResult = await RuTor(query, categoryId, page)
         if (Array.isArray(currentResult)) {
             currentResult.forEach(element => {
                 result.push(element)
@@ -1408,9 +1420,15 @@ async function RuTorRSS(typeData) {
 }
 
 // NoNameClub
-async function NoNameClub(query, page) {
+async function NoNameClub(query, categoryId, page) {
+    if (query === 'undefined') {
+        query = ''
+    }
+    if (categoryId === 0) {
+        categoryId = ''
+    }
     const p = getPage(page)
-    const url = `https://nnmclub.to/forum/tracker.php?nm=${query}&start=${p}`
+    const url = `https://nnmclub.to/forum/tracker.php?nm=${query}&f=${categoryId}&start=${p}`
     const torrents = []
     let html
     try {
@@ -1442,7 +1460,7 @@ async function NoNameClub(query, page) {
                 'Torrent': "https://nnmclub.to/forum/" + data(element).find('a:eq(3)').attr('href'),
                 'Size': size,
                 'Comments': data(element).find(`.gensmall:eq(${sizeIndex + 1})`).text().trim(),
-                'Type': data(element).find('.gen').text().trim(),
+                'Category': data(element).find('.gen').text().trim(),
                 'Seeds': data(element).find('.seedmed').text().trim(),
                 'Peers': data(element).find('.leechmed').text().trim(),
                 // Забираем и преобразуем timestamp
@@ -1461,11 +1479,11 @@ async function NoNameClub(query, page) {
 }
 
 // NoNameClub All Page
-async function NoNameClubAllPage(query) {
+async function NoNameClubAllPage(query, categoryId) {
     let result = []
     page = 0
     while (true) {
-        let currentResult = await NoNameClub(query, page)
+        let currentResult = await NoNameClub(query, categoryId, page)
         if (Array.isArray(currentResult)) {
             currentResult.forEach(element => {
                 result.push(element)
@@ -2029,12 +2047,6 @@ const options = {
 // Генерация спецификации Swagger
 const specs = swaggerJsdoc(options)
 
-// Middleware для логирования подключений к Swagger
-web.use((req, res, next) => {
-    console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [Request] Endpoint: ${req.path}`)
-    return next()
-})
-
 // Конечная точка для Swagger UI
 web.use('/docs', swaggerUi.serve, swaggerUi.setup(specs))
 
@@ -2047,8 +2059,10 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     }
     // Обработка параметров из заголовка запроса
     let query = req.query.query
+    let categoryId = req.query.category
     let page = req.query.page
     let year = req.query.year
+    let format = req.query.format
     // Обработка тип данных из тела запроса
     const headerAccept = req.get('Accept')
     // Кодируем запрос в формат URL (заменяется последовательностью процентов и двумя шестнадцатеричными числами, представляющими ASCII-код символа в кодировке UTF-8)
@@ -2057,8 +2071,22 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
     if (!page || (page !== 'all' && isNaN(page))) {
         page = 0
     }
+    if (!categoryId || !/^[0-9]+$/.test(categoryId)) {
+        categoryId = 0
+    }
     if (!year || !/^[0-9]{4}$/.test(year)) {
         year = 0
+    }
+    if (format === 720 || format === '720') {
+        format = 3002
+    }
+    else if (format === 1080 || format === '1080') {
+        format = 3001
+    }
+    else if (format === 2160 || format === '2160') {
+        format = 7
+    } else {
+        format = 0
     }
     // Обработка path-параметров
     let endpoint = req.params.api
@@ -2135,6 +2163,15 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [404] Endpoint not found. Endpoint: ${req.path}`)
         return res.status(404).send('Endpoint not found')
     }
+    // Проверяем, что номер категории соответствует хотя бы одному из ключей массива, или сбрасываем ее
+    if (categoryId !== 0) {
+        if (
+            !Object.keys(categoryList.RuTracker).includes(categoryId) && !Object.keys(categoryList.Kinozal).includes(categoryId) &&
+            !Object.keys(categoryList.RuTor).includes(categoryId) && !Object.keys(categoryList.NoNameClub).includes(categoryId)
+        ) {
+            categoryId = 0
+        }
+    }
     // Логируем запросы
     console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
     // Проверяем конечные точки провайдеров
@@ -2150,10 +2187,10 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
                 //     RuTorResult,
                 //     NoNameClubResult
                 // ] = await Promise.allSettled([
-                //     RuTrackerAllPage(query),
-                //     KinozalAllPage(query, year),
-                //     RuTorAllPage(query),
-                //     NoNameClubAllPage(query)
+                //     RuTrackerAllPage(query, categoryId),
+                //     KinozalAllPage(query, categoryId, year, format),
+                //     RuTorAllPage(query, categoryId),
+                //     NoNameClubAllPage(query, categoryId)
                 // ])
                 // Results = {
                 //     RuTracker: RuTrackerResult.value,
@@ -2162,10 +2199,10 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
                 //     NoNameClub: NoNameClubResult.value
                 // }
                 // Синхронное выполнение
-                const RuTrackerResult = await RuTrackerAllPage(query)
-                const KinozalResult = await KinozalAllPage(query, year)
-                const RuTorResult = await RuTorAllPage(query)
-                const NoNameClubResult = await NoNameClubAllPage(query)
+                const RuTrackerResult = await RuTrackerAllPage(query, categoryId)
+                const KinozalResult = await KinozalAllPage(query, categoryId, year, format)
+                const RuTorResult = await RuTorAllPage(query, categoryId)
+                const NoNameClubResult = await NoNameClubAllPage(query, categoryId)
                 // Объединяем результаты в один массив
                 Results = {
                     RuTracker: RuTrackerResult,
@@ -2181,10 +2218,10 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
                     RuTorResult,
                     NoNameClubResult
                 ] = await Promise.all([
-                    RuTracker(query, page),
-                    Kinozal(query, page, year),
-                    RuTor(query, page),
-                    NoNameClub(query, page)
+                    RuTracker(query, categoryId, page),
+                    Kinozal(query, categoryId, page, year, format),
+                    RuTor(query, categoryId, page),
+                    NoNameClub(query, categoryId, page)
                 ])
                 Results = {
                     RuTracker: RuTrackerResult,
@@ -2226,10 +2263,10 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         try {
             let result
             if (page === 'all') {
-                result = await RuTrackerAllPage(query)
+                result = await RuTrackerAllPage(query, categoryId)
             }
             else {
-                result = await RuTracker(query, page)
+                result = await RuTracker(query, categoryId, page)
             }
             return res.json(result)
         } catch (error) {
@@ -2276,10 +2313,10 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         try {
             let result
             if (page === 'all') {
-                result = await KinozalAllPage(query, year)
+                result = await KinozalAllPage(query, categoryId, year, format)
             }
             else {
-                result = await Kinozal(query, page, year)
+                result = await Kinozal(query, categoryId, page, year, format)
             }
             return res.json(result)
         } catch (error) {
@@ -2326,10 +2363,10 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         try {
             let result
             if (page === 'all') {
-                result = await RuTorAllPage(query)
+                result = await RuTorAllPage(query, categoryId)
             }
             else {
-                result = await RuTor(query, page)
+                result = await RuTor(query, categoryId, page)
             }
             return res.json(result)
         } catch (error) {
@@ -2378,10 +2415,10 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         try {
             let result
             if (page === 'all') {
-                result = await NoNameClubAllPage(query)
+                result = await NoNameClubAllPage(query, categoryId)
             }
             else {
-                result = await NoNameClub(query, page)
+                result = await NoNameClub(query, categoryId, page)
             }
             return res.json(result)
         } catch (error) {
