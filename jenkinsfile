@@ -2,7 +2,8 @@ pipeline {
   agent any
   tools {nodejs "Node_20"}
   parameters {
-    string(name: 'Iteration_Count', defaultValue: '1', description: 'Number of iterations for Postman collection run')
+    int(name: 'iterationCount', defaultValue: 1, description: 'Number of iterations for Postman collection run')
+    string(name: 'baseUrl', defaultValue: 'https://torapi.vercel.app', description: 'Base URL for Postman environment variable')
   }
   stages {
     stage('Install Postman CLI') {
@@ -12,12 +13,21 @@ pipeline {
     }
     stage('Postman CLI Login') {
       steps {
+        script {
+          if (!env.POSTMAN_API_KEY) {
+            error "API key not set"
+          }
+        }
         sh 'postman login --with-api-key $POSTMAN_API_KEY'
       }
     }
     stage('Running collection with iterations') {
       steps {
-        sh 'postman collection run "37302476-23547b25-084c-4b30-bc78-9e72372dc9b8" --iteration-count ${params.Iteration_Count}'
+        sh """
+          postman collection run "37302476-23547b25-084c-4b30-bc78-9e72372dc9b8" \
+          --iteration-count ${params.iterationCount} \
+          --env-var "baseUrl=${params.baseUrl}"
+        """
       }
     }
   }
