@@ -26,19 +26,20 @@
     <strong>English</strong> | <a href="README_RU.md">Русский</a>
 </h4>
 
-Unofficial API (**backend**) for torrent trackers RuTracker, Kinozal, RuTor and NoNameClub. Used for quick search of distributions, as well as obtaining torrent files, magnet links and detailed information about distribution by movie title, TV series or distribution ID, and also provides RSS news feed for all providers.
+Unofficial API (**backend**) for torrent trackers RuTracker, Kinozal, RuTor and NoNameClub. Used for fast and centralized search of distribution, receiving torrent files, magnetic links and detailed information about distribution by movie title, series or distribution identifier, and also provides news RSS feed to all providers with filtering by categories.
 
 Project is inspired by ✨ [Torrent-Api-py](https://github.com/Ryuk-me/Torrent-Api-py) (previously [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api)) for Russian-speaking torrent providers.
 
-You can try the **public and free version**, which is published on 🔼 [Vercel](https://torapi.vercel.app/api/provider/list) or [Deploy](#Deploy) it yourself. OpenAPI specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
+You can use the public and free version published on [Vercel](https://torapi.vercel.app/api/provider/list), or deploy it yourself. You don’t need an access token or authorization in the API to use it, and you don’t need a VPN if you use the version published on Vercel. The **OpenAPI** specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
 
-The implementation of a simple interface (**frontend**) is available in the Google Chrome extension 🍿 [Libre Kinopoisk](https://github.com/Lifailon/LibreKinopoisk) for simultaneous and fast search of distributions in all available torrent trackers.
+Simple interface implementation (**frontend**) is available through Google Chrome extension 🍿 [Libre Kinopoisk](https://github.com/Lifailon/LibreKinopoisk) for simultaneous and quick search of all available torrent-trackers (like Jackett).
 
 Implemented:
 
-- **Search by Title** to get all available distributions from the specified torrent tracker or from **all** trackers simultaneously. Each distribution has its unique identifier (used for searching by **id**), brief information and a link to download the torrent file.
-- **Search by ID** of the specified provider to get additional information: magnet link and hash sum for direct download via any torrent client, links to the cinema databases Kinopoisk and IMDb, detailed description of the film or TV series, links to posters, information about the distribution and the contents of the distribution (list of files and their size).
-- **Get RSS news feeds** from all used providers in `XML` and also `JSON` formats.
+- Search by title to get current or all available distributions (from all available pages) from a specified provider (torrent tracker) or from all trackers simultaneously. Each distribution contains a unique identifier (used for **search by id**), category (used for **filtering by category**), brief information and a link to download the torrent file.
+- Get a list of categories for all providers and filter search by category.
+- Search by unique distribution identifier of the specified provider for additional information: magnetic link and hash sum for direct download through any torrent client, links to databases about cinema (Movie search and IMDb) and posters, detailed description and content of the giveaways (list of files and their size).
+- Get RSS new feeds for all used providers in formats `XML`, as well as `JSON`.
 
 Examples of requests and responses are available in the static documentation hosted on the [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki).
 
@@ -48,12 +49,12 @@ Released under [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE
 
 ### 🔗 Full list of available providers:
 
-| Provider name                       | Mirrors | Registration | Search by ID | RSS      |
-| -                                   | -       | -            | -            | -        |
-| [RuTracker](https://rutracker.org)  | 3       | Yes*         | Yes          | Native   |
-| [Kinozal](https://kinozal.tv)       | 3       | Yes*         | Yes          | Native   |
-| [RuTor](https://rutor.info)         | 2       | No           | Yes          | *Custom* |
-| [NoNameClub](https://nnmclub.to)    | 1       | No           | Yes          | Native   |
+| Provider name                       | Mirrors | Registration |  Filter for search              | Search by ID | RSS      |
+| -                                   | -       | -            |  -                              | -            | -        |
+| [RuTracker](https://rutracker.org)  | 3       | Yes*         |  Category                       | Yes          | Native   |
+| [Kinozal](https://kinozal.tv)       | 3       | Yes*         |  Category, release year, format | Yes          | Native   |
+| [RuTor](https://rutor.info)         | 2       | No           |  Category                       | Yes          | *Custom* |
+| [NoNameClub](https://nnmclub.to)    | 1       | No           |  Category                       | Yes          | Native   |
 
 **\*** Registration is required only when downloading a torrent file via a direct link. All distributions when searching by **id** contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to immediately start downloading contents or generate a torrent file using any torrent client after downloading the metadata.
 
@@ -236,14 +237,14 @@ To run tests locally:
 ```shell
 npm install -g newman
 newman run postman-tests.json \
-    --iteration-count 1 \
     --env-var "baseUrl=http://localhost:8443" \
     --env-var "query=The Rookie" \
     --env-var "queryAllPage=test" \
     --env-var "categoryRuTracker=1605" \
     --env-var "categoryKinozal=20" \
     --env-var "categoryRuTor=10" \
-    --env-var "categoryNoNameClub=1318"
+    --env-var "categoryNoNameClub=1318" \
+    --iteration-count 1
 ...
 ┌─────────────────────────┬────────────────────┬───────────────────┐
 │                         │           executed │            failed │
@@ -256,13 +257,13 @@ newman run postman-tests.json \
 ├─────────────────────────┼────────────────────┼───────────────────┤
 │      prerequest-scripts │                 77 │                 0 │
 ├─────────────────────────┼────────────────────┼───────────────────┤
-│              assertions │                153 │                 0 │
+│              assertions │                151 │                 0 │
 ├─────────────────────────┴────────────────────┴───────────────────┤
-│ total run duration: 1m 18s                                       │
+│ total run duration: 26.5s                                        │
 ├──────────────────────────────────────────────────────────────────┤
 │ total data received: 1.75MB (approx)                             │
 ├──────────────────────────────────────────────────────────────────┤
-│ average response time: 1960ms [min: 3ms, max: 18.4s, s.d.: 3.6s] │
+│ average response time: 654ms [min: 2ms, max: 6.2s, s.d.: 1221ms] │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
