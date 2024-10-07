@@ -636,8 +636,8 @@ async function RuTrackerFilesPuppetter(query) {
 }
 
 // RuTracker RSS Native
-async function RuTrackerRSS(typeData) {
-    const url = "https://feed.rutracker.cc/atom/f/0.atom"
+async function RuTrackerRSS(typeData, categoryId) {
+    const url = `https://feed.rutracker.cc/atom/f/${categoryId}.atom`
     console.log(`${getCurrentTime()} [Request] ${url}`)
     try {
         const response = await axiosProxy.get(url, {
@@ -1815,18 +1815,19 @@ const providerList = [
 async function testEndpoints(query) {
     let testQuery = query || "The Rookie"
     // Проверяем RSS
-    const RuTrackerRssResult = await RuTrackerRSS("json")
+    const RuTrackerRssResult = await RuTrackerRSS("json", 0)
     const RuTrackerRssCheck = Array.isArray(RuTrackerRssResult) && RuTrackerRssResult.length > 0 && RuTrackerRssResult[0].link && RuTrackerRssResult[0].title
     const KinozalRssResult = await KinozalRSS("json")
     const KinozalRssCheck = Array.isArray(KinozalRssResult) && KinozalRssResult.length > 0 && KinozalRssResult[0].link && KinozalRssResult[0].title
-    const RuTorRssResult = await RuTorRSS("json")
+    // const RuTorRssResult = await RuTorRss("json")
+    const RuTorRssResult = await RuTorRssCustom("json")
     const RuTorRssCheck = Array.isArray(RuTorRssResult) && RuTorRssResult.length > 0 && RuTorRssResult[0].link && RuTorRssResult[0].title
     const NoNameClubRssResult = await NoNameClubRSS("json")
     const NoNameClubRssCheck = Array.isArray(NoNameClubRssResult) && NoNameClubRssResult.length > 0 && NoNameClubRssResult[0].link && NoNameClubRssResult[0].title
 
     // Проверяем поиск по Title
     let startTime = performance.now()
-    const RuTrackerResult = await RuTracker(testQuery, 0)
+    const RuTrackerResult = await RuTracker(testQuery, 0, 0)
     let endTime = performance.now()
     const RuTrackerCheck = Array.isArray(RuTrackerResult) && RuTrackerResult.length > 0 && RuTrackerResult[0].Name && RuTrackerResult[0].Id && RuTrackerResult[0].Url
     // Фиксируем время выполнения функции
@@ -1834,21 +1835,21 @@ async function testEndpoints(query) {
     console.log(`${getCurrentTime()} [DEBUG] RuTracker ID: ${RuTrackerResult[0].Id}`)
 
     startTime = performance.now()
-    const KinozalResult = await Kinozal(testQuery, 0, 0)
+    const KinozalResult = await Kinozal(testQuery, 0, 0, 0, 0)
     const KinozalCheck = Array.isArray(KinozalResult) && KinozalResult.length > 0 && KinozalResult[0].Name && KinozalResult[0].Id && KinozalResult[0].Url
     endTime = performance.now()
     const KinozalRunTime = ((endTime - startTime) / 1000).toFixed(3)
     console.log(`${getCurrentTime()} [DEBUG] Kinozal ID: ${KinozalResult[0].Id}`)
 
     startTime = performance.now()
-    const RuTorResult = await RuTor(testQuery, 0)
+    const RuTorResult = await RuTor(testQuery, 0, 0)
     const RuTorCheck = Array.isArray(RuTorResult) && RuTorResult.length > 0 && RuTorResult[0].Name && RuTorResult[0].Id && RuTorResult[0].Url
     endTime = performance.now()
     const RuTorRunTime = ((endTime - startTime) / 1000).toFixed(3)
     console.log(`${getCurrentTime()} [DEBUG] RuTor ID: ${RuTorResult[0].Id}`)
     
     startTime = performance.now()
-    const NoNameClubResult = await NoNameClub(testQuery, 0)
+    const NoNameClubResult = await NoNameClub(testQuery, 0, 0)
     const NoNameClubCheck = Array.isArray(NoNameClubResult) && NoNameClubResult.length > 0 && NoNameClubResult[0].Name && NoNameClubResult[0].Id && NoNameClubResult[0].Url
     endTime = performance.now()
     const NoNameClubRunTime = ((endTime - startTime) / 1000).toFixed(3)
@@ -2117,13 +2118,13 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         console.log(`${getCurrentTime()} [${req.method}] ${req.ip.replace('::ffff:', '')} (${req.headers['user-agent']}) [200] Endpoint: ${req.path}`)
         const testQuery = "The Rookie"
         try {
-            const RuTrackerResult = await RuTracker(testQuery, 0)
+            const RuTrackerResult = await RuTracker(testQuery, 0, 0)
             const RuTrackerCheck = Array.isArray(RuTrackerResult) && RuTrackerResult.length > 0 && RuTrackerResult[0].Name && RuTrackerResult[0].Id && RuTrackerResult[0].Url
-            const KinozalResult = await Kinozal(testQuery, 0, 0)
+            const KinozalResult = await Kinozal(testQuery, 0, 0, 0, 0)
             const KinozalCheck = Array.isArray(KinozalResult) && KinozalResult.length > 0 && KinozalResult[0].Name && KinozalResult[0].Id && KinozalResult[0].Url
-            const RuTorResult = await RuTor(testQuery, 0)
+            const RuTorResult = await RuTor(testQuery, 0, 0)
             const RuTorCheck = Array.isArray(RuTorResult) && RuTorResult.length > 0 && RuTorResult[0].Name && RuTorResult[0].Id && RuTorResult[0].Url
-            const NoNameClubResult = await NoNameClub(testQuery, 0)
+            const NoNameClubResult = await NoNameClub(testQuery, 0, 0)
             const NoNameClubCheck = Array.isArray(NoNameClubResult) && NoNameClubResult.length > 0 && NoNameClubResult[0].Name && NoNameClubResult[0].Id && NoNameClubResult[0].Url
             const Results = [
                 {
@@ -2293,11 +2294,11 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         try {
             let result
             if (headerAccept && headerAccept.includes('json')) {
-                result = await RuTrackerRSS("json")
+                result = await RuTrackerRSS("json", categoryId)
                 res.set('Content-Type', 'application/json')
             }
             else {
-                result = await RuTrackerRSS("xml")
+                result = await RuTrackerRSS("xml", categoryId)
                 res.set('Content-Type', 'application/xml')
             }
             return res.send(result)
