@@ -7,7 +7,7 @@ const options = {
         openapi: '3.0.0',
         info: {
             title: 'TorAPI',
-            version: '0.5.0',
+            version: '0.5.1',
             description: 'Unofficial API (backend) for RuTracker, Kinozal, RuTor and NoNameClub',
             contact: {
                 name: "© Lifailon (Alex Kup)",
