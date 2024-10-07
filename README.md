@@ -13,9 +13,9 @@
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions" src="https://img.shields.io/badge/Actions-%230075A8.svg?style=for-the-badge&logo=githubactions&logoColor=white"></a>
     <br>
     <br>
-    <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/cd-docker-hub.yml?logo=GitHub-Actions&label=CI+Docker+Hub"></a>
+    <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/cd-docker-hub.yml?logo=GitHub-Actions&label=CD+Docker+Hub"></a>
     <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/cd-vercel.yml?logo=Vercel&label=CD+Vercel"></a>
-    <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/ci-postman-tests.yml?logo=Postman&label=Postman+Tests"></a>
+    <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/ci-postman-tests.yml?logo=Postman&label=CI+Postman+Tests"></a>
     <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger"src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2FLifailon%2FTorAPI%2Fmain%2Fswagger%2Fswagger.yaml&logo=Swagger&label=Swagger"></a>
     <br>
     <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker"src="https://img.shields.io/docker/image-size/lifailon/torapi?&color=blue&logo=Docker&label=Docker+Image"></a>
@@ -237,29 +237,33 @@ To run tests locally:
 npm install -g newman
 newman run postman-tests.json \
     --iteration-count 1 \
+    --env-var "baseUrl=http://localhost:8443" \
     --env-var "query=The Rookie" \
     --env-var "queryAllPage=test" \
-    --env-var "baseUrl=http://localhost:8443"
+    --env-var "categoryRuTracker=1605" \
+    --env-var "categoryKinozal=20" \
+    --env-var "categoryRuTor=10" \
+    --env-var "categoryNoNameClub=1318"
 ...
-┌─────────────────────────┬────────────────────┬────────────────────┐
-│                         │           executed │             failed │
-├─────────────────────────┼────────────────────┼────────────────────┤
-│              iterations │                  1 │                  0 │
-├─────────────────────────┼────────────────────┼────────────────────┤
-│                requests │                 29 │                  0 │
-├─────────────────────────┼────────────────────┼────────────────────┤
-│            test-scripts │                 75 │                  0 │
-├─────────────────────────┼────────────────────┼────────────────────┤
-│      prerequest-scripts │                 62 │                  0 │
-├─────────────────────────┼────────────────────┼────────────────────┤
-│              assertions │                135 │                  0 │
-├─────────────────────────┴────────────────────┴────────────────────┤
-│ total run duration: 30.6s                                         │
-├───────────────────────────────────────────────────────────────────┤
-│ total data received: 1.58MB (approx)                              │
-├───────────────────────────────────────────────────────────────────┤
-│ average response time: 1012ms [min: 2ms, max: 6.5s, s.d.: 1507ms] │
-└───────────────────────────────────────────────────────────────────┘
+┌─────────────────────────┬────────────────────┬───────────────────┐
+│                         │           executed │            failed │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│              iterations │                  1 │                 0 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│                requests │                 38 │                 0 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│            test-scripts │                 90 │                 0 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│      prerequest-scripts │                 77 │                 0 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│              assertions │                153 │                 0 │
+├─────────────────────────┴────────────────────┴───────────────────┤
+│ total run duration: 1m 18s                                       │
+├──────────────────────────────────────────────────────────────────┤
+│ total data received: 1.75MB (approx)                             │
+├──────────────────────────────────────────────────────────────────┤
+│ average response time: 1960ms [min: 3ms, max: 18.4s, s.d.: 3.6s] │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
