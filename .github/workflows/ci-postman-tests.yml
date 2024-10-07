@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       Server:
-        description: 'Local or Publish server:'
+        description: 'Local build or public server:'
         required: false
         default: 'Node'
         type: choice
@@ -93,6 +93,12 @@ jobs:
         echo "npm version: $(npm --version)"
         echo "newman version: $(newman --version)"
 
+    - name: Install dependencies and start local server
+      if: ${{ github.event.inputs.Server == 'Node' }}
+      run: |
+        npm install
+        npm start > torapi.log &
+
     - name: Build docker image and run container
       if: ${{ github.event.inputs.Server == 'Dockerfile' || github.event.inputs.Server == 'DockerHub' }}
       run: |
@@ -117,12 +123,6 @@ jobs:
         if [ "$response_code" -ne 200 ]; then
           exit 1
         fi
-
-    - name: Install dependencies and start local server
-      if: ${{ github.event.inputs.Server == 'Node' }}
-      run: |
-        npm install
-        npm start > torapi.log &
 
     - name: Run postman tests
       run: |
