@@ -4298,7 +4298,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": ""
+			"value": "http://127.0.0.1:8443"
 		},
 		{
 			"key": "localUrl",
@@ -4326,22 +4326,22 @@
 		},
 		{
 			"key": "categoryRuTracker",
-			"value": "",
+			"value": "1605",
 			"type": "string"
 		},
 		{
 			"key": "categoryKinozal",
-			"value": "",
+			"value": "20",
 			"type": "string"
 		},
 		{
 			"key": "categoryRuTor",
-			"value": "",
+			"value": "10",
 			"type": "string"
 		},
 		{
 			"key": "categoryNoNameClub",
-			"value": "",
+			"value": "1318",
 			"type": "string"
 		},
 		{
@@ -4351,6 +4351,10 @@
 		},
 		{
 			"key": "categoryNameKinozal",
+			"value": ""
+		},
+		{
+			"key": "categoryNameNoNameClub",
 			"value": ""
 		},
 		{
@@ -4367,10 +4371,6 @@
 		},
 		{
 			"key": "NoNameClubTestId",
-			"value": ""
-		},
-		{
-			"key": "categoryNameNoNameClub",
 			"value": ""
 		}
 	]

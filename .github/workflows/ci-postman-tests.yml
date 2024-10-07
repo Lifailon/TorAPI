@@ -18,6 +18,26 @@ on:
         required: true
         default: 'test'
         type: string
+      CategoryRuTracker:
+        description: 'Parameter to filter by category for RuTracker (1605 - Switch):'
+        required: true
+        default: 1605
+        type: number
+      CategoryKinozal:
+        description: 'Parameter to filter by category for Kinozal (20 - Anime):'
+        required: true
+        default: 20
+        type: number
+      CategoryRuTor:
+        description: 'Parameter to filter by category for RuTor (10 - Anime):'
+        required: true
+        default: 10
+        type: number
+      CategoryNoNameClub:
+        description: 'Parameter to filter by category for NoNameClub (1318 - Switch):'
+        required: true
+        default: 1318
+        type: number
       Url:
         description: 'Local or Publish server:'
         required: false
@@ -115,9 +135,13 @@ jobs:
       run: |
         newman run postman-tests.json \
           --iteration-count ${{ github.event.inputs.Iterations }} \
+          --env-var "baseUrl=${{ github.event.inputs.Url }}" \
           --env-var "query=${{ github.event.inputs.Query }}" \
           --env-var "queryAllPage=${{ github.event.inputs.queryAllPage }}" \
-          --env-var "baseUrl=${{ github.event.inputs.Url }}" \
+          --env-var "categoryRuTracker=${{ github.event.inputs.CategoryRuTracker }}" \
+          --env-var "categoryKinozal=${{ github.event.inputs.CategoryKinozal }}" \
+          --env-var "categoryRuTor=${{ github.event.inputs.CategoryRuTor }}" \
+          --env-var "categoryNoNameClub=${{ github.event.inputs.CategoryNoNameClub }}" \
           --reporters cli,junit,html \
           --reporter-html-export postman-report.html \
           --reporter-junit-export postman-results.xml
