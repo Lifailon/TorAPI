@@ -237,14 +237,14 @@ npm start -- --test --q "The Rookie"
 ```shell
 npm install -g newman
 newman run postman-tests.json \
+    --iteration-count 1 \
     --env-var "baseUrl=http://localhost:8443" \
     --env-var "query=The Rookie" \
     --env-var "queryAllPage=test" \
     --env-var "categoryRuTracker=1605" \
     --env-var "categoryKinozal=20" \
     --env-var "categoryRuTor=10" \
-    --env-var "categoryNoNameClub=1318" \
-    --iteration-count 1
+    --env-var "categoryNoNameClub=1318"
 ...
 ┌─────────────────────────┬────────────────────┬───────────────────┐
 │                         │           executed │            failed │

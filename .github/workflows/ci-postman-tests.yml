@@ -3,6 +3,23 @@ name: Build and Postman Tests
 on:
   workflow_dispatch:
     inputs:
+      Server:
+        description: 'Local or Publish server:'
+        required: false
+        default: 'Node'
+        type: choice
+        options:
+          - 'Node'
+          - 'Dockerfile'
+          - 'DockerHub'
+          - 'https://torapi.vercel.app'
+          - 'https://toruapi.vercel.app'
+          - 'https://rutorapi.vercel.app'
+      Iterations:
+        description: 'Iteration count for tests:'
+        required: false
+        default: 1
+        type: number
       Query:
         description: 'Search parameter for all API request:'
         required: true
@@ -33,25 +50,6 @@ on:
         required: true
         default: 1318
         type: number
-      Url:
-        description: 'Local or Publish server:'
-        required: false
-        default: 'http://localhost:8443'
-        type: choice
-        options:
-          - 'http://localhost:8443'
-          - 'https://torapi.vercel.app'
-          - 'https://toruapi.vercel.app'
-          - 'https://rutorapi.vercel.app'
-      Docker:
-        description: 'Build Docker image from:'
-        required: false
-        default: 'not'
-        type: choice
-        options:
-          - 'not'
-          - 'GitHub'
-          - 'DockerHub'
       DeployDocker:
         description: 'Deploy to Docker Hub'
         required: false
@@ -96,14 +94,14 @@ jobs:
         echo "newman version: $(newman --version)"
 
     - name: Build docker image and run container
-      if: ${{ github.event.inputs.Url == 'http://localhost:8443' && github.event.inputs.Docker != 'not' }}
+      if: ${{ github.event.inputs.Server == 'Dockerfile' || github.event.inputs.Server == 'DockerHub' }}
       run: |
-        if [ "${{ github.event.inputs.Docker }}" == "GitHub" ]; then
-          echo "Docker build from GitHub"
+        if [ "${{ github.event.inputs.Server }}" == "Dockerfile" ]; then
+          echo "- Build docker image from GitHub"
           docker build -t lifailon/torapi:latest .
           docker run -d --name TorAPI -p 8443:8443 lifailon/torapi:latest
-        elif [ "${{ github.event.inputs.Docker }}" == "DockerHub" ]; then
-          echo "Docker build from Docker Hub"
+        elif [ "${{ github.event.inputs.Server }}" == "DockerHub" ]; then
+          echo "- Build docker image from Docker Hub"
           docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped lifailon/torapi:latest
         fi
         for i in {1..30}; do
@@ -121,15 +119,21 @@ jobs:
         fi
 
     - name: Install dependencies and start local server
-      if: ${{ github.event.inputs.Url == 'http://localhost:8443' && github.event.inputs.Docker == 'not' }}
+      if: ${{ github.event.inputs.Server == 'Node' }}
       run: |
         npm install
         npm start > torapi.log &
 
     - name: Run postman tests
       run: |
+        if [[ ${{ github.event.inputs.Server }} =~ ^https ]]; then
+          server=${{ github.event.inputs.Server }}
+        else
+          server="http://localhost:8443"
+        fi
         newman run postman-tests.json \
-          --env-var "baseUrl=${{ github.event.inputs.Url }}" \
+          --iteration-count ${{ github.event.inputs.Iterations }} \
+          --env-var "baseUrl=$server" \
           --env-var "query=${{ github.event.inputs.Query }}" \
           --env-var "queryAllPage=${{ github.event.inputs.queryAllPage }}" \
           --env-var "categoryRuTracker=${{ github.event.inputs.CategoryRuTracker }}" \
@@ -141,9 +145,9 @@ jobs:
           --reporter-junit-export postman-results.xml
 
     - name: View local server logs
-      if: ${{ github.event.inputs.Url == 'http://localhost:8443' && (success() || failure()) }}
+      if: ${{ github.event.inputs.Server == 'Node' || github.event.inputs.Server == 'Dockerfile' || github.event.inputs.Server == 'DockerHub' && (success() || failure()) }}
       run: |
-        if [ "${{ github.event.inputs.Docker }}" == "not" ]; then
+        if [ "${{ github.event.inputs.Server }}" == "Node" ]; then
           cat torapi.log
         else
           docker logs TorAPI
