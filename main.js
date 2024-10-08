@@ -973,6 +973,107 @@ async function KinozalID(query) {
     }
 }
 
+// Kinozal RSS Custom (через основную функцию)
+async function KinozalRssCustom(typeData, categoryId, year, format) {
+    const dataKinozal = await Kinozal('', categoryId, 0, year, format)
+    const torrents = []
+    if (dataKinozal.length === 50) {
+        dataKinozal.forEach(element => {
+            let updateDate
+            const date = element.Date
+            const today = new Date()
+            let time = date.split(' ')[1]
+            if (date.includes('сегодня')) {
+                // Получаем формат: 2024-10-08T04:21:27+00:00
+                const currentDay = String(today.getDate()).padStart(2, '0')
+                const currentMonth = String(today.getMonth() + 1).padStart(2, '0') // Месяцы начинаются с 0
+                const currentYear = today.getFullYear()
+                updateDate = `${currentYear}-${currentMonth}-${currentDay}T${time}+00:00`
+            } 
+            else if (date.includes('вчера')) {
+                // Вычитаем один день
+                today.setDate(today.getDate() - 1);
+                const currentDay = String(today.getDate()).padStart(2, '0')
+                const currentMonth = String(today.getMonth() + 1).padStart(2, '0')
+                const currentYear = today.getFullYear()
+                updateDate = `${currentYear}-${currentMonth}-${currentDay}T${time}+00:00`
+            }
+            else {
+                // Парсим дату: 06.10.2024 21:46
+                let date2 = date.split(' ')[0].split('.')
+                updateDate = `${date2[2]}-${date2[1]}-${date2[0]}T${time}+00:00`
+            }
+            const torrent = {
+                'date': updateDate,
+                'title': element.Name,
+                'category': element.Category,
+                'link': element.Url ,
+                'downloadLink': element.Torrent,
+                'size': element.Size,
+                'comments': element.Comments,
+                'seeds': element.Seeds,
+                'peers': element.Peers
+            }
+            torrents.push(torrent)
+        })
+    }
+    // Получаем параметр описания по категории
+    let description = 'Раздачи на главной торрент трекера'
+    if (
+        (categoryId >= 0 && categoryId <= 24) || // 0-24
+        (categoryId === 32) ||
+        (categoryId === 35) ||
+        (categoryId === 37) ||
+        (categoryId === 38) ||
+        (categoryId === 39) ||
+        (categoryId >= 40 && categoryId <= 50) || // 40-50
+        (categoryId >= 1001 && categoryId <= 1006) // 1001-1006
+    ) {
+        description = categoryList.Kinozal[categoryId]
+    }
+    if (torrents.length === 0) {
+        return { 'Result': `Server is not available` }
+    } else {
+        if (typeData === "json") {
+            return torrents
+        } else {
+            const builder = new xml2js.Builder()
+            const rss = {
+                rss: {
+                  $: {
+                    version: '2.0'
+                  },
+                  channel: {
+                    title: 'Торрент трекер Кинозал',
+                    link: 'https://kinozal.tv',
+                    description: description,
+                    language: 'ru-ru',
+                    pubDate: new Date(Date.now() + 3 * 60 * 60 * 1000).toUTCString().replace('GMT', '+0300'),
+                    lastBuildDate: new Date(Date.now() + 3 * 60 * 60 * 1000).toUTCString().replace('GMT', '+0300'),
+                    item: torrents.map(torrent => ({
+                      title: torrent.title,
+                      category: torrent.category,
+                      link: torrent.link,
+                      pubDate: torrent.date,
+                      size: torrent.size,
+                      comments: torrent.comments,
+                      seeds: torrent.seeds,
+                      peers: torrent.peers,
+                      enclosure: {
+                        $: {
+                          url: torrent.downloadLink,
+                          type: 'application/x-bittorrent'
+                        }
+                      }
+                    }))
+                  }
+                }
+              }
+              return builder.buildObject(rss)
+        }
+    }
+}
+
 // Kinozal RSS Native
 async function KinozalRSS(typeData) {
     const url = "https://kinozal.tv/rss.xml"
@@ -1007,21 +1108,24 @@ async function KinozalRSS(typeData) {
 
 // RuTor
 async function RuTor(query, categoryId, page) {
-    if (query === 'undefined') {
-        query = ''
+    let urls = []
+    if (query === 'undefined' || !query || query === '' || query.length === 0) {
+        urls = [
+            `https://rutor.info/browse/${page}/${categoryId}/0/0`,
+            `https://rutor.is/browse/${page}/${categoryId}/0/0`
+        ]
+    } else {
+        urls = [
+            `https://rutor.info/search/${page}/${categoryId}/300/0/${query}`,
+            `https://rutor.is/search/${page}/${categoryId}/300/0/${query}`
+        ]
     }
-    const urls = [
-        'https://rutor.info',
-        'https://rutor.is',
-        // 'https://rutor.org/search/'
-    ]
     let checkUrl = false
     const torrents = []
     let html
     let url
-    for (const u of urls) {
-        url = u
-        const urlQuery = `${u}/search/${page}/${categoryId}/300/0/${query}`
+    for (const url of urls) {
+        const urlQuery = url
         try {
             const response = await axiosProxy.get(urlQuery, {
                 timeout: 3000,
@@ -1299,8 +1403,8 @@ async function RuTorFilesPuppeteer(query) {
 }
 
 // RuTor RSS Custom
-async function RuTorRssCustom(typeData) {
-    const url = "https://rutor.info"
+async function RuTorRssCustom(typeData, categoryId) {
+    const url = `https://rutor.info/browse/0/${categoryId}/0/0`
     const torrents = []
     let html
     try {
@@ -1309,7 +1413,7 @@ async function RuTorRssCustom(typeData) {
             headers: headers
         })
         html = iconv.decode(response.data, 'utf8')
-        console.log(`${getCurrentTime()} [Request] ${url}/rss (custom)`)
+        console.log(`${getCurrentTime()} [Request] ${url} (Custom RSS)`)
     } catch (error) {
         console.error(`${getCurrentTime()} [ERROR] ${error.hostname} server is not available (Code: ${error.code})`)
         return { 'Result': `Server is not available` }
@@ -1345,6 +1449,11 @@ async function RuTorRssCustom(typeData) {
         torrent.peers = parseInt(lastCell.find('span.red').text().match(/\d+/)[0] || '0', 10)
         torrents.push(torrent)
     })
+    // Получаем параметр описания по категории
+    let description = 'Раздачи на главной торрент трекера'
+    if (categoryId >= 1 && categoryId <= 17) {
+        description = categoryList.RuTor[categoryId]
+    }
     if (torrents.length === 0) {
         return { 'Result': `Server is not available` }
     } else {
@@ -1358,9 +1467,9 @@ async function RuTorRssCustom(typeData) {
                     version: '2.0'
                   },
                   channel: {
-                    title: 'Торрент трекер',
+                    title: 'Торрент трекер Рутор',
                     link: 'https://rutor.info',
-                    description: 'Раздачи на главной торрент трекера',
+                    description: description,
                     language: 'ru-ru',
                     pubDate: new Date(Date.now() + 3 * 60 * 60 * 1000).toUTCString().replace('GMT', '+0300'),
                     lastBuildDate: new Date(Date.now() + 3 * 60 * 60 * 1000).toUTCString().replace('GMT', '+0300'),
@@ -1389,8 +1498,8 @@ async function RuTorRssCustom(typeData) {
 }
 
 // RuTor RSS Native
-async function RuTorRSS(typeData) {
-    const url = "https://alt.rutor.info/rss.php"
+async function RuTorRSS(typeData, categoryId) {
+    const url = `https://alt.rutor.info/rss.php?category=${categoryId}` // cat=${categoryId} || full=${categoryId}
     console.log(`${getCurrentTime()} [Request] ${url}`)
     try {
         const response = await axiosProxy.get(url, {
@@ -1707,8 +1816,8 @@ async function NoNameClubID(query) {
 }
 
 // NoNameClub RSS Native
-async function NoNameClubRSS(typeData) {
-    const url = "https://nnmclub.to/rssp.xml"
+async function NoNameClubRSS(typeData, categoryId) {
+    const url = `https://nnmclub.to/forum/rss.php?f=${categoryId}`
     console.log(`${getCurrentTime()} [Request] ${url}`)
     try {
         const response = await axiosProxy.get(url, {
@@ -1817,12 +1926,12 @@ async function testEndpoints(query) {
     // Проверяем RSS
     const RuTrackerRssResult = await RuTrackerRSS("json", 0)
     const RuTrackerRssCheck = Array.isArray(RuTrackerRssResult) && RuTrackerRssResult.length > 0 && RuTrackerRssResult[0].link && RuTrackerRssResult[0].title
-    const KinozalRssResult = await KinozalRSS("json")
+    const KinozalRssResult = await KinozalRssCustom("json", 0, 0, 0)
     const KinozalRssCheck = Array.isArray(KinozalRssResult) && KinozalRssResult.length > 0 && KinozalRssResult[0].link && KinozalRssResult[0].title
-    // const RuTorRssResult = await RuTorRss("json")
-    const RuTorRssResult = await RuTorRssCustom("json")
+    // const RuTorRssResult = await RuTorRss("json", 0)
+    const RuTorRssResult = await RuTorRssCustom("json", 0)
     const RuTorRssCheck = Array.isArray(RuTorRssResult) && RuTorRssResult.length > 0 && RuTorRssResult[0].link && RuTorRssResult[0].title
-    const NoNameClubRssResult = await NoNameClubRSS("json")
+    const NoNameClubRssResult = await NoNameClubRSS("json", 0)
     const NoNameClubRssCheck = Array.isArray(NoNameClubRssResult) && NoNameClubRssResult.length > 0 && NoNameClubRssResult[0].link && NoNameClubRssResult[0].title
 
     // Проверяем поиск по Title
@@ -2339,16 +2448,18 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
             )
         }
     }
-    // Kinozal RSS Native
+    // Kinozal RSS Custom
     else if (category === 'get' && type === 'rss' && provider === 'kinozal') {
         try {
             let result
             if (headerAccept && headerAccept.includes('json')) {
-                result = await KinozalRSS("json")
+                // result = await KinozalRSS("json")
+                result = await KinozalRssCustom("json", categoryId, year, format)
                 res.set('Content-Type', 'application/json')
             }
             else {
-                result = await KinozalRSS("xml")
+                // result = await KinozalRSS("xml")
+                result = await KinozalRssCustom("xml", categoryId, year, format)
                 res.set('Content-Type', 'application/xml')
             }
             return res.send(result)
@@ -2394,13 +2505,13 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         try {
             let result
             if (headerAccept && headerAccept.includes('json')) {
-                // result = await RuTorRSS("json")
-                result = await RuTorRssCustom("json")
+                // result = await RuTorRSS("json", categoryId)
+                result = await RuTorRssCustom("json", categoryId)
                 res.set('Content-Type', 'application/json')
             }
             else {
-                // result = await RuTorRSS("xml")
-                result = await RuTorRssCustom("xml")
+                // result = await RuTorRSS("xml", categoryId)
+                result = await RuTorRssCustom("xml", categoryId)
                 res.set('Content-Type', 'application/xml')
             }
             return res.send(result)
@@ -2446,11 +2557,11 @@ web.all('/:api?/:category?/:type?/:provider?', async (req, res) => {
         try {
             let result
             if (headerAccept && headerAccept.includes('json')) {
-                result = await NoNameClubRSS("json")
+                result = await NoNameClubRSS("json", categoryId)
                 res.set('Content-Type', 'application/json')
             }
             else {
-                result = await NoNameClubRSS("xml")
+                result = await NoNameClubRSS("xml", categoryId)
                 res.set('Content-Type', 'application/xml')
             }
             return res.send(result)
