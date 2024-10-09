@@ -1434,8 +1434,16 @@ async function RuTorRssCustom(typeData, categoryId) {
     const data = cheerio.load(html)
     data('#ws #index tbody tr').not('.backgr').each((index, element) => {
         const row = data(element)
+        // Формируем дату
+        let date = formatDate(
+            row.find('td:eq(0)').text().trim().replace(/\s+/g, ' '),
+            " "
+        )
+        // Получаем формат: YYYY-MM-DDTHH:MM:SS+00:00
+        let dateArray = date.split('.')
+        let updateDate = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}T00:01:00+00:00`
         const torrent = {
-            'date': row.find('td').eq(0).text().trim(),
+            'date': updateDate,
             'title': row.find('td').eq(1).find('a').last().text().trim(),
             'link': 'https://rutor.info' + row.find('td').eq(1).find('a[href^="/torrent"]').attr('href'),
             'downloadLink': 'https://' + row.find('td').eq(1).find('a.downgif').attr('href').replace(/^\//, ''),
