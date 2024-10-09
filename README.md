@@ -28,37 +28,41 @@
 
 Unofficial API (**backend**) for torrent trackers RuTracker, Kinozal, RuTor and NoNameClub. Used for fast and centralized search of distribution, receiving torrent files, magnetic links and detailed information about distribution by movie title, series or distribution identifier, and also provides news RSS feed to all providers with filtering by categories.
 
-Project is inspired by ✨ [Torrent-Api-py](https://github.com/Ryuk-me/Torrent-Api-py) (previously [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api)) for Russian-speaking torrent providers.
+You can use the public and free version published on [Vercel](https://torapi.vercel.app/api/provider/list) as well as deploy it yourself on any cloud platform using **serverless** or local with **Docker***.
 
-You can use the public and free version published on [Vercel](https://torapi.vercel.app/api/provider/list), or deploy it yourself. You don’t need an access token or authorization in the API to use it, and you don’t need a VPN if you use the version published on Vercel. The **OpenAPI** specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
+The **OpenAPI** specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
+
+Released under [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
+
+### For what
+
+The API does not require access token and authorization in trackers. In addition, when using the public version, no VPN is required, as this service acts as a gateway, which allows you to integrate it into any project, as well as to use RSS without network restrictions.
 
 Simple interface implementation (**frontend**) is available through Google Chrome extension 🍿 [Libre Kinopoisk](https://github.com/Lifailon/LibreKinopoisk) for simultaneous and quick search of all available torrent-trackers (like Jackett).
 
-Implemented:
+Project is inspired by ✨ [Torrent-Api-py](https://github.com/Ryuk-me/Torrent-Api-py) (previously [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api)) for Russian-speaking torrent providers.
+
+### Implemented
 
 - Search by title to get current or all available distributions (from all available pages) from a specified provider (torrent tracker) or from all trackers simultaneously. Each distribution contains a unique identifier (used for **search by id**), category (used for **filtering by category**), brief information and a link to download the torrent file.
 - Get a list of categories for all providers and filter search by category.
 - Search by unique distribution identifier of the specified provider for additional information: magnetic link and hash sum for direct download through any torrent client, links to databases about cinema (Movie search and IMDb) and posters, detailed description and content of the giveaways (list of files and their size).
 - Get RSS new feeds for all used providers in formats `XML`, as well as `JSON`.
 
-Examples of requests and responses are available in the static documentation hosted on the [GitHub Wiki](https://github.com/Lifailon/TorAPI/wiki).
-
-Released under [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
-
 ---
 
 ### 🔗 Full list of available providers:
 
-| Provider name                       | Mirrors | Registration |  Filter for search              | Search by ID | RSS      |
+| Provider name                       | Mirrors | Registration |  Filter for search and RSS      | Search by ID | RSS      |
 | -                                   | -       | -            |  -                              | -            | -        |
 | [RuTracker](https://rutracker.org)  | 3       | Yes*         |  Category                       | Yes          | Native   |
-| [Kinozal](https://kinozal.tv)       | 3       | Yes*         |  Category, release year, format | Yes          | Native   |
+| [Kinozal](https://kinozal.tv)       | 3       | Yes*         |  Category, release year, format | Yes          | *Custom* |
 | [RuTor](https://rutor.info)         | 2       | No           |  Category                       | Yes          | *Custom* |
 | [NoNameClub](https://nnmclub.to)    | 1       | No           |  Category                       | Yes          | Native   |
 
-**\*** Registration is required only when downloading a torrent file via a direct link. All distributions when searching by **id** contain **hash** (cookies have already been added) and **magnet links** (containing a list of trackers), which allow you to immediately start downloading contents or generate a torrent file using any torrent client after downloading the metadata.
+**\*** Registration is required only when downloading a torrent file via a direct link. All distributions when searching by **id** contain **hash** (cookies have already been added) and **magnet links** (containing a list of torrent-trackers), which allow you to immediately start downloading contents or generate a torrent file using any torrent client after downloading the metadata.
 
-The RSS feed is accessed by redirecting the original feed. For providers that do not support RSS by default, a custom news feed has been implemented from the main page.
+Access to **RSS** feeds for *RuTracker* and *NoNameClub* is by redirecting the original channel. For *Kinozal* and *RuTor* providers, a casted news feed from the homepage has been implemented that supports filtering by categories.
 
 ---
 
@@ -236,6 +240,7 @@ To run tests locally:
 
 ```shell
 npm install -g newman
+
 newman run postman-tests.json \
     --iteration-count 1 \
     --env-var "baseUrl=http://localhost:8443" \
