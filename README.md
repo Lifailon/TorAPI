@@ -28,7 +28,7 @@
 
 Unofficial API (**backend**) for torrent trackers RuTracker, Kinozal, RuTor and NoNameClub. Used for fast and centralized search of distribution, receiving torrent files, magnetic links and detailed information about distribution by movie title, series or distribution identifier, and also provides news RSS feed to all providers with filtering by categories.
 
-You can use the public and free version published on [Vercel](https://torapi.vercel.app/api/provider/list) as well as deploy it yourself on any cloud platform using **serverless** or local with **Docker***.
+You can use the public and free version published on [Vercel](https://torapi.vercel.app/api/provider/list) as well as deploy it yourself on any cloud platform using **serverless** or local with [Docker](https://hub.docker.com/r/lifailon/torapi).
 
 The **OpenAPI** specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
 
@@ -36,7 +36,7 @@ Released under [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE
 
 ### For what
 
-The API does not require access token and authorization in trackers. In addition, when using the public version, no VPN is required, as this service acts as a gateway, which allows you to integrate it into any project, as well as to use RSS without network restrictions.
+You do not need to use a VPN when using the public version, as this service is in the gateway role, which allows you to integrate the 'API' into any project without network restrictions and also use the news feed on mobile devices, for example through [Fluent](https://github.com/yang991178/fluent-reader-lite). No access token and authorization in the trackers are required for the API to work.
 
 Simple interface implementation (**frontend**) is available through Google Chrome extension 🍿 [Libre Kinopoisk](https://github.com/Lifailon/LibreKinopoisk) for simultaneous and quick search of all available torrent-trackers (like Jackett).
 
@@ -60,7 +60,7 @@ Project is inspired by ✨ [Torrent-Api-py](https://github.com/Ryuk-me/Torrent-A
 | [RuTor](https://rutor.info)         | 2       | No           |  Category                       | Yes          | *Custom* |
 | [NoNameClub](https://nnmclub.to)    | 1       | No           |  Category                       | Yes          | Native   |
 
-**\*** Registration is required only when downloading a torrent file via a direct link. All distributions when searching by **id** contain **hash** (cookies have already been added) and **magnet links** (containing a list of torrent-trackers), which allow you to immediately start downloading contents or generate a torrent file using any torrent client after downloading the metadata.
+**\*** Registration is required only when downloading a torrent file via a direct link. All distributions when searching by **id** (identifier) contain **info hash sum** and **magnet link** (already contain current list of torrent-trackers servers), which allow to immediately start loading content distribution or generate torrentfile after downloading metadata using any torrent client, for example [qBittorrent](https://github.com/qbittorrent/qBittorrent) (supports RSS and search plugins), [Transmission](https://github.com/transmission/transmission) or [Webtorrent Desktop](https://github.com/webtorrent/webtorrent-desktop).
 
 Access to **RSS** feeds for *RuTracker* and *NoNameClub* is by redirecting the original channel. For *Kinozal* and *RuTor* providers, a casted news feed from the homepage has been implemented that supports filtering by categories.
 
