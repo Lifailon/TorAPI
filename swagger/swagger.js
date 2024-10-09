@@ -284,6 +284,80 @@
  *   get:
  *     tags: [RSS]
  *     description: Get native RSS news feed from Kinozal provider in XML or JSON format. To get the answer in the required format, use the parameter in the answer block.
+ *     parameters:
+ *       - name: category
+ *         in: query
+ *         required: false
+ *         description: Parameter to filter by category
+ *         schema:
+ *           type: integer
+ *           enum:
+ *             - 0
+ *             - 1
+ *             - 2
+ *             - 3
+ *             - 4
+ *             - 5
+ *             - 6
+ *             - 7
+ *             - 8
+ *             - 9
+ *             - 10
+ *             - 11
+ *             - 12
+ *             - 13
+ *             - 14
+ *             - 15
+ *             - 16
+ *             - 17
+ *             - 18
+ *             - 20
+ *             - 21
+ *             - 22
+ *             - 23
+ *             - 24
+ *             - 32
+ *             - 35
+ *             - 37
+ *             - 38
+ *             - 39
+ *             - 40
+ *             - 41
+ *             - 42
+ *             - 45
+ *             - 46
+ *             - 47
+ *             - 48
+ *             - 49
+ *             - 50
+ *             - 1001
+ *             - 1002
+ *             - 1003
+ *             - 1004
+ *             - 1006
+ *           default: 0
+ *           minimum: 0
+ *       - name: year
+ *         in: query
+ *         required: false
+ *         description: Release year for filtering
+ *         schema:
+ *           type: integer
+ *           default: 0
+ *           minimum: 0
+ *       - name: format
+ *         in: query
+ *         required: false
+ *         description: Quality resolution format for filtering
+ *         schema:
+ *           type: integer
+ *           enum:
+ *             - 0
+ *             - 720
+ *             - 1080
+ *             - 2160
+ *           default: 0
+ *           minimum: 0
  *     responses:
  *       200:
  *         description: Successful response
@@ -302,15 +376,23 @@
  *               items:
  *                 type: object
  *                 properties:
- *                   title:
+ *                   date:
  *                     type: string
- *                   link:
+ *                   title:
  *                     type: string
  *                   category:
  *                     type: string
- *                   guid:
+ *                   link:
  *                     type: string
- *                   pubDate:
+ *                   downloadLink:
+ *                     type: string
+ *                   size:
+ *                     type: string
+ *                   comments:
+ *                     type: string
+ *                   seeds:
+ *                     type: string
+ *                   peers:
  *                     type: string
  *       400:
  *         description: No data
@@ -320,6 +402,34 @@
  *   get:
  *     tags: [RSS]
  *     description: Get custom RSS news feed from RuTor provider in XML or JSON format. To get the answer in the required format, use the parameter in the answer block.
+ *     parameters:
+ *       - name: category
+ *         in: query
+ *         required: false
+ *         description: Parameter to filter by category
+ *         schema:
+ *           type: integer
+ *           enum:
+ *             - 0
+ *             - 1
+ *             - 2
+ *             - 3
+ *             - 4
+ *             - 5
+ *             - 6
+ *             - 7
+ *             - 8
+ *             - 9
+ *             - 10
+ *             - 11
+ *             - 12
+ *             - 13
+ *             - 14
+ *             - 15
+ *             - 16
+ *             - 17
+ *           default: 0
+ *           minimum: 0
  *     responses:
  *       200:
  *         description: Successful response
@@ -364,6 +474,15 @@
  *   get:
  *     tags: [RSS]
  *     description: Get native RSS news feed from NoNameClub provider in XML or JSON format. To get the answer in the required format, use the parameter in the answer block.
+ *     parameters:
+ *       - name: category
+ *         in: query
+ *         required: false
+ *         description: Parameter to filter by category
+ *         schema:
+ *           type: integer
+ *           example: 0
+ *           default: 0
  *     responses:
  *       200:
  *         description: Successful response
@@ -631,6 +750,8 @@
  *                     type: string
  *                   Peers:
  *                     type: string
+ *                   Time:
+ *                     type: string
  *                   Date:
  *                     type: string
  *       400:
@@ -644,7 +765,7 @@
  *     parameters:
  *       - name: query
  *         in: query
- *         required: true
+ *         required: false
  *         description: Query parameter
  *         schema:
  *           type: string
@@ -799,6 +920,8 @@
  *                   Seeds:
  *                     type: string
  *                   Peers:
+ *                     type: string
+ *                   Time:
  *                     type: string
  *                   Date:
  *                     type: string
