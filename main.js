@@ -291,7 +291,7 @@ async function RuTracker(query, categoryId, page) {
                 'Peers': data(element).find('td.row4.leechmed.bold').text().trim(),
                 // Заменяем все символы пробела на обычные пробелы и форматируем дату (передаем пробел вторым параметром разделителя)
                 'Date': formatDate(
-                    data(element).find('td.row4 p').text().trim(),
+                    data(element).find('td.row4 p').text().trim().replace(/(\d{1,2}-[А-Яа-я]{3}-\d{2}).*/, '$1'),
                     "-"
                 )
             }
@@ -721,8 +721,40 @@ async function Kinozal(query, categoryId, page, year, format) {
             // +++ Анализ заголовка
             // Забираем все элементы 's'
             const s = data(element).find('.s')
-            // Разбиваем дату из 3-его элемента массива 's'
-            const date = s.eq(2).text().trim().split(" ")
+            // Забираем дату из 3-его элемента 's'
+            const sDate = s.eq(2).text().trim() // сейчас || сегодня в 15:17 || вчера в 23:51 || 06.10.2024 в 19:47
+            // Разбиваем дату на массив
+            const dateArray = sDate.split(" ")
+            let date
+            let time
+            // Получаем текущую дату и время
+            const today = new Date()
+            let currentDay = String(today.getDate()).padStart(2, '0')
+            let currentMonth = String(today.getMonth() + 1).padStart(2, '0') // Месяцы начинаются с 0
+            let currentYear = today.getFullYear()
+            // Проверяем и обновляем дату и время до формата dd.mm.yyyy и hh:mm
+            if (dateArray.includes('сейчас')) {
+                date = `${currentDay}.${currentMonth}.${currentYear}`
+                time = `${today.getHours()}:${today.getMinutes()}`
+            }
+            // Получаем текущую дату и вытаскиваем время из массива
+            else if (dateArray.includes('сегодня')) {
+                date = `${currentDay}.${currentMonth}.${currentYear}`
+                time = dateArray[2]
+            }
+            // Вычитаем один день
+            else if (dateArray.includes('вчера')) {
+                today.setDate(today.getDate() - 1)
+                currentDay = String(today.getDate()).padStart(2, '0')
+                currentMonth = String(today.getMonth() + 1).padStart(2, '0')
+                currentYear = today.getFullYear()
+                date = `${currentDay}.${currentMonth}.${currentYear}`
+                time = dateArray[2]
+            }
+            else {
+                date = dateArray[0]
+                time = dateArray[2]
+            }
             // Получем жанр по type id
             const categoryGetId = data(element).find("td.bt img")?.attr("onclick")?.match(/\d+/)[0]
             // Получаем название жанра по id через индекс массива
@@ -745,7 +777,8 @@ async function Kinozal(query, categoryId, page, year, format) {
                 'Category': category,
                 'Seeds': data(element).find('.sl_s').text().trim(),
                 'Peers': data(element).find('.sl_p').text().trim(),
-                'Date': `${date[0]} ${date[2]}`
+                'Time': time,
+                'Date': date
             }
             torrents.push(torrent)
         }
@@ -979,30 +1012,10 @@ async function KinozalRssCustom(typeData, categoryId, year, format) {
     const torrents = []
     if (dataKinozal.length === 50) {
         dataKinozal.forEach(element => {
-            let updateDate
-            const date = element.Date
-            const today = new Date()
-            let time = date.split(' ')[1]
-            if (date.includes('сегодня')) {
-                // Получаем формат: 2024-10-08T04:21:27+00:00
-                const currentDay = String(today.getDate()).padStart(2, '0')
-                const currentMonth = String(today.getMonth() + 1).padStart(2, '0') // Месяцы начинаются с 0
-                const currentYear = today.getFullYear()
-                updateDate = `${currentYear}-${currentMonth}-${currentDay}T${time}+00:00`
-            } 
-            else if (date.includes('вчера')) {
-                // Вычитаем один день
-                today.setDate(today.getDate() - 1);
-                const currentDay = String(today.getDate()).padStart(2, '0')
-                const currentMonth = String(today.getMonth() + 1).padStart(2, '0')
-                const currentYear = today.getFullYear()
-                updateDate = `${currentYear}-${currentMonth}-${currentDay}T${time}+00:00`
-            }
-            else {
-                // Парсим дату: 06.10.2024 21:46
-                let date2 = date.split(' ')[0].split('.')
-                updateDate = `${date2[2]}-${date2[1]}-${date2[0]}T${time}+00:00`
-            }
+            let dateArray = element.Date.split('.')
+            let time = element.Time
+            // Получаем формат: YYYY-MM-DDTHH:MM:SS+00:00
+            let updateDate = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}T${time}:00+00:00`
             const torrent = {
                 'date': updateDate,
                 'title': element.Name,
@@ -1124,8 +1137,8 @@ async function RuTor(query, categoryId, page) {
     const torrents = []
     let html
     let url
-    for (const url of urls) {
-        const urlQuery = url
+    for (const urlQuery of urls) {
+        url = urlQuery.replace(/^(https:\/\/rutor\.[a-z]{2,4}).+/, "$1") // подстановочный параметр для рабочего url
         try {
             const response = await axiosProxy.get(urlQuery, {
                 timeout: 3000,
@@ -1562,6 +1575,12 @@ async function NoNameClub(query, categoryId, page) {
             const sizeIndex = count === 4 ? 1 : count === 5 ? 2 : 1
             // Исключаем первый элемент байт из массива (slice(1))
             const size = data(element).find(`.gensmall:eq(${sizeIndex})`).text().trim().split(' ', 3).slice(1).join(' ')
+            // Забираем и преобразуем timestamp
+            const dataArray = unixTimestamp(
+                data(element).find(`.gensmall:eq(${sizeIndex + 2})`).text().trim().split(' ')[0]
+            ).split(' ')
+            const date = dataArray[0]
+            const time = dataArray[1]
             const torrent = {
                 'Name': data(element).find('.genmed a b').text().trim(),
                 'Id': data(element).find('.genmed a').attr('href').replace(/.+t=/, ''),
@@ -1573,9 +1592,8 @@ async function NoNameClub(query, categoryId, page) {
                 'Seeds': data(element).find('.seedmed').text().trim(),
                 'Peers': data(element).find('.leechmed').text().trim(),
                 // Забираем и преобразуем timestamp
-                'Date': unixTimestamp(
-                    data(element).find(`.gensmall:eq(${sizeIndex + 2})`).text().trim().split(' ')[0]
-                )
+                'Time': time,
+                'Date': date
             }
             torrents.push(torrent)
         }
@@ -2121,7 +2139,7 @@ const options = {
         openapi: '3.0.0',
         info: {
             title: 'TorAPI',
-            version: '0.5.1',
+            version: '0.5.2',
             description: 'Unofficial API (backend) for RuTracker, Kinozal, RuTor and NoNameClub',
             contact: {
                 name: "© Lifailon (Alex Kup)",
