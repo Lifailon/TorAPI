@@ -36,7 +36,7 @@ Released under [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE
 
 ### For what
 
-You do not need to use a VPN when using the public version, as this service is in the gateway role, which allows you to integrate the 'API' into any project without network restrictions and also use the news feed on mobile devices, for example through [Fluent](https://github.com/yang991178/fluent-reader-lite). No access token and authorization in the trackers are required for the API to work.
+You do not need to use a VPN when using the public version, as this service is in the gateway role, which allows you to integrate the `API` into any project without network restrictions and also use the news feed on mobile devices, for example through [ReadYou](https://github.com/Ashinch/ReadYou) or [Feeder](https://github.com/spacecowboy/Feeder). No access token and authorization in the trackers are required for the API to work.
 
 Project is inspired by ✨ [Torrent-Api-py](https://github.com/Ryuk-me/Torrent-Api-py) (previously [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api)) for Russian-speaking torrent providers.
 
@@ -44,7 +44,7 @@ Project is inspired by ✨ [Torrent-Api-py](https://github.com/Ryuk-me/Torrent-A
 
 - Search by title to get current or all available distributions (from all available pages) from a specified provider (torrent tracker) or from all trackers simultaneously. Each distribution contains a unique identifier (used for **search by id**), category (used for **filtering by category**), brief information and a link to download the torrent file.
 - Get a list of categories for all providers and filter search by category.
-- Search by unique distribution identifier of the specified provider for additional information: magnetic link and hash sum for direct download through any torrent client, links to databases about cinema (Movie search and IMDb) and posters, detailed description and content of the giveaways (list of files and their size).
+- Search by unique distribution identifier of the specified provider for additional information: magnetic link and hash sum for direct download through any torrent client, links to databases about cinema (Kinopoisk and IMDb) and posters, detailed description and content of the giveaways (list of files and their size).
 - Get RSS new feeds for all used providers in formats `XML`, as well as `JSON`.
 
 ### Frontend
