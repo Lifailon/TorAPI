@@ -1,0 +1,205 @@
+pipeline {
+    agent any
+    parameters {
+        string(
+            name: 'gitUrl',
+            defaultValue: 'https://github.com/Lifailon/TorAPI',
+            description: 'Git repository URL'
+        )
+        string(
+            name: 'deployServerName',
+            defaultValue: '192.168.3.101',
+            description: 'Remote server address'
+        )
+        string(
+            name: 'sshPort',
+            defaultValue: '2121', description:
+            'SSH port for remote server'
+        )
+        string(
+            name: 'credentials',
+            defaultValue: 'd5da50fc-5a98-44c4-8c55-d009081a861a',
+            description: 'SSH Credentials ID'
+        )
+        string(
+            name: 'deployPath',
+            defaultValue: '/home/lifailon/TorAPI',
+            description: 'Path target for deploy'
+        )
+        string(
+            name: 'serverPort',
+            defaultValue: '8443',
+            description: 'Port number for start server'
+        )
+        booleanParam(
+            name: "useProxy",
+            defaultValue: true,
+            description: 'Use proxy server'
+        )
+        string(
+            name: 'proxyAddress',
+            defaultValue: '192.168.3.100',
+            description: 'Address proxy server'
+        )
+        string(
+            name: 'proxyPort',
+            defaultValue: '9090',
+            description: 'Port number for proxy server'
+        )
+        string(
+            name: 'proxyUser',
+            defaultValue: 'TorAPI',
+            description: 'Username for proxy'
+        )
+        string(
+            name: 'proxyPassword',
+            defaultValue: 'TorAPI',
+            description: 'Password for proxy'
+        )
+        choice(
+            name: "mode",
+            choices: [
+                "Build",
+                "Start",
+                "Stop",
+                "Logs"
+            ],
+            description: "Select mode"
+        )
+    }
+    stages {
+        stage('Stop server') {
+            when {
+                expression { params.mode == "Build" || params.mode == "Stop" }
+            }
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(credentialsId: params.credentials, usernameVariable: 'SSH_USER', keyFileVariable: 'SSH_KEY', passphraseVariable: '')]) {
+                        def remote = [:]
+                        remote.name = params.deployServerName
+                        remote.host = params.deployServerName
+                        remote.port = params.sshPort.toInteger()
+                        remote.user = SSH_USER
+                        remote.identityFile = SSH_KEY
+                        remote.allowAnyHosts = true
+                        def mainCommand = """
+                            echo ">>>>> Test path: ${params.deployPath}"
+                            testPath=\$(ls ${params.deployPath} || echo false)
+                            if [ "\$testPath" != "false" ]; then
+                                testPort=\$(ss -tunelp | grep ${params.serverPort})
+                                if [ -n "\$testPort" ]; then
+                                    echo ">>>>> Stopping server"
+                                    echo ">>>>> Port: ${params.serverPort}"
+                                    pid=\$(echo \$testPort | grep -oP 'pid=\\K\\d+')
+                                    echo ">>>>> PID: \$pid"
+                                    kill \$pid
+                                else
+                                    echo ">>>>> Server not running"
+                                fi
+                            else
+                                echo ">>>>> Server not installed"
+                            fi
+                        """
+                        sshCommand remote: remote, command: mainCommand
+                    }
+                }
+            }
+        }
+        stage('Build') {
+            when {
+                expression { params.mode == "Build" }
+            }
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(credentialsId: params.credentials, usernameVariable: 'SSH_USER', keyFileVariable: 'SSH_KEY', passphraseVariable: '')]) {
+                        echo SSH_USER
+                        echo env.SSH_USER
+                        def remote = [:]
+                        remote.name = params.deployServerName
+                        remote.host = params.deployServerName
+                        remote.port = params.sshPort.toInteger()
+                        remote.user = SSH_USER
+                        remote.identityFile = SSH_KEY
+                        remote.allowAnyHosts = true
+                        def mainCommand = """
+                            echo ">>>>> Remove old code"
+                            rm -r ${params.deployPath} 2> /dev/null
+                            echo ">>>>> clone repository"
+                            git clone ${params.gitUrl}
+                            cd ${params.deployPath}
+                            echo ">>>>> Install dependencies"
+                            npm install
+                        """
+                        sshCommand remote: remote, command: mainCommand
+                    }
+                }
+            }
+        }
+        stage('Start server') {
+            when {
+                expression { params.mode == "Build" || params.mode == "Start" }
+            }
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(credentialsId: params.credentials, usernameVariable: 'SSH_USER', keyFileVariable: 'SSH_KEY', passphraseVariable: '')]) {
+                        echo SSH_USER
+                        echo env.SSH_USER
+                        def remote = [:]
+                        remote.name = params.deployServerName
+                        remote.host = params.deployServerName
+                        remote.port = params.sshPort.toInteger()
+                        remote.user = SSH_USER
+                        remote.identityFile = SSH_KEY
+                        remote.allowAnyHosts = true
+                        echo ">>>>> Starting server"
+                        def mainCommand
+                        if (params.useProxy && params.proxyUser.size() > 0) {
+                            mainCommand = """
+                                cd ${params.deployPath}
+                                nohup npm start -- --port ${params.serverPort} --proxyAddress ${params.proxyAddress} --proxyPort ${params.proxyPort} --username ${params.proxyUser} --password ${params.proxyPassword} > torapi.log 2>&1 &
+                            """
+                        } else if (params.useProxy) {
+                            mainCommand = """
+                                cd ${params.deployPath}
+                                nohup npm start -- --port ${params.serverPort} --proxyAddress ${params.proxyAddress} --proxyPort ${params.proxyPort} > torapi.log 2>&1 &
+                            """
+                        } else {
+                            mainCommand = """
+                                cd ${params.deployPath}
+                                nohup npm start -- --port ${params.serverPort} > torapi.log 2>&1 &
+                            """
+                        }
+                        sshCommand remote: remote, command: mainCommand
+                    }
+                }
+            }
+        }
+        stage('Get logs') {
+            when {
+                expression { params.mode == "Logs" }
+            }
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(credentialsId: params.credentials, usernameVariable: 'SSH_USER', keyFileVariable: 'SSH_KEY', passphraseVariable: '')]) {
+                        echo SSH_USER
+                        echo env.SSH_USER
+                        def remote = [:]
+                        remote.name = params.deployServerName
+                        remote.host = params.deployServerName
+                        remote.port = params.sshPort.toInteger()
+                        remote.user = SSH_USER
+                        remote.identityFile = SSH_KEY
+                        remote.allowAnyHosts = true
+                        def mainCommand = """
+                            cd ${params.deployPath}
+                            cat "torapi.log"
+                        """
+                        def readLog = sshCommand remote: remote, command: mainCommand
+                        writeFile file: 'torapi.log', text: readLog
+                    }
+                }
+                archiveArtifacts artifacts: 'torapi.log', allowEmptyArchive: true
+            }
+        }
+    }
+}

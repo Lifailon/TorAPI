@@ -1,0 +1,17 @@
+{
+    "name": "TorAPI",
+    "params": {
+        "gitUrl": "https://github.com/Lifailon/TorAPI",
+        "deployServerName": "192.168.3.101",
+        "sshPort": "2121",
+        "credentials": "d5da50fc-5a98-44c4-8c55-d009081a861a",
+        "deployPath": "/home/lifailon/TorAPI",
+        "serverPort": "8443",
+        "useProxy": true,
+        "proxyAddress": "192.168.3.100",
+        "proxyPort": "9090",
+        "proxyUser": "TorAPI",
+        "proxyPassword": "TorAPI",
+        "mode": "Build"
+    }
+}
