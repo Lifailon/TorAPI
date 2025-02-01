@@ -24,7 +24,7 @@
 </p>
 
 <h4 align="center">
-    <strong>English</strong> | <a href="README_RU.md">Русский</a>
+    <strong>English</strong> | <a href="README.md">Русский</a>
 </h4>
 
 Unofficial API (**backend**) for torrent trackers RuTracker, Kinozal, RuTor and NoNameClub. Used for fast and centralized search of distribution, receiving torrent files, magnetic links and detailed information about distribution by movie title, series or distribution identifier, and also provides news RSS feed to all providers with filtering by categories.
