@@ -5,78 +5,95 @@
 ---
 
 <p align="center">
-    <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"></a>
-    <a href="https://www.npmjs.com/package/torapi"><img title="NPM" src="https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white"></a>
-    <a href="https://vercel.com/torapi/torapi"><img title="Vercel" src="https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white"></a>
-    <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"></a>
-    <a href="https://documenter.getpostman.com/view/37302476/2sAXqzYeRj"><img title="Postman" src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white"></a>
-    <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions" src="https://img.shields.io/badge/Actions-%230075A8.svg?style=for-the-badge&logo=githubactions&logoColor=white"></a>
+        <a href="https://www.npmjs.com/package/torapi"><img title="NPM" src="https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white"></a>
+        <a href="https://vercel.com/torapi/torapi"><img title="Vercel" src="https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white"></a>
+        <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"></a>
+        <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger" src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white"></a>
+        <a href="https://documenter.getpostman.com/view/37302476/2sAXqzYeRj"><img title="Postman" src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white"></a>
+        <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions" src="https://img.shields.io/badge/Actions-%230075A8.svg?style=for-the-badge&logo=githubactions&logoColor=white"></a>
+        <a href="https://github.com/Lifailon/TorAPI/blob/main/jenkins/jenkinsfile"><img title="Actions" src="https://img.shields.io/badge/jenkins-%232C5263?style=for-the-badge&logo=jenkins&logoColor=white"></a>
     <br>
     <br>
-    <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/cd-docker-hub.yml?logo=GitHub-Actions&label=CD+Docker+Hub"></a>
-    <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/cd-vercel.yml?logo=Vercel&label=CD+Vercel"></a>
-    <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/ci-postman-tests.yml?logo=Postman&label=CI+Postman+Tests"></a>
-    <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger"src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2FLifailon%2FTorAPI%2Fmain%2Fswagger%2Fswagger.yaml&logo=Swagger&label=Swagger"></a>
+        <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/ci-postman-tests.yml?logo=Postman&label=CI+Postman"></a>
+        <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/cd-vercel.yml?logo=Vercel&label=CD+Vercel"></a>
+        <a href="https://github.com/Lifailon/TorAPI/actions"><img title="Actions"src="https://img.shields.io/github/actions/workflow/status/Lifailon/TorAPI/cd-docker-hub.yml?logo=GitHub-Actions&label=CD+Docker+Hub"></a>
+        <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker"src="https://img.shields.io/docker/image-size/lifailon/torapi?&color=blue&logo=Docker&label=Docker+Image"></a>
     <br>
-    <a href="https://hub.docker.com/r/lifailon/torapi"><img title="Docker"src="https://img.shields.io/docker/image-size/lifailon/torapi?&color=blue&logo=Docker&label=Docker+Image"></a>
-    <a href="https://www.npmjs.com/package/torapi"><img title="GitHub License"src="https://img.shields.io/npm/v/torapi?logo=npm&logoColor=red"></a>
+        <a href="https://www.npmjs.com/package/torapi"><img title="GitHub License"src="https://img.shields.io/npm/v/torapi?logo=npm&logoColor=red"></a>
+        <a href="https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI"><img title="Swagger"src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2FLifailon%2FTorAPI%2Fmain%2Fswagger%2Fswagger.yaml&logo=Swagger&label=Swagger"></a>
 </p>
 
 <h4 align="center">
-    <strong>English</strong> | <a href="README_RU.md">Русский</a>
+    <a href="README.md">English</a> | <strong>Русский</strong>
 </h4>
 
-Unofficial API (**backend**) for torrent trackers RuTracker, Kinozal, RuTor and NoNameClub. Used for fast and centralized search of distribution, receiving torrent files, magnetic links and detailed information about distribution by movie title, series or distribution identifier, and also provides news RSS feed to all providers with filtering by categories.
+Неофициальный `API` (**backend**) для торрент трекеров RuTracker, Kinozal, RuTor и NoNameClub. Используется для быстрого и централизованного поиска раздач, получения торрент файлов, магнитных ссылок и подробной информации о раздаче по названию фильма, сериала или идентификатору раздачи.
 
-You can use the public and free version published on [Vercel](https://torapi.vercel.app/api/provider/list) as well as deploy it yourself on any cloud platform using **serverless** or local with [Docker](https://hub.docker.com/r/lifailon/torapi).
+Вы можете воспользоваться публичной и бесплатной версией опубликованной на платформе [Vercel](https://torapi.vercel.app/api/provider/list), или развернуть его самостоятельно на любом облачной платформе используя **serverless**, а также локально с помощью [Docker](https://hub.docker.com/r/lifailon/torapi) или менеджера пакетов [NPM](https://www.npmjs.com/package/torapi).
 
-The **OpenAPI** specification is available on the official [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI) website.
+Спецификация **OpenAPI** доступна на официальном сайте [Swagger Hub](https://app.swaggerhub.com/apis-docs/Lifailon/TorAPI).
 
-Released under [MIT license](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
+Выпущено под лицензией [MIT](https://github.com/Lifailon/TorAPI/blob/rsa/LICENSE).
 
-### For what
+- [💁 Для чего](#-для-чего)
+- [🎉 Реализовано](#-реализовано)
+- [📰 Список доступных провайдеров](#-список-доступных-провайдеров)
+- [⚡ Frontend](#-frontend)
+  - [Google Chrome Extension](#google-chrome-extension)
+  - [Wox Plugin](#wox-plugin)
+- [🚀 Deploy](#-deploy)
+- [🐳 Docker](#-docker)
+  - [Docker Hub](#docker-hub)
+    - [Run](#run)
+    - [Compose](#compose)
+  - [Local image](#local-image)
+  - [Dockerfile](#dockerfile)
+- [📦 NPM](#-npm)
+- [🔨 Build](#-build)
+- [📚 Swagger](#-swagger)
+- [🧪 Postman](#-postman)
+- [👨‍🔬 Jenkins](#-jenkins)
+- [🎊 Другие проекты](#-другие-проекты)
 
-You do not need to use a VPN when using the public version, as this service is in the gateway role, which allows you to integrate the `API` into any project without network restrictions and also use the news feed on mobile devices, for example through [ReadYou](https://github.com/Ashinch/ReadYou) or [Feeder](https://github.com/spacecowboy/Feeder). No access token and authorization in the trackers are required for the API to work.
+## 💁 Для чего
 
-Project is inspired by ✨ [Torrent-Api-py](https://github.com/Ryuk-me/Torrent-Api-py) (previously [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api)) for Russian-speaking torrent providers.
+При использовании публичной версии не нужно использовать `VPN` сервисы, так как данный сервер выступает в роле шлюза, что позволяет интегрировать `API` в любой проект без сетевых ограничений, а также использовать новостную `RSS` ленту на мобильных устройствах, например, через [ReadYou](https://github.com/Ashinch/ReadYou) или [Feeder](https://github.com/spacecowboy/Feeder). Для работы API не требуется токен доступа и авторизация в трекерах.
 
-### Implemented
+Проект вдохновлен ✨ [Torrent-Api-py](https://github.com/Ryuk-me/Torrent-Api-py) (ранее [Torrents-Api](https://github.com/Ryuk-me/Torrents-Api)) для русскоязычных торрент провайдеров.
 
-- Search by title to get current or all available distributions (from all available pages) from a specified provider (torrent tracker) or from all trackers simultaneously. Each distribution contains a unique identifier (used for **search by id**), category (used for **filtering by category**), brief information and a link to download the torrent file.
-- Get a list of categories for all providers and filter search by category.
-- Search by unique distribution identifier of the specified provider for additional information: magnetic link and hash sum for direct download through any torrent client, links to databases about cinema (Kinopoisk and IMDb) and posters, detailed description and content of the giveaways (list of files and their size).
-- Get RSS new feeds for all used providers in formats `XML`, as well as `JSON`.
+## 🎉 Реализовано
 
-### Frontend
+- [X] Поиск по названию для получения актуальных или всех доступных раздач (со всех доступных страниц) из указанного провайдера (торрент-трекера) или со всех трекеров одновнеременно. Каждая раздача содержит уникальный идентификатор (используется для поиска по `id`), категорию (используется для фильтрации по категории), краткая информация и ссылка на скачивание торрент-файла.
+- [X] Получение списка категорий для всех провайдеров и фильтрация поиска по категории.
+- [X] Поиск по уникальному идентификатору раздачи указанного провайдера для получения дополнительной информации: магнитная ссылка и хэш сумма для прямой загрузки через любой торрент клиент, ссылки на базы даных о кинематографе (Кинопоиск и IMDb), ссылки на постеры, подробное описание и содержимое раздачи (список файлов и их размер).
+- [X] Получение новостных `RSS` лент для всех используемых провайдеров с поддержкой фильтрации в форматах `XML`, а также `JSON`.
 
-#### Google Chrome Extension
+## 📰 Список доступных провайдеров
 
-The implementation of a simple user interface (like [Jackett](https://github.com/Jackett/Jackett)) is available through the Google Chrome extension 🍿 Libre Kinopoisk for simultaneously searching for distributions in all available torrent trackers and downloading content via magnet links or torrent files directly from the trackers.
+| Имя провайдера                      | Зеркала | Регистрация  |  Фильтрация для поиска и RSS   | Поиск по ID  | RSS      |
+| -                                   | -       | -            |  -                             | -            | -        |
+| [RuTracker](https://rutracker.org)  | 3       | Yes*         |  Категория                     | Yes          | Native   |
+| [Kinozal](https://kinozal.tv)       | 3       | Yes*         |  Категория, год выхода, формат | Yes          | *Custom* |
+| [RuTor](https://rutor.info)         | 2       | No           |  Категория                     | Yes          | *Custom* |
+| [NoNameClub](https://nnmclub.to)    | 1       | No           |  Категория                     | Yes          | Native   |
 
-#### Wox Plugin
+**\*** Регистрация требуется только при скачивании торрент-файла по прямой ссылке. Все раздачи при поиске по **id** (идентификатору) содержат **хэш сумму** и **магнитные ссылки** (уже включают в себя актуальный список серверов торрент-трекеров), которые позволяют сразу начать загрузку содержимого раздачи или сгенерировать торрент-файл после загрузки метаданных с помощью любого торрент-клиента, например, [qBittorrent](https://github.com/qbittorrent/qBittorrent) (поддерживает RSS и поисковые плагины), [Transmission](https://github.com/transmission/transmission) или [Webtorrent Desktop](https://github.com/webtorrent/webtorrent-desktop).
 
-Torrent [Search plugin](https://github.com/Lifailon/Wox.Plugins) for quickly searching for distributions in all available torrent trackers through the [Wox](https://github.com/Wox-launcher/Wox) interface, which is available for installation from the [plugins repository](http://www.wox.one/plugin/431).
+Доступ к новостным **RSS** лентам для *RuTracker* и *NoNameClub* осуществляется путем перенаправления оригинального канала. Для провайдеров *Kinozal* и *RuTor* реализована кастомная лента новостей с главной страницы, которые поддерживают фильтрацию по категориям.
 
----
+## ⚡ Frontend
 
-### 🔗 Full list of available providers:
+### Google Chrome Extension
 
-| Provider name                       | Mirrors | Registration |  Filter for search and RSS      | Search by ID | RSS      |
-| -                                   | -       | -            |  -                              | -            | -        |
-| [RuTracker](https://rutracker.org)  | 3       | Yes*         |  Category                       | Yes          | Native   |
-| [Kinozal](https://kinozal.tv)       | 3       | Yes*         |  Category, release year, format | Yes          | *Custom* |
-| [RuTor](https://rutor.info)         | 2       | No           |  Category                       | Yes          | *Custom* |
-| [NoNameClub](https://nnmclub.to)    | 1       | No           |  Category                       | Yes          | Native   |
+Пользовательский интерфейс для браузера и мобильных устройств в стиле [Jackett](https://github.com/Jackett/Jackett) через расширение 🍿 [Libre Kinopoisk](https://github.com/Lifailon/LibreKinopoisk) для одновременного поиска раздач во всех доступных торрент-трекерах и загрузки контента.
 
-**\*** Registration is required only when downloading a torrent file via a direct link. All distributions when searching by **id** (identifier) contain **info hash sum** and **magnet link** (already contain current list of torrent-trackers servers), which allow to immediately start loading content distribution or generate torrentfile after downloading metadata using any torrent client, for example [qBittorrent](https://github.com/qbittorrent/qBittorrent) (supports RSS and search plugins), [Transmission](https://github.com/transmission/transmission) or [Webtorrent Desktop](https://github.com/webtorrent/webtorrent-desktop).
+### Wox Plugin
 
-Access to **RSS** feeds for *RuTracker* and *NoNameClub* is by redirecting the original channel. For *Kinozal* and *RuTor* providers, a casted news feed from the homepage has been implemented that supports filtering by categories.
-
----
+Плагин [Torrent Search](https://github.com/Lifailon/Wox.Plugins) для быстрого поиска раздач во всех доступных торрент-трекерах через интерфейс [Wox](https://github.com/Wox-launcher/Wox), которое доступно для установки из [репозитория плагинов](http://www.wox.one/plugin/431).
 
 ## 🚀 Deploy
 
-You can deploy your own public API to Vercel from this repository, just click the button below and follow the instructions:
+Вы можете развернуть свой публичный сервер на платформе Vercel из исходного кода репозитория. Для этого нажмите кнопку ниже и следуйте инструкциям:
 
 [![Vercel](https://img.shields.io/badge/Deploy-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/new/torapi/clone?repository-url=https://github.com/lifailon/TorAPI)
 
@@ -84,17 +101,17 @@ You can deploy your own public API to Vercel from this repository, just click th
 
 ### Docker Hub
 
-The project uses [GitHub Actions](https://github.com/Lifailon/TorAPI/actions) to build the Docker container and automatically test the functionality of all endpoints.
+Проект использует [GitHub Actions](https://github.com/Lifailon/TorAPI/actions) для сборки контейнера Docker и автоматического тестирования функциональности всех конечных точек.
 
 #### Run
 
-Upload the image and run the container from the [Docker Hub](https://hub.docker.com/repository/docker/lifailon/torapi/general):
+Загрузите образ и запустите контейнер из [Docker Hub](https://hub.docker.com/repository/docker/lifailon/torapi/general):
 
 ```shell
 docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped lifailon/torapi:latest
 ```
 
-If you are using a proxy server:
+Что бы использовать Proxy сервер, воспользуйтесь следующими параметрами при запуске контейнера:
 
 ```shell
 docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped \
@@ -105,18 +122,18 @@ docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped \
   lifailon/torapi:latest
 ```
 
-Replace the contents of the variables for connecting to the Proxy server with your own. If you do not use authorization on the proxy server, simply do not specify these parameters when starting the container.
+Замените содержимое переменных для подключения к Proxy серверу на свои. Если вы не используете авторизацию на прокси сервере, просто не указывайте эти параметры при запуске контейнера.
 
 #### Compose
 
-You can download and use the [docker-compose](docker-compose.yml) file to build the container from Docker Hub:
+Вы можете загрузить и использовать файл `docker-compose.yml` для сборки контейнера из **Docker Hub**:
 
 ```shell
 curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/docker-compose.yml
 curl -sO https://raw.githubusercontent.com/Lifailon/TorAPI/main/.env.yml
 ```
 
-Edit the environment variables in the [.env](.env) file (required if using a proxy server) and start the container:
+Отредактируйте переменные окружения в файле [env](.env) (необходимо для использования прокси сервера), и запустите контейнер:
 
 ```shell
 docker-compose up -d
@@ -124,19 +141,19 @@ docker-compose up -d
 
 ### Local image
 
-You can save an image downloaded from Docker Hub to transfer it to a machine that does not have Docker Hub access:
+Вы можете сохранить образ, загруженный из Docker Hub, что бы передать ее на машину, у которой нет доступа к Docker Hub:
 
 ```shell
 docker save -o TorAPI-Docker-Image.tar lifailon/torapi
 ```
 
-In the [release files](https://github.com/Lifailon/TorAPI/releases) you can download the prepared image and boot it on your machine:
+В [файлах к релизу](https://github.com/Lifailon/TorAPI/releases) вы можете скачать подготовленный образ и загрузить его на своей машине:
 
 ```shell
 docker load -i TorAPI-Docker-Image.tar
 ```
 
-Run the container from the downloaded local image:
+Запустите контейнер из загруженного локального образа:
 
 ```shell
 docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped lifailon/torapi:latest
@@ -144,16 +161,16 @@ docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped lifailon/torap
 
 ### Dockerfile
 
-You can build the image yourself from the project's source files using [dockerfile](dockerfile).
+Вы можете создать образ самостоятельно из исходных файлов проекта, используя [dockerfile](dockerfile).
 
-Clone this repository:
+Клонируйте репозиторий:
 
 ```shell
 git clone https://github.com/Lifailon/TorAPI
 cd TorAPI
 ```
 
-Edit variables or other settings in the `dockerfile` if necessary:
+При необходимости, отредактируйте переменные или другие параметры в `dockerfile`:
 
 ```shell
 ENV PROXY_ADDRESS="192.168.3.100"
@@ -162,16 +179,16 @@ ENV USERNAME="TorAPI"
 ENV PASSWORD="TorAPI"
 ```
 
-Build the image and run the container:
+Соберите образ и запустите контейнер:
 
 ```shell
 docker build -t torapi .
 docker run -d --name TorAPI -p 8443:8443 --restart=unless-stopped torapi
 ```
 
-## 📦 Install
+## 📦 NPM
 
-To install the project and all dependencies, you can use the package manager [npm](https://www.npmjs.com/package/torapi):
+Для установки проекта и всех зависимостей, вы можете использовать менеджер пакетов [npm](https://www.npmjs.com/package/torapi):
 
 ```shell
 npm install -g torapi
@@ -179,7 +196,7 @@ npm install -g torapi
 
 ## 🔨 Build
 
-Clone the repository, install dependencies and start the server:
+Для сборки проекта из исходного кода, клонируйте репозиторий, установите зависимости и запустите сервер:
 
 ```shell
 git clone https://github.com/Lifailon/TorAPI
@@ -188,63 +205,61 @@ npm install
 npm start
 ```
 
-By default, the server will be launched on port `8443`.
+По умолчанию сервер будет запущен на порту `8443`.
 
-You can specify a different port:
+Вы можете указать другой порт:
 
 ```js
 npm start -- --port 2024
 ```
 
-For development, use **nodemon** mode (restarts the server when the contents of files change):
+Для разработки используется запуск в режиме [nodemon](https://github.com/remy/nodemon) (перезапускает сервер при изменение содержимого файлов):
 
 ```
 npm run dev
 ```
 
-### Proxy
-
-Use a proxy for all requests:
+Использование прокси сервера для всех запросов:
 
 ```js
 npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090
 ```
 
-If authorization on a proxy server is required:
+Авторизация на прокси сервере:
 
 ```js
 npm start -- --port 2024 --proxyAddress 192.168.3.100 --proxyPort 9090 --username TorAPI --password TorAPI
 ```
 
-### OpenAPI
+## 📚 Swagger
 
-📚 Documentation is available in the **Swagger UI** at: `http://localhost:8443/docs` via module [swagger-ui-express](https://github.com/scottie1984/swagger-ui-express). The documentation is described through the [swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc) library.
+Документация доступна через **Swagger UI** по адресу `http://localhost:8443/docs` с использованием модуля [swagger-ui-express](https://github.com/scottie1984/swagger-ui-express). Описание документации производится через библиотеку [swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc).
 
-To create up-to-date or update Swagger documentation files in `JSON` and `YAML` format, use the command:
+Чтобы создать или обновить файлы документации Swagger в формате `JSON` и `YAML`, используйте команду:
 
 ```shell
 npm run docs
 ```
 
-## 🧪 Tests
+## 🧪 Postman
 
-You can run testing to quickly check the health of all endpoints in the console:
+Вы можете запустить тестирование, чтобы быстро проверить работоспособность всех конечных точек в консоли:
 
 ```shell
 npm start -- --test
 ```
 
-During testing, the local server is started, a request is made to the endpoint `/api/provider/test`, the output is logged in JSON format and the server exits.
+Во время тестирования запускается локальный сервер, делается запрос к конечной точке `/api/provider/test`, логирует вывод в формате JSON и завершает свою работу.
 
-Change header parameter in request:
+Изменение параметра заголовка в запросе:
 
 ```shell
 npm start -- --test --q "The Rookie"
 ```
 
-Parameterized tests are also available through [GitHub Actions](/.github/workflows/ci-postman-tests.yml) using [Postman](/postman-tests.json) via [newman](https://github.com/postmanlabs/newman) in `JUnit` format:
+Также доступны параметризированные тесты через [GitHub Actions](/.github/workflows/ci-postman-tests.yml) с использованием [Postman](/postman-tests.json) и [Newman](https://github.com/postmanlabs/newman) для формирования отчетов в формате `JUnit`.
 
-To run tests locally:
+Локальный запуск тестов:
 
 ```shell
 npm install -g newman
@@ -280,14 +295,18 @@ newman run postman-tests.json \
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+## 👨‍🔬 Jenkins
+
+Для автоматизации процесса развертвывания и управления (запуск, остановка и выгрузка логов) на удаленной машине в локальной среде используется [Jenkins Pipeline](jenkinsfile).
+
 ---
 
-## Other projects:
+## 🎊 Другие проекты
 
-- 🔎 [LibreKinopoisk](https://github.com/Lifailon/LibreKinopoisk) - Google Chrome extension that adds buttons to the Kinopoisk website and provides a **TorAPI** interface in the [Jackett](https://github.com/Jackett/Jackett) style (without the need to install a server part and use a VPN) for quickly searching for movies and series in open sources.
+- 🔎 [LibreKinopoisk](https://github.com/Lifailon/LibreKinopoisk) - расширение Google Chrome, которое добавляет кнопки на сайт Кинопоиск и предоставляет интерфейс **TorAPI** в стиле [Jackett](https://github.com/Jackett/Jackett) (без необходимости устанавливать серверную часть и использовать VPN) для быстрого поиска фильмов и сериалов в открытых источниках.
 
-- 🧲 [Kinozal bot](https://github.com/Lifailon/Kinozal-Bot) - Telegram bot that allows you to automate the process of delivering content to your TV using only your phone. Provides a convenient interface for interacting with the torrent tracker [Kinozal](https://kinozal.tv) and the database [TMDB](https://www.themoviedb.org) to track the release date of episodes, seasons and search for actors for each episode , as well as the ability to manage the torrent client [qBittorrent](https://github.com/qbittorrent/qBittorrent) or [Transmission](https://github.com/transmission/transmission) on your computer, being remote from home and from single interface.
+- 🧲 [Kinozal Bot](https://github.com/Lifailon/Kinozal-Bot) - Telegram бот, который позволяет автоматизировать процесс доставки контента до вашего телевизора, используя только телефон. Предоставляет удобный интерфейс для взаимодействия с торрент трекером [Кинозал](https://kinozal.tv) и базой данных [TMDB](https://www.themoviedb.org) для отслеживания даты выхода серий, сезонов и поиска актеров для каждой серии, а также возможность управлять торрент клиентом [qBittorrent](https://github.com/qbittorrent/qBittorrent) или [Transmission](https://github.com/transmission/transmission) на вашем компьютере, находясь удаленно от дома и из единого интерфейса.
 
-- ❤️ [WebTorrent Desktop api](https://github.com/Lifailon/webtorrent-desktop-api) - fork of the [WebTorrent Desktop](https://github.com/webtorrent/webtorrent-desktop) client, which added a remote control mechanism via the `REST API` based on [Express Framework](https://github.com/expressjs/express).
+- 📡 [Froxy](https://github.com/Lifailon/froxy/blob/main/README_RU.md) - классический и обратный прокси сервер на базе `.NET` для запуска в режиме командной строки и контейнера [Docker](https://hub.docker.com/r/lifailon/froxy). Поддерживает проксирование `HTTPS` трафика (`CONNECT` запросы) и протокол `SOCKS5` для туннелирования `TCP` трафика, а также `TCP`, `UDP` и `HTTP/HTTPS` протоколы для обратоного проксирования (поддерживается обработка `GET` и `POST` запросов с передачей заголовков и тела запроса для работы с `API` и передачи `cookie`).
 
-- 📡 [Reverse Proxy .NET](https://github.com/Lifailon/rpnet) - cross-platform command-line utility for implementing a **.NET** based reverse proxy server. It is used to provide access to hosts on the network from one network interface to remote applications via **TCP**, **UDP** or **HTTP/HTTPS** protocols (`GET` and `POST` requests are supported to access external resources over the Internet) available via another network interface (e.g. via **VPN**) on your host without unnecessary configuration and with authorization support.
+- ❤️ [WebTorrent Desktop api](https://github.com/Lifailon/webtorrent-desktop-api) - форк клиента [WebTorrent Desktop](https://github.com/webtorrent/webtorrent-desktop), в котором добавлен механизм удаленного управления через `REST API` на базе [Express Framework](https://github.com/expressjs/express).
