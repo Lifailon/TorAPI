@@ -8,28 +8,27 @@
         "docs": "node swagger/swagger-convert.js"
     },
     "keywords": [
-        "Torrent",
-        "Tracker",
-        "API",
-        "Express",
-        "Cheerio"
+        "express",
+        "torrent",
+        "tracker",
+        "serverless"
     ],
     "author": "Lifailon",
     "license": "MIT",
     "dependencies": {
-        "axios": "^0.21.1",
-        "cheerio": "^1.0.0-rc.3",
-        "express": "^4.17.1",
-        "https-proxy-agent": "^7.0.5",
+        "axios": "^0.21.4",
+        "cheerio": "^1.0.0",
+        "express": "^4.21.2",
+        "https-proxy-agent": "^7.0.6",
         "iconv-lite": "^0.6.3",
         "js-yaml": "^4.1.0",
-        "nodemon": "^2.0.4",
+        "nodemon": "^2.0.22",
         "swagger-jsdoc": "^6.2.8",
         "swagger-ui-express": "^5.0.1",
         "xml2js": "^0.6.2",
         "yargs": "^17.7.2"
     },
-    "description": "Unofficial API (backend) for RuTracker, Kinozal, RuTor and NoNameClub for receiving torrent files and detailed information about distribution by movie title, TV series or id, and also provides RSS news feed for all providers.",
+    "description": "Unofficial API (backend) for RuTracker, Kinozal, RuTor and NoNameClub.",
     "repository": {
         "type": "git",
         "url": "https://github.com/Lifailon/TorAPI"

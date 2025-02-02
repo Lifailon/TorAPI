@@ -1,16 +1,16 @@
 # Build stage
-FROM --platform=$BUILDPLATFORM node:alpine AS build
+FROM node:alpine AS build
 
 WORKDIR /torapi
 
 # Install dependencies
 COPY package.json ./
-RUN npm install && npm cache clean --force
+RUN npm install && npm update && npm cache clean --force
 
 COPY . .
 
 # Final stage
-FROM --platform=$BUILDPLATFORM node:alpine
+FROM node:alpine
 
 WORKDIR /torapi
 
@@ -23,7 +23,7 @@ COPY --from=build /torapi/category.json ./category.json
 ENV PORT=8443
 EXPOSE 8443
 
-# Set variables for connecting through a proxy server
+# Set variables for proxy server connection via env file or params run
 ENV PROXY_ADDRESS=""
 ENV PROXY_PORT=""
 ENV USERNAME=""
