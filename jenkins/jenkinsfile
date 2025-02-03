@@ -4,7 +4,7 @@ pipeline {
         choice(
             name: "gitUrl",
             choices: [
-                "https://github.com/Lifailon/TorAPI.git",
+                "https://github.com/Lifailon/TorAPI",
                 "https://gitlab.com/Lifailon/TorAPI.git"
             ],
             description: "Git repository URL"
@@ -62,17 +62,13 @@ pipeline {
         choice(
             name: "mode",
             choices: [
-                "Build",
+                "Local build",
+                "Docker build",
                 "Restart",
                 "Stop",
                 "Logs"
             ],
             description: "Select mode"
-        )
-        booleanParam(
-            name: "docker",
-            defaultValue: false,
-            description: 'Build in Docker container'
         )
         booleanParam(
             name: "test",
@@ -96,36 +92,36 @@ pipeline {
                         remote.identityFile = SSH_KEY
                         remote.allowAnyHosts = true
                         def mainCommand = """
-                            echo ">>>>> Check local path: ${params.deployPath}"
-                            testPath=\$(ls ${params.deployPath} || echo false)
+                            echo " ---> Check local path: ${params.deployPath}"
+                            testPath=\$(ls ${params.deployPath} 2> /dev/null || echo false)
                             if [ "\$testPath" != "false" ]; then
                                 testPort=\$(ss -tunelp | grep ${params.serverPort})
                                 if [ -n "\$testPort" ]; then
-                                    echo ">>>>> Stopping local server"
-                                    echo ">>>>> Port: ${params.serverPort}"
+                                    echo " ---> Stopping local server"
+                                    echo " ---> Port: ${params.serverPort}"
                                     pid=\$(echo \$testPort | grep -oP 'pid=\\K\\d+')
-                                    echo ">>>>> PID: \$pid"
+                                    echo " ---> PID: \$pid"
                                     kill \$pid
                                 else
-                                    echo ">>>>> Local server not running"
+                                    echo " ---> Local server not running"
                                 fi
                             else
-                                echo ">>>>> Local server not installed"
+                                echo " ---> Local server not installed"
                             fi
-                            echo ">>>>> Check docker container"
-                            dockerCheck=\$(docker ps | grep TorAPI || true)
+                            echo " ---> Check docker container"
+                            dockerCheck=\$(docker ps -a | grep TorAPI || true)
                             if [ -n "\$dockerCheck" ]; then
-                                echo ">>>>> Check docker status"
+                                echo " ---> Check docker status"
                                 dockerStatus=\$(docker inspect --format '{{.State.Status}}' TorAPI)
                                 if [ \$dockerStatus == "running" ]; then
-                                    echo ">>>>> Stopping docker container"
+                                    echo " ---> Stopping docker container"
                                     docker stop TorAPI
                                 else
-                                    echo ">>>>> Docker container not running"
-                                    echo ">>>>> Status: \$dockerStatus"
+                                    echo " ---> Docker container not running"
+                                    echo " ---> Status: \$dockerStatus"
                                 fi
                             else
-                                echo ">>>>> Docker container not found"
+                                echo " ---> Docker container not found"
                             fi
                         """
                         sshCommand remote: remote, command: mainCommand
@@ -133,9 +129,9 @@ pipeline {
                 }
             }
         }
-        stage('Build') {
+        stage('Local build') {
             when {
-                expression { params.mode == "Build" }
+                expression { params.mode == "Local build" || params.mode == "Docker build" }
             }
             steps {
                 script {
@@ -150,13 +146,14 @@ pipeline {
                         remote.identityFile = SSH_KEY
                         remote.allowAnyHosts = true
                         def mainCommand = """
-                            echo ">>>>> Remove old code"
+                            echo " ---> Remove old code"
                             rm -r -f ${params.deployPath} 2> /dev/null
-                            echo ">>>>> clone repository"
+                            echo " ---> Clone repository"
                             git clone ${params.gitUrl}
                             cd ${params.deployPath}
-                            echo ">>>>> Install dependencies"
+                            echo " ---> Install dependencies"
                             npm install
+                            npm update
                         """
                         sshCommand remote: remote, command: mainCommand
                     }
@@ -165,7 +162,7 @@ pipeline {
         }
         stage('Docker build') {
             when {
-                expression { params.mode == "Build" && params.docker }
+                expression { params.mode == "Docker build" }
             }
             steps {
                 script {
@@ -181,34 +178,64 @@ pipeline {
                         remote.allowAnyHosts = true
                         if (params.useProxy && params.proxyUser.size() > 0) {
                             mainCommand = """
+                                echo " ---> Build container using proxy with authentication"
                                 cd ${params.deployPath}
+                                dockerCheck=\$(docker ps -a | grep TorAPI || true)
+                                if [ -n "\$dockerCheck" ]; then
+                                    echo " ---> Remove container and image"
+                                    docker stop TorAPI
+                                    docker rm TorAPI
+                                    docker rmi -f torapi
+                                    docker rmi -f node:alpine
+                                fi
                                 docker build -t torapi .
                                 docker run -d --name TorAPI \
-                                    -p ${params.serverPort}:${params.serverPort} --restart=unless-stopped torapi \
+                                    -p ${params.serverPort}:${params.serverPort} --restart=unless-stopped \
                                     -e PROXY_ADDRESS=${params.proxyAddress} -e PROXY_PORT=${params.proxyPort} \
                                     -e USERNAME=${params.proxyUser} -e PASSWORD=${params.proxyPassword} \
                                     torapi
+                                echo " ---> Remove code"
                                 cd \$HOME
                                 rm -r ${params.deployPath}
                             """
                         } else if (params.useProxy) {
                             mainCommand = """
+                                echo " ---> Build container using proxy without authentication"
                                 cd ${params.deployPath}
+                                dockerCheck=\$(docker ps -a | grep TorAPI || true)
+                                if [ -n "\$dockerCheck" ]; then
+                                    echo " ---> Remove container and image"
+                                    docker stop TorAPI
+                                    docker rm TorAPI
+                                    docker rmi -f torapi
+                                    docker rmi -f node:alpine
+                                fi
                                 docker build -t torapi .
                                 docker run -d --name TorAPI \
-                                    -p ${params.serverPort}:${params.serverPort} --restart=unless-stopped torapi \
+                                    -p ${params.serverPort}:${params.serverPort} --restart=unless-stopped \
                                     -e PROXY_ADDRESS=${params.proxyAddress} -e PROXY_PORT=${params.proxyPort} \
                                     torapi
+                                echo " ---> Remove code"
                                 cd \$HOME
                                 rm -r ${params.deployPath}
                             """
                         } else {
                             mainCommand = """
+                                echo " ---> Build container without proxy"
                                 cd ${params.deployPath}
+                                dockerCheck=\$(docker ps -a | grep TorAPI || true)
+                                if [ -n "\$dockerCheck" ]; then
+                                    echo " ---> Remove container and image"
+                                    docker stop TorAPI
+                                    docker rm TorAPI
+                                    docker rmi -f torapi
+                                    docker rmi -f node:alpine
+                                fi
                                 docker build -t torapi .
                                 docker run -d --name TorAPI \
-                                    -p ${params.serverPort}:${params.serverPort} --restart=unless-stopped torapi \
+                                    -p ${params.serverPort}:${params.serverPort} --restart=unless-stopped \
                                     torapi
+                                echo " ---> Remove code"
                                 cd \$HOME
                                 rm -r ${params.deployPath}
                             """
@@ -220,7 +247,7 @@ pipeline {
         }
         stage('Restart server') {
             when {
-                expression { params.mode == "Build" || params.mode == "Restart" }
+                expression { params.mode == "Restart" || params.mode == "Local build" || params.mode == "Docker build"  }
             }
             steps {
                 script {
@@ -235,22 +262,22 @@ pipeline {
                         remote.identityFile = SSH_KEY
                         remote.allowAnyHosts = true
                         def mainCommand = """
-                            testPath=\$(ls ${params.deployPath} || echo false)
+                            testPath=\$(ls ${params.deployPath} 2> /dev/null || echo false)
                             if [ "\$testPath" != "false" ]; then
                                 cd ${params.deployPath}
-                                echo ">>>>> Start local server"
-                                    if [ ${params.useProxy} == "true" && -n ${params.proxyUser} ]; then
+                                echo " ---> Start local server"
+                                    if [[ "${params.useProxy}" == "true" && -n "${params.proxyUser}" ]]; then
                                         nohup npm start -- --port ${params.serverPort} \
                                             --proxyAddress ${params.proxyAddress} --proxyPort ${params.proxyPort} \
                                             --username ${params.proxyUser} --password ${params.proxyPassword} >> torapi.log 2>&1 &
-                                    elif [ ${params.useProxy} == "true" ]; then
+                                    elif [ "${params.useProxy}" == "true" ]; then
                                         nohup npm start -- --port ${params.serverPort} \
                                             --proxyAddress ${params.proxyAddress} --proxyPort ${params.proxyPort} >> torapi.log 2>&1 &
                                     else
                                         nohup npm start -- --port ${params.serverPort} >> torapi.log 2>&1 &
                                     fi
                             else
-                                echo ">>>>> Start docker container"
+                                echo " ---> Start docker container"
                                 docker start TorAPI
                             fi
                         """
@@ -276,15 +303,10 @@ pipeline {
                         remote.identityFile = SSH_KEY
                         remote.allowAnyHosts = true
                         def mainCommand = """
-                            echo ">>>>> Check docker container"
-                            dockerCheck=\$(docker ps | grep TorAPI || true)
+                            dockerCheck=\$(docker ps -a | grep TorAPI || true)
                             if [ -n "\$dockerCheck" ]; then
-                                echo ">>>>> Check docker status"
-                                dockerStatus=\$(docker inspect --format '{{.State.Status}}' TorAPI)
-                                echo ">>>>> Status: \$dockerStatus"
                                 docker logs TorAPI
                             else
-                                echo ">>>>> Docker container not found"
                                 cd ${params.deployPath}
                                 cat "torapi.log"
                             fi
