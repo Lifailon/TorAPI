@@ -13,6 +13,7 @@
         "proxyUser": "TorAPI",
         "proxyPassword": "TorAPI",
         "mode": "Docker build",
-        "test": false
+        "test": true,
+        "testQuery": "The+Rookie"
     }
 }

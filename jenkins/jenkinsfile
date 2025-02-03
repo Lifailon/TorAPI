@@ -75,11 +75,18 @@ pipeline {
             defaultValue: false,
             description: 'Run postman tests'
         )
+        string(
+            name: 'testQuery',
+            defaultValue: 'The+Rookie',
+            description: 'Search request for testing via Postman'
+        )
     }
     stages {
         stage('Stop server') {
             when {
-                expression { params.mode != "Logs" }
+                expression {
+                    params.mode != "Logs"
+                }
             }
             steps {
                 script {
@@ -131,7 +138,9 @@ pipeline {
         }
         stage('Local build') {
             when {
-                expression { params.mode == "Local build" || params.mode == "Docker build" }
+                expression {
+                    params.mode == "Local build" || params.mode == "Docker build"
+                }
             }
             steps {
                 script {
@@ -162,7 +171,9 @@ pipeline {
         }
         stage('Docker build') {
             when {
-                expression { params.mode == "Docker build" }
+                expression {
+                    params.mode == "Docker build"
+                }
             }
             steps {
                 script {
@@ -247,7 +258,9 @@ pipeline {
         }
         stage('Restart server') {
             when {
-                expression { params.mode == "Restart" || params.mode == "Local build" || params.mode == "Docker build"  }
+                expression {
+                    params.mode == "Restart" || params.mode == "Local build" || params.mode == "Docker build"
+                }
             }
             steps {
                 script {
@@ -286,9 +299,60 @@ pipeline {
                 }
             }
         }
+        stage('Postman tests') {
+            when {
+                expression {
+                    params.test && params.mode.contains("build")
+                }
+            }
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(credentialsId: params.credentials, usernameVariable: 'SSH_USER', keyFileVariable: 'SSH_KEY', passphraseVariable: '')]) {
+                        echo SSH_USER
+                        echo env.SSH_USER
+                        def remote = [:]
+                        remote.name = params.deployServerName
+                        remote.host = params.deployServerName
+                        remote.port = params.sshPort.toInteger()
+                        remote.user = SSH_USER
+                        remote.identityFile = SSH_KEY
+                        remote.allowAnyHosts = true
+                        def mainCommand = """
+                            newman run https://raw.githubusercontent.com/Lifailon/TorAPI/refs/heads/main/postman-tests.json \
+                                --iteration-count 1 \
+                                --env-var "baseUrl=http://localhost:8443" \
+                                --env-var "query=${params.testQuery}" \
+                                --env-var "queryAllPage=test" \
+                                --env-var "categoryRuTracker=1605" \
+                                --env-var "categoryKinozal=20" \
+                                --env-var "categoryRuTor=10" \
+                                --env-var "categoryNoNameClub=1318" \
+                                --reporters cli,junit \
+                                --reporter-junit-export postman-results.xml \
+                                --suppress-exit-code
+                        """
+                        sshCommand remote: remote, command: mainCommand
+                        sshGet remote: remote, from: "postman-results.xml", into: "${env.WORKSPACE}/postman-results.xml", override: true
+                        sshCommand remote: remote, command: "rm postman-results.xml"
+                    }
+                }
+            }
+        }
+        stage('Get junit postman results') {
+            when {
+                expression {
+                    params.test && params.mode.contains("build")
+                }
+            }
+            steps {
+                junit '**/postman-results.xml'
+            }
+        }
         stage('Get logs') {
             when {
-                expression { params.mode == "Logs" }
+                expression {
+                    params.mode == "Logs"
+                }
             }
             steps {
                 script {
