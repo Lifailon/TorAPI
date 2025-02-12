@@ -2,6 +2,20 @@ name: Build and K6 Test
 
 on:
   workflow_dispatch:
+    inputs:
+      Server:
+        description: 'Local build or public server:'
+        required: false
+        default: 'Node'
+        type: choice
+        options:
+          - 'http://localhost:8443'
+          - 'https://torapi.vercel.app'
+      Query:
+        description: 'Search parameter for API request:'
+        required: true
+        default: 'The Rookie'
+        type: string
 
 jobs:
   build:
@@ -25,20 +39,19 @@ jobs:
           ${{ runner.os }}-node-
 
     - name: Install dependencies and start local server
+      if: ${{ contains(github.event.inputs.Server, 'localhost') }}
       run: |
         npm install
         npm start > torapi.log &
 
-    - name: Install K6
+    - name: Install k6 and jq
       run: |
         sudo apt-get update
         sudo apt-get install -y snapd
         sudo systemctl enable --now snapd.socket
         sudo ln -s /var/lib/snapd/snap /snap
         sudo snap install k6
-
-    - name: Install jq
-      run: sudo apt-get install -y jq
+        sudo apt-get install -y jq
 
     - name: Packet check
       run: |
@@ -49,7 +62,8 @@ jobs:
 
     - name: Run K6 tests and save report file
       run: |
-        # export TOR_API_QUERY="The Rookie"
+        export TOR_API_URL=${{ github.event.inputs.Server }}
+        export TOR_API_QUERY=${{ github.event.inputs.Query }}
         k6 run --summary-export=k6-report.json test/k6.js
 
     - name: Markdown Report
@@ -79,4 +93,5 @@ jobs:
         echo "| Iteration Duration (ms)             | $(jq '.metrics.iteration_duration.avg' k6-report.json)        | $(jq '.metrics.iteration_duration."p(95)"' k6-report.json)        | $(jq '.metrics.iteration_duration.max' k6-report.json)        |" >> $GITHUB_STEP_SUMMARY
 
     - name: View local server logs
+      if: ${{ contains(github.event.inputs.Server, 'localhost') }}
       run: cat torapi.log
