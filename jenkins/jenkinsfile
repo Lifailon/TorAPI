@@ -285,7 +285,7 @@ pipeline {
             steps {
                 script {
                     sshCommand remote: remote, command: """
-                        newman run https://raw.githubusercontent.com/Lifailon/TorAPI/refs/heads/main/postman-tests.json \
+                        newman run https://raw.githubusercontent.com/Lifailon/TorAPI/refs/heads/main/test/postman.json \
                             --iteration-count 1 \
                             --env-var "baseUrl=http://localhost:8443" \
                             --env-var "query=${params.testQuery}" \

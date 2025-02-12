@@ -243,14 +243,14 @@ Change header parameter in request:
 npm start -- --test --q "The Rookie"
 ```
 
-Parameterized tests are also available through [GitHub Actions](/.github/workflows/ci-postman-tests.yml) using [Postman](/postman-tests.json) via [newman](https://github.com/postmanlabs/newman) in `JUnit` format:
+Parameterized tests are also available through [GitHub Actions](/.github/workflows/ci-postman-tests.yml) using [Postman](/test/postman.json) via [newman](https://github.com/postmanlabs/newman) in `JUnit` format:
 
 To run tests locally:
 
 ```shell
 npm install -g newman
 
-newman run postman-tests.json \
+newman run test/postman.json \
     --iteration-count 1 \
     --env-var "baseUrl=http://localhost:8443" \
     --env-var "query=The Rookie" \
@@ -259,7 +259,7 @@ newman run postman-tests.json \
     --env-var "categoryKinozal=20" \
     --env-var "categoryRuTor=10" \
     --env-var "categoryNoNameClub=1318"
-...
+
 ┌─────────────────────────┬────────────────────┬───────────────────┐
 │                         │           executed │            failed │
 ├─────────────────────────┼────────────────────┼───────────────────┤

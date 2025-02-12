@@ -131,7 +131,7 @@ jobs:
         else
           server="http://localhost:8443"
         fi
-        newman run postman-tests.json \
+        newman run test/postman.json \
           --iteration-count ${{ github.event.inputs.Iterations }} \
           --env-var "baseUrl=$server" \
           --env-var "query=${{ github.event.inputs.Query }}" \
