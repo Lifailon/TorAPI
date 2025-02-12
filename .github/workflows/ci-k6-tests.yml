@@ -24,31 +24,28 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - name: Install newman
-      run: |
-        npm install -g newman
-        npm install -g newman-reporter-html
-
-    - name: Packet check
-      run: |
-        echo "node version: $(node --version)"
-        echo "npm version: $(npm --version)"
-        echo "newman version: $(newman --version)"
-
     - name: Install dependencies and start local server
       run: |
         npm install
         npm start > torapi.log &
 
-    - name: Install jq
-      run: |
-        sudo apt-get install -y jq
-        echo "jq version: $(jq --version)"
-
     - name: Install K6
       run: |
-        sudo apt-get install -y k6
-        echo "K6 version: $(k6 --version)"
+        sudo apt-get update
+        sudo apt-get install -y snapd
+        sudo systemctl enable --now snapd.socket
+        sudo ln -s /var/lib/snapd/snap /snap
+        sudo snap install k6
+
+    - name: Install jq
+      run: sudo apt-get install -y jq
+
+    - name: Packet check
+      run: |
+        echo "node version: $(node --version)"
+        echo "npm version: $(npm --version)"
+        echo "k6 version: $(k6 --version)"
+        echo "jq version: $(jq --version)"
 
     - name: Run K6 tests and save report file
       run: |
