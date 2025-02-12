@@ -3,3 +3,4 @@ package-lock.json
 *.log
 *.html
 *.xml
+k6-report*

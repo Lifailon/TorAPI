@@ -1,0 +1,85 @@
+name: Build and K6 Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v4
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Cache npm dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install newman
+      run: |
+        npm install -g newman
+        npm install -g newman-reporter-html
+
+    - name: Packet check
+      run: |
+        echo "node version: $(node --version)"
+        echo "npm version: $(npm --version)"
+        echo "newman version: $(newman --version)"
+
+    - name: Install dependencies and start local server
+      run: |
+        npm install
+        npm start > torapi.log &
+
+    - name: Install jq
+      run: |
+        sudo apt-get install -y jq
+        echo "jq version: $(jq --version)"
+
+    - name: Install K6
+      run: |
+        sudo apt-get install -y k6
+        echo "K6 version: $(k6 --version)"
+
+    - name: Run K6 tests and save report file
+      run: |
+        # export TOR_API_QUERY="The Rookie"
+        k6 run --summary-export=k6-report.json test/k6.js
+
+    - name: Markdown Report
+      run: |
+        # GITHUB_STEP_SUMMARY="k6-report.md"
+        echo "## K6 Test Report" >> $GITHUB_STEP_SUMMARY
+        echo "| Name  | Value |" >> $GITHUB_STEP_SUMMARY
+        echo "| -     | -     |" >> $GITHUB_STEP_SUMMARY
+        echo "| RPS (Requests per Second) | $(jq '.metrics.http_reqs.rate' k6-report.json) |" >> $GITHUB_STEP_SUMMARY
+        echo "| Interations Count | $(jq '.metrics.iterations.count' k6-report.json) |" >> $GITHUB_STEP_SUMMARY
+        echo "| Requests Total | $(jq '.metrics.http_reqs.count' k6-report.json) |" >> $GITHUB_STEP_SUMMARY
+        echo "| VUs Max | $(jq '.metrics.vus_max.value' k6-report.json) |" >> $GITHUB_STEP_SUMMARY
+        echo "| Checks Fails | $(jq '.metrics.checks.fails' k6-report.json) |" >> $GITHUB_STEP_SUMMARY
+        echo "| Requests Failed | $(jq '.metrics.http_req_failed.value' k6-report.json) |" >> $GITHUB_STEP_SUMMARY
+        echo "| Data Sent (bytes) | $(jq '.metrics.data_sent.count' k6-report.json) |" >> $GITHUB_STEP_SUMMARY
+        echo "| Data Received (bytes) | $(jq '.metrics.data_received.count' k6-report.json) |" >> $GITHUB_STEP_SUMMARY
+        echo "### Metrics" >> $GITHUB_STEP_SUMMARY
+        echo "| Name  | Avg     | 95%    | Max   |" >> $GITHUB_STEP_SUMMARY
+        echo "| -     | -       | -      | -     |" >> $GITHUB_STEP_SUMMARY
+        echo "| Requests TCP Connecting (ms)        | $(jq '.metrics.http_req_connecting.avg' k6-report.json)       | $(jq '.metrics.http_req_connecting."p(95)"' k6-report.json)       | $(jq '.metrics.http_req_connecting.max' k6-report.json)       |" >> $GITHUB_STEP_SUMMARY
+        echo "| Requests TLS Handshaking (ms)       | $(jq '.metrics.http_req_tls_handshaking.avg' k6-report.json)  | $(jq '.metrics.http_req_tls_handshaking."p(95)"' k6-report.json)  | $(jq '.metrics.http_req_tls_handshaking.max' k6-report.json)  |" >> $GITHUB_STEP_SUMMARY
+        echo "| Requests Blocked (ms)               | $(jq '.metrics.http_req_blocked.avg' k6-report.json)          | $(jq '.metrics.http_req_blocked."p(95)"' k6-report.json)          | $(jq '.metrics.http_req_blocked.max' k6-report.json)          |" >> $GITHUB_STEP_SUMMARY
+        echo "| + Requests Sending to Server (ms)   | $(jq '.metrics.http_req_sending.avg' k6-report.json)          | $(jq '.metrics.http_req_sending."p(95)"' k6-report.json)          | $(jq '.metrics.http_req_sending.max' k6-report.json)          |" >> $GITHUB_STEP_SUMMARY
+        echo "| + Requests Waiting from Server (ms) | $(jq '.metrics.http_req_waiting.avg' k6-report.json)          | $(jq '.metrics.http_req_waiting."p(95)"' k6-report.json)          | $(jq '.metrics.http_req_waiting.max' k6-report.json)          |" >> $GITHUB_STEP_SUMMARY
+        echo "| + Response Receiving (ms)           | $(jq '.metrics.http_req_receiving.avg' k6-report.json)        | $(jq '.metrics.http_req_receiving."p(95)"' k6-report.json)        | $(jq '.metrics.http_req_receiving.max' k6-report.json)        |" >> $GITHUB_STEP_SUMMARY
+        echo "| = Requests Duration Full (ms)       | $(jq '.metrics.http_req_duration.avg' k6-report.json)         | $(jq '.metrics.http_req_duration."p(95)"' k6-report.json)         | $(jq '.metrics.http_req_duration.max' k6-report.json)         |" >> $GITHUB_STEP_SUMMARY
+        echo "| Iteration Duration (ms)             | $(jq '.metrics.iteration_duration.avg' k6-report.json)        | $(jq '.metrics.iteration_duration."p(95)"' k6-report.json)        | $(jq '.metrics.iteration_duration.max' k6-report.json)        |" >> $GITHUB_STEP_SUMMARY
+
+    - name: View local server logs
+      run: cat torapi.log
